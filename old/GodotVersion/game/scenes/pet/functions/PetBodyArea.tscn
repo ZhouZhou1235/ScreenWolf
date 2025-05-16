@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://bo1aqeqgigwtk"]
+
+[ext_resource type="Script" uid="uid://ca3xy7b27c78d" path="res://scripts/pet/functions/PetBodyArea.gd" id="1_u4sd1"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_w2vb7"]
+radius = 48.0
+
+[node name="PetBodyArea" type="Area2D"]
+script = ExtResource("1_u4sd1")
+
+[node name="Shape" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_w2vb7")

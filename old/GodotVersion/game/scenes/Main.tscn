@@ -1,0 +1,132 @@
+[gd_scene load_steps=11 format=3 uid="uid://dttqb2bvjed4b"]
+
+[ext_resource type="Script" uid="uid://b50vvjrmp4lv7" path="res://scripts/Main.gd" id="1_k4rks"]
+[ext_resource type="Texture2D" uid="uid://drwfpa644goxn" path="res://assets/image/icon/gamelogo.png" id="2_istqp"]
+[ext_resource type="Script" uid="uid://cfcpsqdrx08y0" path="res://scripts/Welcome.gd" id="2_k3ffk"]
+[ext_resource type="PackedScene" uid="uid://bbvgojj0bfjgu" path="res://scenes/gui/WindowBase.tscn" id="3_s7vgh"]
+[ext_resource type="Script" uid="uid://kthnhsusg4c4" path="res://scripts/Windows.gd" id="4_rario"]
+[ext_resource type="PackedScene" uid="uid://cp2dr2wvdw34x" path="res://scenes/gui/SelectPet.tscn" id="6_grq5f"]
+[ext_resource type="PackedScene" uid="uid://cu622wedq3yq1" path="res://scenes/gui/About.tscn" id="7_rfjq3"]
+
+[sub_resource type="Theme" id="Theme_uxlyu"]
+default_font_size = 24
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_j8li0"]
+size = Vector2(1312, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_iaw3a"]
+size = Vector2(32, 689.188)
+
+[node name="Main" type="Node"]
+script = ExtResource("1_k4rks")
+
+[node name="Game" type="Node2D" parent="."]
+
+[node name="Welcome" type="Node2D" parent="Game"]
+position = Vector2(512, 192)
+script = ExtResource("2_k3ffk")
+
+[node name="Polygon" type="Polygon2D" parent="Game/Welcome"]
+visible = false
+position = Vector2(-8, -16)
+color = Color(1, 1, 1, 0.196078)
+polygon = PackedVector2Array(72, 16, 72, 144, 8, 144, 8, 208, 72, 208, 72, 352, 200, 352, 200, 208, 264, 208, 264, 144, 200, 144, 200, 16)
+
+[node name="Icon" type="Sprite2D" parent="Game/Welcome"]
+position = Vector2(128, 64)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("2_istqp")
+
+[node name="IconArea" type="Area2D" parent="Game/Welcome/Icon"]
+
+[node name="Shape" type="CollisionPolygon2D" parent="Game/Welcome/Icon/IconArea"]
+position = Vector2(29.8754, 30.7282)
+scale = Vector2(0.846362, 0.846362)
+polygon = PackedVector2Array(-337.77, -338.777, -337.77, 266.165, -640.241, 266.165, -640.241, 568.636, 569.643, 568.636, 569.643, 266.165, 267.172, 266.165, 267.172, -338.777)
+
+[node name="Title" type="Label" parent="Game/Welcome"]
+offset_top = 128.0
+offset_right = 256.0
+offset_bottom = 192.0
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 36
+text = "屏幕有狼"
+horizontal_alignment = 1
+vertical_alignment = 1
+text_overrun_behavior = 3
+
+[node name="Menu" type="VBoxContainer" parent="Game/Welcome"]
+offset_left = 72.0
+offset_top = 192.0
+offset_right = 184.0
+offset_bottom = 332.0
+theme = SubResource("Theme_uxlyu")
+
+[node name="Start" type="Button" parent="Game/Welcome/Menu"]
+layout_mode = 2
+text = "开始"
+
+[node name="Select" type="Button" parent="Game/Welcome/Menu"]
+layout_mode = 2
+text = "选狼"
+
+[node name="About" type="Button" parent="Game/Welcome/Menu"]
+layout_mode = 2
+text = "关于"
+
+[node name="Exit" type="Button" parent="Game/Welcome/Menu"]
+layout_mode = 2
+text = "退出"
+
+[node name="Pet" type="Node2D" parent="Game"]
+
+[node name="MyWolf" type="Node2D" parent="Game/Pet"]
+
+[node name="BeginPos" type="Marker2D" parent="Game/Pet"]
+position = Vector2(640, 256)
+
+[node name="DesktopTop" type="Area2D" parent="Game/Pet"]
+
+[node name="Shape" type="CollisionShape2D" parent="Game/Pet/DesktopTop"]
+position = Vector2(640, 0)
+shape = SubResource("RectangleShape2D_j8li0")
+
+[node name="DesktopLeft" type="Area2D" parent="Game/Pet"]
+
+[node name="Shape" type="CollisionShape2D" parent="Game/Pet/DesktopLeft"]
+position = Vector2(0, 359.563)
+shape = SubResource("RectangleShape2D_iaw3a")
+
+[node name="DesktopRight" type="Area2D" parent="Game/Pet"]
+position = Vector2(1280, 0)
+
+[node name="Shape" type="CollisionShape2D" parent="Game/Pet/DesktopRight"]
+position = Vector2(0, 360.594)
+shape = SubResource("RectangleShape2D_iaw3a")
+
+[node name="DesktopBotton" type="Area2D" parent="Game/Pet"]
+position = Vector2(0, 720)
+
+[node name="Shape" type="CollisionShape2D" parent="Game/Pet/DesktopBotton"]
+position = Vector2(640, 0)
+shape = SubResource("RectangleShape2D_j8li0")
+
+[node name="Windows" type="Node" parent="."]
+script = ExtResource("4_rario")
+
+[node name="SelectPet" parent="Windows" instance=ExtResource("3_s7vgh")]
+title = "选择宠物狼"
+
+[node name="SelectPet" parent="Windows/SelectPet" instance=ExtResource("6_grq5f")]
+
+[node name="About" parent="Windows" instance=ExtResource("3_s7vgh")]
+title = "关于"
+
+[node name="About" parent="Windows/About" instance=ExtResource("7_rfjq3")]
+
+[connection signal="mouse_entered" from="Game/Welcome/Icon/IconArea" to="Game/Welcome" method="_on_icon_area_mouse_entered"]
+[connection signal="mouse_exited" from="Game/Welcome/Icon/IconArea" to="Game/Welcome" method="_on_icon_area_mouse_exited"]
+[connection signal="pressed" from="Game/Welcome/Menu/Start" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="Game/Welcome/Menu/Select" to="." method="_on_select_pressed"]
+[connection signal="pressed" from="Game/Welcome/Menu/About" to="." method="_on_about_pressed"]
+[connection signal="pressed" from="Game/Welcome/Menu/Exit" to="." method="_on_exit_pressed"]

@@ -1,0 +1,29 @@
+{
+	"info":"屏幕有狼 原版桌面宠物狼",
+	"data":[
+		{
+			"id":"WOLF_bluewolf",
+			"name":"蓝水狼",
+			"icon":"res://assets/image/PetIcons/WOLF_bluewolf.png",
+			"info":"活泼的青年狼~",
+			"res":"res://scenes/pet/WOLF_bluewolf.tscn",
+			"save":"WOLF_bluewolf"
+		},
+		{
+			"id":"WOLF_goldfox",
+			"name":"金光狐狸",
+			"icon":"res://assets/image/PetIcons/WOLF_goldfox.png",
+			"info":"金光闪闪！",
+			"res":"res://scenes/pet/WOLF_goldfox.tscn",
+			"save":"WOLF_goldfox"
+		},
+		{
+			"id":"WOLF_graywolf",
+			"name":"大灰狼",
+			"icon":"res://assets/image/PetIcons/WOLF_graywolf.png",
+			"info":"沉稳安静待在身旁",
+			"res":"res://scenes/pet/WOLF_graywolf.tscn",
+			"save":"WOLF_graywolf"
+		}
+	]
+}
