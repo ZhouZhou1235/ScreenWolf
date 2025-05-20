@@ -1,7 +1,9 @@
+// 程序入口
+
 package com.pinkcandy;
 
+import com.pinkcandy.core.Launcher;
+
 public class Main {
-    public static void main(String[] args) {
-        System.out.println("Hello world!");
-    }
+    public static void main(String[] args){new Launcher();}
 }

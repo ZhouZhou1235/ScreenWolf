@@ -4,3 +4,4 @@
 
 # 编译产物
 build
+*.class
