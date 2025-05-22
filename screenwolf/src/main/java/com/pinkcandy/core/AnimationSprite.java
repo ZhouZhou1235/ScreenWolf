@@ -1,6 +1,7 @@
 package com.pinkcandy.core;
 
 import java.awt.Dimension;
+import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -11,15 +12,26 @@ import com.pinkcandy.GArea;
 public class AnimationSprite extends JLabel {
     private Dimension size = GArea.DEFAULT_bodySize;
     private Timer playTimer = new Timer(GArea.DEFAULT_animationPlaySpeed,null);
-    private ImageIcon[] frames = null;
-    private int frameIndex = 0;
-    private int frameLength = 0;
+    private ImageIcon[] frames = new ImageIcon[GArea.GAME_maxFrameLength];
+    private int frameIndex;
+    private int frameLength;
+    private Map<String,String> animations;
+    public AnimationSprite(Dimension size,Map<String,String> animations){
+        this.animations = animations;
+        this.size = size;
+        Object[] animationKeys = animations.keySet().toArray();
+        if(animationKeys.length>0){
+            setAnimation(animationKeys[0].toString());
+            playAnimation();
+        }
+    }
     // 播放动画
     public void playAnimation(){playTimer.start();}
     // 停止动画
     public void stopAnimation(){playTimer.stop();}
     // 设置动画
-    public void setAnimation(String path){
+    public void setAnimation(String animationName){
+        String path = animations.get(animationName);if(path==null){return;}
         int index = 0;
         String[] imageFiles = GArea.scanDir(path);
         for(String file:imageFiles){
@@ -28,13 +40,11 @@ public class AnimationSprite extends JLabel {
             index++;
         }
         frameIndex = 0;
-        frameLength = frames.length;
+        frameLength = imageFiles.length;
         GArea.clearTimerListeners(playTimer);
         playTimer.addActionListener(_->{
             this.setIcon(frames[frameIndex]);
             frameIndex++;if(frameIndex>=frameLength){frameIndex=0;}
         });
     }
-    // 设置动画精灵大小
-    public void setSpriteSize(Dimension size){this.size=size;}
 }

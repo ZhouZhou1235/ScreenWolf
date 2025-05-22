@@ -13,6 +13,9 @@ import javax.swing.Timer;
 // 游戏全局类
 public class GArea {
     static public int DEFAULT_animationPlaySpeed = 100;
+    static public int GAME_maxFrameLength = 1024;
+    static public int GAME_renderTime = 32;
+    static public String GAME_workPath = System.getProperty("user.dir");
     static public Dimension DEFAULT_bodySize = new Dimension(256,256);
     static public Dimension SCREEN_dimension = Toolkit.getDefaultToolkit().getScreenSize();
     // 扫描文件夹内容
