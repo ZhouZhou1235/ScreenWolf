@@ -10,7 +10,7 @@
 
     <!-- 项目信息 -->
     <groupId>com.pinkcandy</groupId>
-    <artifactId>screenwolfcore</artifactId>
+    <artifactId>screenwolfgame</artifactId>
     <version>1.0.0</version>
 
     <!-- 属性 -->
@@ -21,11 +21,15 @@
 
     <!-- 包含库 -->
     <dependencies>
-        <!-- JSON解析 https://mvnrepository.com/artifact/com.alibaba/fastjson -->
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>2.0.45</version>
+            <groupId>com.pinkcandy</groupId>
+            <artifactId>screenwolfcore</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.pinkcandy</groupId>
+            <artifactId>screenwolfpet</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 

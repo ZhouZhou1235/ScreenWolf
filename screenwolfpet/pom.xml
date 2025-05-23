@@ -10,7 +10,7 @@
 
     <!-- 项目信息 -->
     <groupId>com.pinkcandy</groupId>
-    <artifactId>screenwolfcore</artifactId>
+    <artifactId>screenwolfpet</artifactId>
     <version>1.0.0</version>
 
     <!-- 属性 -->
@@ -26,6 +26,11 @@
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>2.0.45</version>
+        </dependency>
+        <dependency>
+            <groupId>com.pinkcandy</groupId>
+            <artifactId>screenwolfcore</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 
