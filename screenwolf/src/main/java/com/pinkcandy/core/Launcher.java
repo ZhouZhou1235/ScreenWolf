@@ -23,6 +23,7 @@ public class Launcher {
         String petFrames = GArea.GAME_workPath+"/screenwolf/src/main/assets/images/PetFrames";
         animations.put("default", petFrames+"/zhou/default/");
         PetBase wolf1 = new PetBase(petSize,animations);
+        screen.petAddMouseActionEcho(wolf1);
         screen.add(wolf1);
     }
 }
