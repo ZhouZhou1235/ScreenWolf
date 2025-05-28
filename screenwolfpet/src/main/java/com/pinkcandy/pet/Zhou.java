@@ -3,14 +3,14 @@ package com.pinkcandy.pet;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Map;
 
+import com.pinkcandy.screenwolf.GWorkArea;
 import com.pinkcandy.screenwolf.base.PetBase;
 
 public class Zhou extends PetBase {
     private boolean isFocus = false; // 是否聚焦
     public Zhou(Dimension size){
-        super(size,new AnimationTable().animationTable.get("zhou"));
+        super(size,GWorkArea.loadPetAnimationMap("ScreenWolf_Zhou.json"));
         this.addMouseListener(new MouseAdapter(){
             @Override
             public void mouseEntered(MouseEvent e){

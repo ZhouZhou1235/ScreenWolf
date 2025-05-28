@@ -21,12 +21,6 @@
 
     <!-- 包含库 -->
     <dependencies>
-        <!-- JSON解析 https://mvnrepository.com/artifact/com.alibaba/fastjson -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>2.0.45</version>
-        </dependency>
         <dependency>
             <groupId>com.pinkcandy</groupId>
             <artifactId>screenwolfcore</artifactId>

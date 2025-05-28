@@ -5,18 +5,30 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
-// 游戏全局类
+import com.alibaba.fastjson.JSON;
+
+// 全局通用类
 public class GArea {
-    static public int DEFAULT_animationPlaySpeed = 100;
+    // 动画播放间隔
+    static public int DEFAULT_animationPlaySpeed = 96;
+    // 最大帧长度
     static public int GAME_maxFrameLength = 1024;
+    // 渲染时钟间隔
     static public int GAME_renderTime = 32;
+    // 程序工作地址
     static public String GAME_workPath = System.getProperty("user.dir");
+    // 屏幕大小
     static public Dimension SCREEN_dimension = Toolkit.getDefaultToolkit().getScreenSize();
+    // 默认宠物大小
     static public Dimension DEFAULT_bodySize = new Dimension((int)(SCREEN_dimension.getWidth()/10),(int)(SCREEN_dimension.getWidth()/10));
     // 扫描文件夹内容
     static public String[] scanDir(String path){return (new File(path)).list();}
@@ -41,5 +53,31 @@ public class GArea {
         int x = (SCREEN_dimension.width/2)-(size.width/2);
         int y = (SCREEN_dimension.height/2)-(size.height/2);
         jFrame.setLocation(x,y);
+    }
+    // 编码json
+    static public String jsonEncode(Object object){
+        return JSON.toJSONString(object);
+    }
+    // 读取文件
+    static public String readFile(String path){
+        try {
+            return new String(Files.readAllBytes(Paths.get(path)));
+        }catch(IOException e){
+            e.printStackTrace();
+            return "";
+        }
+    }
+    // 写入文件
+    static public void saveToFile(String path,String content){
+        File file = new File(path);
+        try {
+            if(!file.exists()){file.createNewFile();}
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write(content);
+            fileWriter.flush();
+            fileWriter.close();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
     }
 }
