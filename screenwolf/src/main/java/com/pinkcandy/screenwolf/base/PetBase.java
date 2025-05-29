@@ -2,11 +2,13 @@ package com.pinkcandy.screenwolf.base;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.util.Map;
-
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import javax.swing.JPanel;
 import javax.swing.Timer;
-
 import com.pinkcandy.screenwolf.AnimationSprite;
 import com.pinkcandy.screenwolf.GArea;
 
@@ -14,17 +16,21 @@ import com.pinkcandy.screenwolf.GArea;
 public class PetBase extends JPanel {
     private Map<String,String> animations; // 动画数据
     private AnimationSprite body; // 动画精灵
-    private Timer animationUpdateTimer; // 自动动画更新计时器
+    private Point pressPetPoint; // 宠物点按处
+    private Timer updateTimer; // 自动动画更新计时器
+    public boolean isFocus = false; // 聚焦
+    public boolean isPress = false; // 按住
     public PetBase(Dimension size,Map<String,String> animations){
         this.body = new AnimationSprite(size,animations);
         this.animations = animations;
-        this.animationUpdateTimer = new Timer(GArea.GAME_renderTime,_->{
-            this.auto_playAnimations();
+        this.updateTimer = new Timer(GArea.GAME_renderTime,_->{
+            auto_playAnimations();
         });
-        this.animationUpdateTimer.start();
+        this.updateTimer.start();
         this.setSize(size);
         this.setBackground(new Color(0,0,0,0));
         this.add(body);
+        this.ready();
     }
     // 切换动画
     public void updateBodyAnimation(String animationName){
@@ -42,6 +48,44 @@ public class PetBase extends JPanel {
     public void updateAnimationOnce(String animationName){
         String theAnimationName = this.getAnimationName();
         if(theAnimationName!=animationName){this.updateBodyAnimation(animationName);}
+    }
+    // 初始化完成时执行
+    public void ready(){
+        // 为桌宠添加鼠标事件回应
+        PetBase petBase = this;
+        petBase.addMouseListener(new MouseAdapter(){
+            @Override
+            public void mousePressed(MouseEvent e){
+                super.mousePressed(e);
+                isPress = true;
+                pressPetPoint = e.getPoint();
+            }
+            @Override
+            public void mouseEntered(MouseEvent e){
+                super.mouseEntered(e);
+                isFocus = true;
+            }
+            @Override
+            public void mouseExited(MouseEvent e){
+                super.mouseExited(e);
+                isFocus = false;
+            }
+            @Override
+            public void mouseReleased(MouseEvent e){
+                super.mouseReleased(e);
+                isPress = false;
+            }
+        });
+        petBase.addMouseMotionListener(new MouseMotionAdapter(){
+            @Override
+            public void mouseDragged(MouseEvent e){
+                super.mouseDragged(e);
+                Point petPosition = petBase.getLocation();
+                int x = petPosition.x+e.getX()-pressPetPoint.x;
+                int y = petPosition.y+e.getY()-pressPetPoint.y;
+                petBase.setLocation(x,y);
+            }
+        });
     }
     // 重写 自动播放动画
     public void auto_playAnimations(){}

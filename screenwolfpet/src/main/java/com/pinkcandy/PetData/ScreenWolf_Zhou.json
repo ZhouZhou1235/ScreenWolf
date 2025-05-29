@@ -2,5 +2,5 @@
     "id":"ScreenWolf_Zhou",
     "name":"Zhou",
     "info":"周周是只小蓝狗",
-    "AnimationNames":["default","focus"]
+    "AnimationNames":["default","focus","press"]
 }

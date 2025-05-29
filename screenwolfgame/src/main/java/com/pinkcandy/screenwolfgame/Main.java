@@ -1,15 +1,14 @@
-package com.pinkcandy.game;
+package com.pinkcandy.screenwolfgame;
 
-import com.pinkcandy.pet.Zhou;
 import com.pinkcandy.screenwolf.GArea;
 import com.pinkcandy.screenwolf.TransparentScreen;
-import com.pinkcandy.screenwolf.base.PetBase;
+import com.pinkcandy.screenwolfpet.TudouUmbreon;
+import com.pinkcandy.screenwolfpet.Zhou;
 
 public class Main {
     public static void main(String[] args){
         TransparentScreen screen = new TransparentScreen(GArea.SCREEN_dimension);
-        PetBase wolf1 = new Zhou(GArea.DEFAULT_bodySize);
-        screen.petAddMouseActionEcho(wolf1);
-        screen.add(wolf1);
+        screen.add(new Zhou());
+        screen.add(new TudouUmbreon());
     }
 }
