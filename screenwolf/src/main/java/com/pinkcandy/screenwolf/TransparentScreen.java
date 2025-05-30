@@ -2,17 +2,14 @@ package com.pinkcandy.screenwolf;
 
 import java.awt.Color;
 import java.awt.Dimension;
-// import java.awt.MouseInfo;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
 // 屏幕透明窗体
 public class TransparentScreen extends JFrame {
     private Timer renderTimer; // 渲染时钟
-    // private Point mousePoint; // 鼠标点
     public TransparentScreen(Dimension size){
         renderTimer = new Timer(GArea.GAME_renderTime,_->{
-            // mousePoint = MouseInfo.getPointerInfo().getLocation();
             this.repaint();
             this.update(getGraphics());
         });

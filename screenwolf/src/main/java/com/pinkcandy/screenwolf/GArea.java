@@ -2,6 +2,8 @@ package com.pinkcandy.screenwolf;
 
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.MouseInfo;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -79,5 +81,14 @@ public class GArea {
         }catch(IOException e){
             e.printStackTrace();
         }
+    }
+    // 获取鼠标在屏幕位置
+    static public Point getMousePoint(){return MouseInfo.getPointerInfo().getLocation();}
+    // 获取两点之间距离
+    static public double getDistanse2Point(Point point1,Point point2){
+        double x = Math.abs(point1.x-point2.x);
+        double y = Math.abs(point1.y-point2.y);
+        double distanse = Math.pow(Math.pow(x,2)+Math.pow(y,2),0.5);
+        return distanse;
     }
 }

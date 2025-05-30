@@ -87,6 +87,14 @@ public class PetBase extends JPanel {
             }
         });
     }
+    // 获取宠物中心位置
+    public Point getPetPosition(){
+        Point o = this.getLocation();
+        Dimension size = this.getSize();
+        int x = o.x+size.width/2;
+        int y = o.y+size.height/2;
+        return new Point(x,y);
+    }
     // 重写 自动播放动画
     public void auto_playAnimations(){}
 }
