@@ -26,6 +26,8 @@ public class GArea {
     static public int GAME_maxFrameLength = 1024;
     // 渲染时钟间隔
     static public int GAME_renderTime = 32;
+    // 宠物事件更新间隔
+    static public int GAME_petUpdateTime = 16;
     // 程序工作地址
     static public String GAME_workPath = System.getProperty("user.dir");
     // 屏幕大小
