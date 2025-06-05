@@ -9,7 +9,7 @@ public class TudouUmbreon extends PetBase {
     public TudouUmbreon(){
         super(
             GArea.DEFAULT_bodySize,
-            GWorkArea.loadPetAnimationMap("ScreenWolf_tudouUmbreon.json")
+            GWorkArea.loadPetData("ScreenWolf_tudouUmbreon.json")
         );
     }
     @Override

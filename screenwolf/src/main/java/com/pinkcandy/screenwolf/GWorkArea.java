@@ -11,10 +11,14 @@ public class GWorkArea {
     static public String PET_imageFramePath = GArea.GAME_workPath+"\\screenwolfpet\\src\\main\\java\\com\\pinkcandy\\ImageFrames\\";
     // 宠物数据地址
     static public String PET_petdataPath = GArea.GAME_workPath+"\\screenwolfpet\\src\\main\\java\\com\\pinkcandy\\PetData\\";
-    // 载入宠物动画帧地图
-    static public HashMap<String,String> loadPetAnimationMap(String filename){
+    // 加载宠物数据
+    static public PetData loadPetData(String filename){
         String jsonpetdata = GArea.readFile(GWorkArea.PET_petdataPath+filename);
         PetData petData = JSON.parseObject(jsonpetdata).toJavaObject(PetData.class);
+        return petData;
+    }
+    // 载入宠物动画帧地图
+    static public HashMap<String,String> loadPetAnimationMap(PetData petData){
         String petid = petData.getId();
         String[] animationNames = petData.getAnimationNames();
         HashMap<String,String> imageFrameHashmap = new HashMap<>();

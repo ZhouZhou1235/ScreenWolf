@@ -14,7 +14,7 @@ public class Zhou extends PetBase {
     public Zhou(){
         super(
             GArea.DEFAULT_bodySize,
-            GWorkArea.loadPetAnimationMap("ScreenWolf_Zhou.json")
+            GWorkArea.loadPetData("ScreenWolf_Zhou.json")
         );
         // try{
         //     petRobot = new Robot();

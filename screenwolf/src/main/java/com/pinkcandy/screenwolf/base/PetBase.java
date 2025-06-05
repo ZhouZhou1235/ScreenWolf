@@ -9,22 +9,31 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+
+import com.alibaba.fastjson.JSON;
 import com.pinkcandy.screenwolf.AnimationSprite;
 import com.pinkcandy.screenwolf.GArea;
+import com.pinkcandy.screenwolf.GWorkArea;
+import com.pinkcandy.screenwolf.bean.PetData;
+import com.pinkcandy.screenwolf.bean.PlayPetData;
 
 // 桌面宠物
 public class PetBase extends JPanel {
+    private String id; // 宠物号码
     private Map<String,String> animations; // 动画数据
     private AnimationSprite body; // 动画精灵
     private Point pressPetPoint; // 宠物点按处
     private Timer updateTimer; // 自动动画更新计时器
     private int followDistanse = (int)GArea.DEFAULT_bodySize.getWidth(); // 跟随距离
     private int moveSpeed = (int)GArea.DEFAULT_bodySize.getWidth()/20; // 移动速度
+    private PlayPetData playPetData; // 游玩数据
     public boolean isFollow = false; // 跟随
     public boolean isFocus = false; // 聚焦
     public boolean isPress = false; // 按住
     public boolean isMoving = false; // 移动
-    public PetBase(Dimension size,Map<String,String> animations){
+    public PetBase(Dimension size,PetData petData){
+        Map<String,String> animations = GWorkArea.loadPetAnimationMap(petData);
+        this.id = petData.getId();
         this.body = new AnimationSprite(size,animations);
         this.animations = animations;
         this.updateTimer = new Timer(GArea.GAME_petUpdateTime,_->{autoLoop();});this.updateTimer.start();
@@ -33,6 +42,10 @@ public class PetBase extends JPanel {
         this.add(body);
         this.ready();
     }
+    // 获取宠物号码
+    public String getid(){return this.id;}
+    // 获取游玩数据
+    public PlayPetData getPlayPetData(){return this.playPetData;}
     // 切换动画
     public void updateBodyAnimation(String animationName){
         if(animations.get(animationName)==null){return;}
@@ -73,9 +86,34 @@ public class PetBase extends JPanel {
     }
     // 初始化完成时执行
     public void ready(){
+        ready_loadPlayPetData();
+        ready_addAutoSaveHonkOnExit();
         ready_addMouseAction();
     }
-    // 为桌宠添加鼠标事件回应
+    // 加载游玩数据
+    public void ready_loadPlayPetData(){
+        String path = GArea.GAME_workPath+"\\"+this.getid()+".json";
+        if(GArea.createFile(path)==1){
+            PlayPetData playPetData = new PlayPetData();
+            GArea.saveToFile(path,GArea.jsonEncode(playPetData));
+            this.playPetData = playPetData;
+        }
+        else{
+            PlayPetData playPetData = JSON.parseObject(GArea.readFile(path)).toJavaObject(PlayPetData.class);
+            this.playPetData = playPetData;
+        }
+    }
+    // 退出时自动保存数据
+    public void ready_addAutoSaveHonkOnExit(){
+        PetBase petBase = this;
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable(){
+            @Override
+            public void run(){
+                petBase.savePlayPetData();
+            }
+        }));
+    }
+    // 添加鼠标事件回应
     public void ready_addMouseAction(){
         PetBase petBase = this;
         petBase.addMouseListener(new MouseAdapter(){
@@ -84,6 +122,7 @@ public class PetBase extends JPanel {
                 super.mousePressed(e);
                 isPress = true;
                 pressPetPoint = e.getPoint();
+                playPetData.setMouseClickNum(playPetData.getMouseClickNum()+1);
             }
             @Override
             public void mouseEntered(MouseEvent e){
@@ -135,6 +174,12 @@ public class PetBase extends JPanel {
             }
             else if(isMoving){isMoving=false;}
         }
+    }
+    // 保存游玩数据
+    public void savePlayPetData(){
+        String path = GArea.GAME_workPath+"\\"+this.getid()+".json";
+        String jsonString = GArea.jsonEncode(playPetData);
+        GArea.saveToFile(path,jsonString);
     }
     // 重写 播放动画
     public void auto_playAnimations(){}

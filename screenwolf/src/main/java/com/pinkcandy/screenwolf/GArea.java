@@ -62,6 +62,16 @@ public class GArea {
     static public String jsonEncode(Object object){
         return JSON.toJSONString(object);
     }
+    // 创建文件
+    static public int createFile(String path){
+        File file = new File(path);
+        if(!file.exists()){
+        try{
+            file.createNewFile();
+            return 1;
+        }catch(IOException e){e.printStackTrace();}}
+        return 0;
+    }
     // 读取文件
     static public String readFile(String path){
         try {
