@@ -45,7 +45,7 @@ public class AnimationSprite extends JLabel {
         frameIndex = 0;
         frameLength = imageFiles.length;
         GArea.clearTimerListeners(playTimer);
-        playTimer.addActionListener(_->{
+        playTimer.addActionListener(e->{
             this.setIcon(frames[frameIndex]);
             frameIndex++;if(frameIndex>=frameLength){frameIndex=0;}
         });

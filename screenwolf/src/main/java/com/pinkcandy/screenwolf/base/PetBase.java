@@ -36,7 +36,7 @@ public class PetBase extends JPanel {
         this.id = petData.getId();
         this.body = new AnimationSprite(size,animations);
         this.animations = animations;
-        this.updateTimer = new Timer(GArea.GAME_petUpdateTime,_->{autoLoop();});this.updateTimer.start();
+        this.updateTimer = new Timer(GArea.GAME_petUpdateTime,e->{autoLoop();});this.updateTimer.start();
         this.setSize(size);
         this.setBackground(new Color(0,0,0,0));
         this.add(body);
