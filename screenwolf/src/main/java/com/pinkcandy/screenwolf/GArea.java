@@ -9,6 +9,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -30,8 +32,16 @@ public class GArea {
     static public int GAME_petUpdateTime = 16;
     // 程序工作地址
     static public String GAME_workPath = System.getProperty("user.dir");
+    // 游戏数据保存位置
+    static public String GAME_dataPath = GArea.GAME_workPath+"\\data\\";
+    // 桌宠资源保存位置
+    static public String GAME_petsPath = GArea.GAME_workPath+"\\pets\\";
     // 屏幕大小
     static public Dimension SCREEN_dimension = Toolkit.getDefaultToolkit().getScreenSize();
+    // 默认窗口大小
+    static public Dimension DEFAULT_windowSize = new Dimension(SCREEN_dimension.width/2,SCREEN_dimension.height/2);
+    // 默认字体大小
+    static public int DEFAULT_textSize = SCREEN_dimension.width/54;
     // 默认宠物大小
     static public Dimension DEFAULT_bodySize = new Dimension((int)(SCREEN_dimension.getWidth()/10),(int)(SCREEN_dimension.getWidth()/10));
     // 扫描文件夹内容
@@ -102,5 +112,24 @@ public class GArea {
         double y = Math.abs(point1.y-point2.y);
         double distanse = Math.pow(Math.pow(x,2)+Math.pow(y,2),0.5);
         return distanse;
+    }
+    // 在jar包中指定类 返回一个实例
+    static public Object loadObjFromJarByClass(String jarPath,String jarClass){
+        try {
+            File jarFile = new File(jarPath);
+            URLClassLoader classLoader = new URLClassLoader(new URL[]{jarFile.toURI().toURL()});
+            Class<?> loadedClass = classLoader.loadClass(jarClass);
+            Object instance = loadedClass.getDeclaredConstructor().newInstance();
+            classLoader.close();
+            return instance;
+        }catch(Exception e){System.out.println(e);return null;}
+    }
+    // 构建游戏文件结构
+    static public void initFileDirs(){
+        File assetsDir = new File(GAME_workPath+"\\assets\\");
+        File dataDir = new File(GAME_workPath+"\\data\\");
+        File petsDir = new File(GAME_workPath+"\\pets\\");
+        File[] fileList = {assetsDir,dataDir,petsDir};
+        for(File file:fileList){if(!file.exists()){file.mkdir();}}
     }
 }

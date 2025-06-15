@@ -10,5 +10,6 @@ target
 # 工作配置
 .vscode
 
-# 游戏数据
-ScreenWolf_*.json
+# 游戏产生
+playpet_*.json
+pets

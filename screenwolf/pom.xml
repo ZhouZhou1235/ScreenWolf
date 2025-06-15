@@ -10,8 +10,13 @@
 
     <!-- 项目信息 -->
     <groupId>com.pinkcandy</groupId>
-    <artifactId>screenwolfcore</artifactId>
+    <artifactId>screenwolf</artifactId>
     <version>1.0.0</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>screenwolfpet</module>
+        <module>pet_zhou</module>
+    </modules>
 
     <!-- 属性 -->
     <properties>
@@ -21,12 +26,14 @@
 
     <!-- 包含库 -->
     <dependencies>
+
         <!-- JSON解析 https://mvnrepository.com/artifact/com.alibaba/fastjson -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>2.0.45</version>
         </dependency>
+
     </dependencies>
 
 </project>

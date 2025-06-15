@@ -3,6 +3,7 @@ package com.pinkcandy.screenwolf.base;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.util.HashMap;
 import java.util.Map;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -13,7 +14,6 @@ import javax.swing.Timer;
 import com.alibaba.fastjson.JSON;
 import com.pinkcandy.screenwolf.AnimationSprite;
 import com.pinkcandy.screenwolf.GArea;
-import com.pinkcandy.screenwolf.GWorkArea;
 import com.pinkcandy.screenwolf.bean.PetData;
 import com.pinkcandy.screenwolf.bean.PlayPetData;
 
@@ -27,16 +27,27 @@ public class PetBase extends JPanel {
     private int followDistanse = (int)GArea.DEFAULT_bodySize.getWidth(); // 跟随距离
     private int moveSpeed = (int)GArea.DEFAULT_bodySize.getWidth()/20; // 移动速度
     private PlayPetData playPetData; // 游玩数据
+    private String savePath; // 数据保存地址
     public boolean isFollow = false; // 跟随
     public boolean isFocus = false; // 聚焦
     public boolean isPress = false; // 按住
     public boolean isMoving = false; // 移动
-    public PetBase(Dimension size,PetData petData){
-        Map<String,String> animations = GWorkArea.loadPetAnimationMap(petData);
+    public PetBase(Dimension size,String id){
+        String jsonpetdata = GArea.readFile(GArea.GAME_petsPath+id+"\\"+id+".json");
+        PetData petData = JSON.parseObject(jsonpetdata).toJavaObject(PetData.class);
+        String[] animationNames = petData.getAnimationNames();
+        HashMap<String,String> imageFrameHashmap = new HashMap<>();
+        for(String animationName:animationNames){
+            imageFrameHashmap.put(
+                animationName,
+                GArea.GAME_petsPath+id+"\\"+"frames"+"\\"+animationName+"\\"
+            );
+        }
+        this.animations = imageFrameHashmap;
         this.id = petData.getId();
         this.body = new AnimationSprite(size,animations);
-        this.animations = animations;
         this.updateTimer = new Timer(GArea.GAME_petUpdateTime,e->{autoLoop();});this.updateTimer.start();
+        this.savePath = GArea.GAME_dataPath+"playpet_"+id+".json";
         this.setSize(size);
         this.setBackground(new Color(0,0,0,0));
         this.add(body);
@@ -92,14 +103,13 @@ public class PetBase extends JPanel {
     }
     // 加载游玩数据
     public void ready_loadPlayPetData(){
-        String path = GArea.GAME_workPath+"\\"+this.getid()+".json";
-        if(GArea.createFile(path)==1){
+        if(GArea.createFile(savePath)==1){
             PlayPetData playPetData = new PlayPetData();
-            GArea.saveToFile(path,GArea.jsonEncode(playPetData));
+            GArea.saveToFile(savePath,GArea.jsonEncode(playPetData));
             this.playPetData = playPetData;
         }
         else{
-            PlayPetData playPetData = JSON.parseObject(GArea.readFile(path)).toJavaObject(PlayPetData.class);
+            PlayPetData playPetData = JSON.parseObject(GArea.readFile(savePath)).toJavaObject(PlayPetData.class);
             this.playPetData = playPetData;
         }
     }
@@ -177,9 +187,8 @@ public class PetBase extends JPanel {
     }
     // 保存游玩数据
     public void savePlayPetData(){
-        String path = GArea.GAME_workPath+"\\"+this.getid()+".json";
         String jsonString = GArea.jsonEncode(playPetData);
-        GArea.saveToFile(path,jsonString);
+        GArea.saveToFile(savePath,jsonString);
     }
     // 重写 播放动画
     public void auto_playAnimations(){}

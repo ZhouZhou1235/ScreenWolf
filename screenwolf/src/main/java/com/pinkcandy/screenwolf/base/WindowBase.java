@@ -17,4 +17,9 @@ public class WindowBase extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
     }
+    // 刷新窗口
+    public void updateWindow(){
+        this.update(getGraphics());
+        this.repaint();
+    }
 }
