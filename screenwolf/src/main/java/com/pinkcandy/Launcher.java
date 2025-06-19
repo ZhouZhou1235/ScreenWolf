@@ -2,8 +2,11 @@ package com.pinkcandy;
 
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Enumeration;
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
@@ -11,6 +14,7 @@ import javax.swing.plaf.FontUIResource;
 
 import com.pinkcandy.screenwolf.GArea;
 import com.pinkcandy.screenwolf.TransparentScreen;
+import com.pinkcandy.screenwolf.base.PetBase;
 import com.pinkcandy.screenwolf.base.WindowBase;
 
 // 启动器
@@ -25,7 +29,6 @@ public class Launcher {
         initGlobalFont(new Font("SansSerif",Font.BOLD,GArea.DEFAULT_textSize));
         initWelcomeWindow();
         loadPetButtons();
-        this.screen.setVisible(true);
         this.welcomeWindow.updateWindow();
     };
     // 初始化开始窗口
@@ -49,13 +52,24 @@ public class Launcher {
 	}
     // 加载宠物按钮
     private void loadPetButtons(){
-
-        // 加载宠物动作
-        // PetBase pet = (PetBase)GArea.loadObjFromJarByClass(
-        //     "D:\\programmingArea\\ProjectGame\\ScreenWolf\\pets\\ScreenWolf_Zhou\\ScreenWolf_Zhou.jar",
-        //     "com.pinkcandy.Zhou"
-        // );
-        // screen.add(pet);
-
+        String[] petsList = GArea.scanDir(GArea.GAME_petsPath);
+        for(String petid:petsList){
+            JButton petButton = new JButton(petid);
+            petButton.addActionListener(new ActionListener(){
+                @Override
+                public void actionPerformed(ActionEvent e){
+                    createPet(petid);
+                }
+            });
+            welcomePanel.add(petButton);
+        }
+    }
+    // 创建桌宠
+    private void createPet(String petid){
+        PetBase pet = (PetBase)GArea.loadObjFromJarByClass(
+            GArea.GAME_petsPath+petid+"\\"+petid+".jar",
+            "com.pinkcandy."+petid
+        );
+        screen.add(pet);
     }
 }

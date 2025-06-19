@@ -13,3 +13,6 @@ target
 # 游戏产生
 playpet_*.json
 pets
+
+# zhou写的模组
+mod

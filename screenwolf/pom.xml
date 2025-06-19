@@ -12,11 +12,6 @@
     <groupId>com.pinkcandy</groupId>
     <artifactId>screenwolf</artifactId>
     <version>1.0.0</version>
-    <packaging>pom</packaging>
-    <modules>
-        <module>screenwolfpet</module>
-        <module>pet_zhou</module>
-    </modules>
 
     <!-- 属性 -->
     <properties>
