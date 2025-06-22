@@ -1,11 +1,15 @@
 package com.pinkcandy.screenwolf;
 
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -131,5 +135,20 @@ public class GArea {
         File petsDir = new File(GAME_workPath+"\\pets\\");
         File[] fileList = {assetsDir,dataDir,petsDir};
         for(File file:fileList){if(!file.exists()){file.mkdir();}}
+    }
+    // awt 翻转图像
+    static public Image flipImage(Image image){
+        BufferedImage bufferedImage = new BufferedImage(
+            image.getWidth(null), 
+            image.getHeight(null), 
+            BufferedImage.TYPE_INT_ARGB
+        );
+        Graphics2D g2d = bufferedImage.createGraphics();
+        g2d.drawImage(image,0, 0,null);
+        g2d.dispose();
+        AffineTransform tx = AffineTransform.getScaleInstance(-1,1);
+        tx.translate(-bufferedImage.getWidth(null), 0);
+        AffineTransformOp op = new AffineTransformOp(tx,AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+        return op.filter(bufferedImage, null);
     }
 }

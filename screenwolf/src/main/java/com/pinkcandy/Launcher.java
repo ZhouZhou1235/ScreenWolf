@@ -1,5 +1,6 @@
 package com.pinkcandy;
 
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -35,7 +36,7 @@ public class Launcher {
     public void initWelcomeWindow(){
         welcomeWindow = new WindowBase("ScreenWolf",GArea.DEFAULT_windowSize);
         GArea.setWindowCenter(welcomeWindow);
-        JLabel titleLabel = new JLabel("屏幕有狼");
+        JLabel titleLabel = new JLabel("ScreenWolf");
         welcomePanel.add(titleLabel);
         welcomeWindow.add(welcomePanel);
     }
@@ -71,5 +72,6 @@ public class Launcher {
             "com.pinkcandy."+petid
         );
         screen.add(pet);
+        System.out.println(petid);
     }
 }

@@ -94,6 +94,8 @@ public class PetBase extends JPanel {
         if(moveY>moveSpeed){nextPoint.y-=moveSpeed;}
         else if(moveY<-moveSpeed){nextPoint.y+=moveSpeed;}
         this.setLocation(nextPoint);
+        if(moveX>0 && !body.filp_h){body.filp_h=true;}
+        if(moveX<0 && body.filp_h){body.filp_h=false;}
     }
     // 初始化完成时执行
     public void ready(){

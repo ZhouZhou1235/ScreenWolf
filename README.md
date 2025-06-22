@@ -32,7 +32,6 @@ screenwolf 运行本体
 屏幕有狼是一款windows平台桌面宠物程序，使用了两种技术分别实现。
 Java版 作者的兽设“小蓝狗”制作成桌宠~
 Godot版 提供选项加载模组狼
-old文件夹中旧的java和godot项目已停止维护
 
 旧版下载
 1 见github发行版
