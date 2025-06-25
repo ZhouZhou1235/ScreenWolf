@@ -1,17 +1,14 @@
 package com.pinkcandy;
 
-import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Enumeration;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.UIManager;
-import javax.swing.plaf.FontUIResource;
 
 import com.pinkcandy.screenwolf.GArea;
 import com.pinkcandy.screenwolf.TransparentScreen;
@@ -20,14 +17,20 @@ import com.pinkcandy.screenwolf.base.WindowBase;
 
 // 启动器
 public class Launcher {
-    private TransparentScreen screen; // 全屏透明窗体
+    private TransparentScreen screen;
     private WindowBase welcomeWindow;
     private JPanel welcomePanel;
+    private ArrayList<PetBase> petsList;
+    private JButton playButton;
+    private JButton clearButton;
+    private ArrayList<JButton> petButtonsList;
     public Launcher(){
         this.screen = new TransparentScreen(GArea.SCREEN_dimension);
         this.welcomePanel = new JPanel(new GridLayout(4,1,10,10));
+        this.petsList = new ArrayList<>();
+        this.petButtonsList = new ArrayList<>();
         GArea.initFileDirs();
-        initGlobalFont(new Font("SansSerif",Font.BOLD,GArea.DEFAULT_textSize));
+        GArea.initGlobalFont(new Font("SansSerif",Font.BOLD,GArea.DEFAULT_textSize));
         initWelcomeWindow();
         loadPetButtons();
         this.welcomeWindow.updateWindow();
@@ -37,20 +40,36 @@ public class Launcher {
         welcomeWindow = new WindowBase("ScreenWolf",GArea.DEFAULT_windowSize);
         GArea.setWindowCenter(welcomeWindow);
         JLabel titleLabel = new JLabel("ScreenWolf");
+        playButton = new JButton("play");
+        clearButton = new JButton("clear pets");
+        clearButton.setEnabled(false);
+        playButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                for(PetBase pet:petsList){screen.add(pet);}
+                for(JButton petButton:petButtonsList){petButton.setEnabled(false);}
+                screen.setVisible(true); // 问题：这行没有就不显示宠物
+                playButton.setEnabled(false);
+                clearButton.setEnabled(true);
+                // welcomeWindow.setVisible(false);
+            }
+        });
+        clearButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                for(PetBase pet:petsList){screen.remove(pet);pet=null;}
+                for(JButton petButton:petButtonsList){petButton.setEnabled(true);}
+                petsList.clear();
+                playButton.setEnabled(true);
+                clearButton.setEnabled(false);
+                System.gc();
+            }
+        });
         welcomePanel.add(titleLabel);
+        welcomePanel.add(playButton);
+        welcomePanel.add(clearButton);
         welcomeWindow.add(welcomePanel);
     }
-    // 全局字体
-	private void initGlobalFont(Font font){
-		FontUIResource fontRes = new FontUIResource(font);
-		for(Enumeration<Object> keys = UIManager.getDefaults().keys();keys.hasMoreElements();){
-			Object key = keys.nextElement();
-			Object value = UIManager.get(key);
-			if(value instanceof FontUIResource){
-                UIManager.put(key,fontRes);
-            }
-		}
-	}
     // 加载宠物按钮
     private void loadPetButtons(){
         String[] petsList = GArea.scanDir(GArea.GAME_petsPath);
@@ -59,19 +78,20 @@ public class Launcher {
             petButton.addActionListener(new ActionListener(){
                 @Override
                 public void actionPerformed(ActionEvent e){
-                    createPet(petid);
+                    addPetToList(petid);
+                    petButton.setEnabled(false);
                 }
             });
             welcomePanel.add(petButton);
+            petButtonsList.add(petButton);
         }
     }
-    // 创建桌宠
-    private void createPet(String petid){
+    // 添加桌宠到列表
+    private void addPetToList(String petid){
         PetBase pet = (PetBase)GArea.loadObjFromJarByClass(
-            GArea.GAME_petsPath+petid+"\\"+petid+".jar",
+            GArea.GAME_petsPath+petid+"\\pet.jar",
             "com.pinkcandy."+petid
         );
-        screen.add(pet);
-        System.out.println(petid);
+        petsList.add(pet);
     }
 }

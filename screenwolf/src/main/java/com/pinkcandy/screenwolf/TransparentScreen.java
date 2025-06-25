@@ -9,11 +9,6 @@ import javax.swing.Timer;
 public class TransparentScreen extends JFrame {
     private Timer renderTimer; // 渲染时钟
     public TransparentScreen(Dimension size){
-        renderTimer = new Timer(GArea.GAME_renderTime,e->{
-            this.repaint();
-            this.update(getGraphics());
-        });
-        renderTimer.start();
         this.setTitle("ScreenWolf TransparentScreen");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setBounds(0,0,size.width,size.height);
@@ -25,5 +20,10 @@ public class TransparentScreen extends JFrame {
         this.setLayout(null);
         this.setType(JFrame.Type.UTILITY);
         this.setVisible(true);
+        renderTimer = new Timer(GArea.GAME_renderTime,e->{
+            this.repaint();
+            this.update(getGraphics());
+        });
+        renderTimer.start();
     }
 }

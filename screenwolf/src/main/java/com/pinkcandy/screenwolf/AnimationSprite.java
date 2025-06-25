@@ -1,7 +1,6 @@
 package com.pinkcandy.screenwolf;
 
 import java.awt.Dimension;
-import java.awt.Image;
 import java.util.Map;
 
 import javax.swing.ImageIcon;

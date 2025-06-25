@@ -1,6 +1,7 @@
 package com.pinkcandy.screenwolf;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.MouseInfo;
@@ -17,17 +18,18 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Enumeration;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.Timer;
+import javax.swing.UIManager;
+import javax.swing.plaf.FontUIResource;
 
 import com.alibaba.fastjson.JSON;
 
 // 全局通用类
 public class GArea {
-    // 动画播放间隔
-    static public int DEFAULT_animationPlaySpeed = 96;
     // 最大帧长度
     static public int GAME_maxFrameLength = 1024;
     // 渲染时钟间隔
@@ -42,6 +44,10 @@ public class GArea {
     static public String GAME_petsPath = GArea.GAME_workPath+"\\pets\\";
     // 屏幕大小
     static public Dimension SCREEN_dimension = Toolkit.getDefaultToolkit().getScreenSize();
+    // 默认动画播放间隔
+    static public int DEFAULT_animationPlaySpeed = 96;
+    // 默认宠物反应间隔
+    static public int DEFAULT_petResponseTime = 1024;
     // 默认窗口大小
     static public Dimension DEFAULT_windowSize = new Dimension(SCREEN_dimension.width/2,SCREEN_dimension.height/2);
     // 默认字体大小
@@ -89,7 +95,7 @@ public class GArea {
     // 读取文件
     static public String readFile(String path){
         try {
-            return new String(Files.readAllBytes(Paths.get(path)));
+            return new String(Files.readAllBytes(Paths.get(path)),"UTF-8");
         }catch(IOException e){
             e.printStackTrace();
             return "";
@@ -151,4 +157,15 @@ public class GArea {
         AffineTransformOp op = new AffineTransformOp(tx,AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
         return op.filter(bufferedImage, null);
     }
+    // 全局字体
+	static public void initGlobalFont(Font font){
+		FontUIResource fontRes = new FontUIResource(font);
+		for(Enumeration<Object> keys = UIManager.getDefaults().keys();keys.hasMoreElements();){
+			Object key = keys.nextElement();
+			Object value = UIManager.get(key);
+			if(value instanceof FontUIResource){
+                UIManager.put(key,fontRes);
+            }
+		}
+	}
 }

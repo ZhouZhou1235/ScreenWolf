@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.pinkcandy</groupId>
-    <artifactId>screenwolfpet_zhou</artifactId>
+    <artifactId>screenwolfpet_demo</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -13,15 +13,12 @@
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
-    <!-- 包含库 -->
     <dependencies>
-
         <dependency>
             <groupId>com.pinkcandy</groupId>
             <artifactId>screenwolf</artifactId>
             <version>1.0.0</version>
         </dependency>
-
     </dependencies>
 
 </project>

@@ -8,12 +8,16 @@ import java.util.Map;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
+
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import com.alibaba.fastjson.JSON;
 import com.pinkcandy.screenwolf.AnimationSprite;
 import com.pinkcandy.screenwolf.GArea;
+import com.pinkcandy.screenwolf.PetOption;
 import com.pinkcandy.screenwolf.bean.PetData;
 import com.pinkcandy.screenwolf.bean.PlayPetData;
 
@@ -24,16 +28,24 @@ public class PetBase extends JPanel {
     private AnimationSprite body; // 动画精灵
     private Point pressPetPoint; // 宠物点按处
     private Timer updateTimer; // 自动动画更新计时器
+    private Timer responseTimer; // 反应计时器
     private int followDistanse = (int)GArea.DEFAULT_bodySize.getWidth(); // 跟随距离
     private int moveSpeed = (int)GArea.DEFAULT_bodySize.getWidth()/20; // 移动速度
     private PlayPetData playPetData; // 游玩数据
     private String savePath; // 数据保存地址
+    private int touchNum = 0; // 抚摸值
+    private int touchThreshold = 5; // 抚摸阈值
+    private PetOption petOption; // 宠物选项窗口
     public boolean isFollow = false; // 跟随
     public boolean isFocus = false; // 聚焦
     public boolean isPress = false; // 按住
     public boolean isMoving = false; // 移动
-    public PetBase(Dimension size,String id){
-        String jsonpetdata = GArea.readFile(GArea.GAME_petsPath+id+"\\"+id+".json");
+    public boolean isTouching = false; // 正在被摸
+    public boolean isResting = false; // 正在休息
+    public PetBase(){
+        Dimension size = GArea.DEFAULT_bodySize;
+        this.id = this.getClass().getSimpleName();
+        String jsonpetdata = GArea.readFile(GArea.GAME_petsPath+id+"\\pet_data.json");
         PetData petData = JSON.parseObject(jsonpetdata).toJavaObject(PetData.class);
         String[] animationNames = petData.getAnimationNames();
         HashMap<String,String> imageFrameHashmap = new HashMap<>();
@@ -44,14 +56,25 @@ public class PetBase extends JPanel {
             );
         }
         this.animations = imageFrameHashmap;
-        this.id = petData.getId();
         this.body = new AnimationSprite(size,animations);
         this.updateTimer = new Timer(GArea.GAME_petUpdateTime,e->{autoLoop();});this.updateTimer.start();
-        this.savePath = GArea.GAME_dataPath+"playpet_"+id+".json";
+        this.responseTimer = new Timer(GArea.DEFAULT_petResponseTime,e->{responseAutoLoop();});this.responseTimer.start();
+        this.savePath = GArea.GAME_dataPath+id+".json";
+        this.petOption = new PetOption(
+            petData,
+            playPetData,
+            new Dimension(GArea.DEFAULT_bodySize.width*2,GArea.DEFAULT_bodySize.height*3)
+        );
         this.setSize(size);
         this.setBackground(new Color(0,0,0,0));
         this.add(body);
         this.ready();
+    }
+    // 宠物的析构
+    @Override
+    protected void finalize() throws Throwable{
+        super.finalize();
+        petOption.setVisible(false);
     }
     // 获取宠物号码
     public String getid(){return this.id;}
@@ -117,11 +140,11 @@ public class PetBase extends JPanel {
     }
     // 退出时自动保存数据
     public void ready_addAutoSaveHonkOnExit(){
-        PetBase petBase = this;
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable(){
             @Override
             public void run(){
-                petBase.savePlayPetData();
+                String jsonString = GArea.jsonEncode(playPetData);
+                GArea.saveToFile(savePath,jsonString);
             }
         }));
     }
@@ -132,9 +155,15 @@ public class PetBase extends JPanel {
             @Override
             public void mousePressed(MouseEvent e){
                 super.mousePressed(e);
-                isPress = true;
-                pressPetPoint = e.getPoint();
-                playPetData.setMouseClickNum(playPetData.getMouseClickNum()+1);
+                if(e.getButton()==MouseEvent.BUTTON1){
+                    isPress = true;
+                    pressPetPoint = e.getPoint();
+                    playPetData.setMouseClickNum(playPetData.getMouseClickNum()+1);
+                }
+                else if(e.getButton()==MouseEvent.BUTTON3){
+                    petOption.setLocation(petBase.getPetPosition());
+                    petOption.setVisible(true);
+                }
             }
             @Override
             public void mouseEntered(MouseEvent e){
@@ -149,23 +178,35 @@ public class PetBase extends JPanel {
             @Override
             public void mouseReleased(MouseEvent e){
                 super.mouseReleased(e);
-                isPress = false;
+                if(e.getButton()==MouseEvent.BUTTON1){
+                    isPress = false;
+                }
             }
             @Override
             public void mouseClicked(MouseEvent e){
                 super.mouseClicked(e);
-                int num = e.getClickCount();
-                if(num>=2){isFollow = !isFollow;}
+                if(e.getButton()==MouseEvent.BUTTON1){
+                    int num = e.getClickCount();
+                    if(num>=2){isFollow = !isFollow;}
+                }
             }
         });
         petBase.addMouseMotionListener(new MouseMotionAdapter(){
             @Override
             public void mouseDragged(MouseEvent e){
                 super.mouseDragged(e);
-                Point petPosition = petBase.getLocation();
-                int x = petPosition.x+e.getX()-pressPetPoint.x;
-                int y = petPosition.y+e.getY()-pressPetPoint.y;
-                petBase.setLocation(x,y);
+                if(isPress){
+                    Point petPosition = petBase.getLocation();
+                    int x = petPosition.x+e.getX()-pressPetPoint.x;
+                    int y = petPosition.y+e.getY()-pressPetPoint.y;
+                    petBase.setLocation(x,y);
+                }
+            }
+        });
+        petBase.addMouseWheelListener(new MouseWheelListener(){
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e){
+                touchNum += 1;
             }
         });
     }
@@ -187,11 +228,29 @@ public class PetBase extends JPanel {
             else if(isMoving){isMoving=false;}
         }
     }
-    // 保存游玩数据
-    public void savePlayPetData(){
-        String jsonString = GArea.jsonEncode(playPetData);
-        GArea.saveToFile(savePath,jsonString);
+    // 播放动画
+    public void auto_playAnimations(){
+        if(!isResting){
+            if(isPress){this.updateAnimationOnce("press");}
+            else if(isMoving){this.updateAnimationOnce("move");}
+            else if(isFocus){
+                if(isTouching){this.updateAnimationOnce("touch");}
+                else{this.updateAnimationOnce("focus");}
+            }
+            else{this.updateAnimationOnce("default");}
+        }
+        else{this.updateAnimationOnce("rest");}
     }
-    // 重写 播放动画
-    public void auto_playAnimations(){}
+    // 反应自动执行事件
+    public void responseAutoLoop(){
+        responseAuto_touch();
+    };
+    // 抚摸反应
+    public void responseAuto_touch(){
+        if(touchNum>=touchThreshold){isTouching=true;}else{isTouching=false;}
+        if(touchNum>0){
+            touchNum-=touchThreshold;
+            if(touchNum<0){touchNum=0;}
+        }
+    }
 }

@@ -11,5 +11,9 @@ target
 .vscode
 
 # 游戏产生
-playpet_*.json
+data
 pets
+
+# 自己的模组
+# mod 官方模组
+mymod
