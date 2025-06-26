@@ -70,11 +70,16 @@ public class PetBase extends JPanel {
         this.add(body);
         this.ready();
     }
-    // 宠物的析构
-    @Override
-    protected void finalize() throws Throwable{
-        super.finalize();
-        petOption.setVisible(false);
+    // 释放宠物对象
+    public void dispose(){
+        savePetData();
+        this.petOption.setVisible(false);
+        this.body.stopAnimation();
+        this.updateTimer.stop();
+        this.responseTimer.stop();
+        this.removeAll();
+        this.getParent().remove(this);
+        System.gc();
     }
     // 获取宠物号码
     public String getid(){return this.id;}
@@ -120,6 +125,11 @@ public class PetBase extends JPanel {
         if(moveX>0 && !body.filp_h){body.filp_h=true;}
         if(moveX<0 && body.filp_h){body.filp_h=false;}
     }
+    // 保存桌宠游玩数据
+    public void savePetData(){
+        String jsonString = GArea.jsonEncode(playPetData);
+        GArea.saveToFile(savePath,jsonString);
+    }
     // 初始化完成时执行
     public void ready(){
         ready_loadPlayPetData();
@@ -142,10 +152,7 @@ public class PetBase extends JPanel {
     public void ready_addAutoSaveHonkOnExit(){
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable(){
             @Override
-            public void run(){
-                String jsonString = GArea.jsonEncode(playPetData);
-                GArea.saveToFile(savePath,jsonString);
-            }
+            public void run(){savePetData();}
         }));
     }
     // 添加鼠标事件回应

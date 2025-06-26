@@ -19,6 +19,7 @@ public class WindowBase extends JFrame {
     }
     // 刷新窗口
     public void updateWindow(){
+        this.revalidate();
         this.update(getGraphics());
         this.repaint();
     }
