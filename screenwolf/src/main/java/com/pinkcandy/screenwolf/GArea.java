@@ -37,11 +37,11 @@ public class GArea {
     // 宠物事件更新间隔
     static public int GAME_petUpdateTime = 16;
     // 程序工作地址
-    static public String GAME_workPath = System.getProperty("user.dir");
+    static public String GAME_workPath = System.getProperty("user.dir").replace("\\", "/");
     // 游戏数据保存位置
-    static public String GAME_dataPath = GArea.GAME_workPath+"\\data\\";
+    static public String GAME_dataPath = GArea.GAME_workPath+"/data/";
     // 桌宠资源保存位置
-    static public String GAME_petsPath = GArea.GAME_workPath+"\\pets\\";
+    static public String GAME_petsPath = GArea.GAME_workPath+"/pets/";
     // 屏幕大小
     static public Dimension SCREEN_dimension = Toolkit.getDefaultToolkit().getScreenSize();
     // 默认动画播放间隔
@@ -136,9 +136,9 @@ public class GArea {
     }
     // 构建游戏文件结构
     static public void initFileDirs(){
-        File assetsDir = new File(GAME_workPath+"\\assets\\");
-        File dataDir = new File(GAME_workPath+"\\data\\");
-        File petsDir = new File(GAME_workPath+"\\pets\\");
+        File assetsDir = new File(GAME_workPath+"/assets/");
+        File dataDir = new File(GAME_workPath+"/data/");
+        File petsDir = new File(GAME_workPath+"/pets/");
         File[] fileList = {assetsDir,dataDir,petsDir};
         for(File file:fileList){if(!file.exists()){file.mkdir();}}
     }

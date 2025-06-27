@@ -45,14 +45,14 @@ public class PetBase extends JPanel {
     public PetBase(){
         Dimension size = GArea.DEFAULT_bodySize;
         this.id = this.getClass().getSimpleName();
-        String jsonpetdata = GArea.readFile(GArea.GAME_petsPath+id+"\\pet_data.json");
+        String jsonpetdata = GArea.readFile(GArea.GAME_petsPath+id+"/pet_data.json");
         PetData petData = JSON.parseObject(jsonpetdata).toJavaObject(PetData.class);
         String[] animationNames = petData.getAnimationNames();
         HashMap<String,String> imageFrameHashmap = new HashMap<>();
         for(String animationName:animationNames){
             imageFrameHashmap.put(
                 animationName,
-                GArea.GAME_petsPath+id+"\\"+"frames"+"\\"+animationName+"\\"
+                GArea.GAME_petsPath+id+"/"+"frames"+"/"+animationName+"/"
             );
         }
         this.animations = imageFrameHashmap;
@@ -111,19 +111,19 @@ public class PetBase extends JPanel {
         return new Point(x,y);
     }
     // 向目标点移动一次
-    public void gotoPoint(Point point){
-        Point petPosition = this.getPetPosition();
-        Point o = this.getLocation();
-        int moveX = petPosition.x-point.x;
-        int moveY = petPosition.y-point.y;
-        Point nextPoint = new Point(o);
-        if(moveX>moveSpeed){nextPoint.x-=moveSpeed;}
-        else if(moveX<-moveSpeed){nextPoint.x+=moveSpeed;}
-        if(moveY>moveSpeed){nextPoint.y-=moveSpeed;}
-        else if(moveY<-moveSpeed){nextPoint.y+=moveSpeed;}
-        this.setLocation(nextPoint);
-        if(moveX>0 && !body.filp_h){body.filp_h=true;}
-        if(moveX<0 && body.filp_h){body.filp_h=false;}
+    public void gotoPoint(Point target) {
+        Point currentPos = this.getLocation();
+        int dx = target.x-currentPos.x;
+        int dy = target.y-currentPos.y;
+        double distance = Math.sqrt(dx*dx+dy*dy);
+        if(distance<=moveSpeed){this.setLocation(target);return;}
+        double directionX = dx/distance;
+        double directionY = dy/distance;
+        int nextX = currentPos.x+(int)(directionX*moveSpeed);
+        int nextY = currentPos.y+(int)(directionY*moveSpeed);
+        this.setLocation(new Point(nextX, nextY));
+        if(dx>0&&!body.filp_h){body.filp_h=true;}
+        else if(dx<0&&body.filp_h){body.filp_h=false;}
     }
     // 保存桌宠游玩数据
     public void savePetData(){
