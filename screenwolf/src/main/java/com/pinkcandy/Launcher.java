@@ -40,11 +40,11 @@ public class Launcher {
     public WindowBase welcomeWindow;
     public GameTray gameTray;
     public Launcher(){
+        GArea.initFileDirs();
+        GArea.initGlobalFont(new Font("SansSerif",Font.BOLD,GArea.DEFAULT_textSize));
         this.screen = new TransparentScreen(GArea.SCREEN_dimension);
         this.petsList = new ArrayList<>();
         this.petButtonsList = new ArrayList<>();
-        GArea.initFileDirs();
-        GArea.initGlobalFont(new Font("SansSerif",Font.BOLD,GArea.DEFAULT_textSize));
         initWelcomeWindow();
         this.welcomeWindow.updateWindow();
         this.gameTray = new GameTray(this);

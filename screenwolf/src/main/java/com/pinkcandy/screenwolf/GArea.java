@@ -168,4 +168,12 @@ public class GArea {
             }
 		}
 	}
+    // 随机在屏幕上取点
+    static public Point getRandomPointOnScreen(){
+        int width = SCREEN_dimension.width;
+        int height = SCREEN_dimension.height;
+        int w = (int)(width*Math.random());
+        int h = (int)(height*Math.random());
+        return new Point(w,h);
+    }
 }
