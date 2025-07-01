@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import com.alibaba.fastjson.JSON;
+import com.pinkcandy.Launcher;
 import com.pinkcandy.screenwolf.AnimationSprite;
 import com.pinkcandy.screenwolf.GArea;
 import com.pinkcandy.screenwolf.ImageSelection;
@@ -31,26 +32,30 @@ import com.pinkcandy.screenwolf.bean.PlayPetData;
 
 // 桌面宠物
 public class PetBase extends JPanel {
-    private String id; // 宠物号码
-    private Map<String,String> animations; // 动画数据
+    // === 组成 ===
     private AnimationSprite body; // 动画精灵
-    private Point pressPetPoint; // 宠物点按处
-    private Point autoMoveTarget; // 自动移动目标位置
-    private Timer updateTimer; // 自动动画更新计时器
-    private Timer responseTimer; // 反应计时器
+    private PetOption petOption; // 宠物选项窗口
+    private Robot robot; // 自动机器
+    private Launcher launcher; // 启动器的引用
+    // === 数值 ===
     private int followDistanse = (int)GArea.DEFAULT_bodySize.getWidth(); // 跟随距离
     private int moveSpeed = (int)GArea.DEFAULT_bodySize.getWidth()/10; // 移动速度
+    // === 数据 ===
+    private String id; // 宠物号码
+    private Map<String,String> animations; // 动画数据
     private PetData petData; // 宠物数据
-    private PlayPetData playPetData; // 游玩数据
     private String savePath; // 数据保存地址
+    private PlayPetData playPetData; // 游玩数据
+    private Point pressPetPoint; // 宠物点按处
+    private Point autoMoveTarget; // 自动移动目标位置
+    // === 反应 ===
     private int touchNum = 0; // 抚摸值
     private int restNum = 0; // 休息值
     private int moveNum = 0; // 移动值
-    private int moveThreshold = 30; // 移动阈值
     private int restThreshold = 60*10; // 休息阈值
     private int touchThreshold = 5; // 抚摸阈值
-    private PetOption petOption; // 宠物选项窗口
-    private Robot robot; // 自动机器
+    private int moveThreshold = 30; // 移动阈值
+    // === 状态 ===
     public boolean isFollow = false; // 跟随
     public boolean isFocus = false; // 聚焦
     public boolean isPress = false; // 按住
@@ -59,32 +64,54 @@ public class PetBase extends JPanel {
     public boolean isResting = false; // 正在休息
     public boolean isAutoMoving = false; // 正在自主移动
     public boolean isTargetAnimationPlaying = false; // 正在播放特定动画
-    public PetBase(){
+    // 计时器
+    private Timer updateTimer; // 高速循环计时器
+    private Timer lowUpdateTimer; // 低速循环计时器
+    public PetBase(Launcher theLauncher){
+        this.launcher = theLauncher;
+        initPet();
+        System.err.println(launcher);
+    }
+    // 空参构造 - 仅测试
+    public PetBase(){initPet();}
+    // 初始化桌宠
+    public void initPet(){
+        // 基本属性
         Dimension size = GArea.DEFAULT_bodySize;
         this.id = this.getClass().getSimpleName();
-        String jsonpetdata = GArea.readFile(GArea.GAME_petsPath+id+"/pet_data.json");
+        this.savePath = GArea.GAME_dataPath+id+".json";
+        // 宠物数据
+        String jsonpetdata = GArea.readFile(GArea.GAME_petsPath + id + "/pet_data.json");
         this.petData = JSON.parseObject(jsonpetdata).toJavaObject(PetData.class);
+        // 动画
         String[] animationNames = petData.getAnimationNames();
-        HashMap<String,String> imageFrameHashmap = new HashMap<>();
+        HashMap<String, String> imageFrameHashmap = new HashMap<>();
         for(String animationName:animationNames){
             imageFrameHashmap.put(
                 animationName,
-                GArea.GAME_petsPath+id+"/"+"frames"+"/"+animationName+"/"
+                GArea.GAME_petsPath+id+"/frames/"+animationName+"/"
             );
         }
         this.animations = imageFrameHashmap;
         this.body = new AnimationSprite(size,animations);
-        this.updateTimer = new Timer(GArea.GAME_petUpdateTime,e->{autoLoop();});this.updateTimer.start();
-        this.responseTimer = new Timer(GArea.DEFAULT_petResponseTime,e->{responseAutoLoop();});this.responseTimer.start();
-        this.savePath = GArea.GAME_dataPath+id+".json";
+        // 定时器
+        this.updateTimer = new Timer(GArea.GAME_updateTime,e->autoLoop());
+        this.updateTimer.start();
+        this.lowUpdateTimer = new Timer(GArea.GAME_lowUpdateTime,e->lowAutoLoop());
+        this.lowUpdateTimer.start();        
+        // 宠物选项
         this.petOption = new PetOption(
             this,
-            new Dimension(GArea.DEFAULT_bodySize.width*2,GArea.DEFAULT_bodySize.height*3)
+            new Dimension(size.width*2,size.width*2)
         );
-        try{this.robot = new Robot();}catch(AWTException e){e.printStackTrace();}
+        // 自动机器
+        try{this.robot = new Robot();}
+        catch(AWTException e){e.printStackTrace();}
+        // 面板属性
         this.setSize(size);
         this.setBackground(new Color(0,0,0,0));
         this.add(body);
+        // 完毕
         this.ready();
     }
     // 释放宠物对象
@@ -93,7 +120,7 @@ public class PetBase extends JPanel {
         this.petOption.setVisible(false);
         this.body.stopAnimation();
         this.updateTimer.stop();
-        this.responseTimer.stop();
+        this.lowUpdateTimer.stop();
         this.removeAll();
         this.getParent().remove(this);
         System.gc();
@@ -175,7 +202,6 @@ public class PetBase extends JPanel {
         ImageSelection imageSelection = new ImageSelection(bufferedImage);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(imageSelection,null);
-        playTargetAnimation("copy_screen",1000);
         return bufferedImage;
     }
     // 指定播放目标动画
@@ -197,10 +223,11 @@ public class PetBase extends JPanel {
             }
         },time+50);
     }
+    
+    // === 实例化完成调用 ===
     // 初始化完成时执行
     public void ready(){
         ready_loadPlayPetData();
-        ready_addAutoSaveHonkOnExit();
         ready_addMouseAction();
     }
     // 加载游玩数据
@@ -214,13 +241,6 @@ public class PetBase extends JPanel {
             PlayPetData playPetData = JSON.parseObject(GArea.readFile(savePath)).toJavaObject(PlayPetData.class);
             this.playPetData = playPetData;
         }
-    }
-    // 退出时自动保存数据
-    public void ready_addAutoSaveHonkOnExit(){
-        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable(){
-            @Override
-            public void run(){savePetData();}
-        }));
     }
     // 添加鼠标事件回应
     public void ready_addMouseAction(){
@@ -292,7 +312,9 @@ public class PetBase extends JPanel {
             }
         });
     }
-    // 自动执行事件
+    
+    // === 高速循环 ===
+    // 高速循环执行
     public void autoLoop(){
         auto_playAnimations();
         auto_followMouse();
@@ -338,14 +360,16 @@ public class PetBase extends JPanel {
             else if(isAutoMoving){isAutoMoving=false;}
         }
     }
-    // 反应自动执行事件
-    public void responseAutoLoop(){
-        responseAuto_touch();
-        responseAuto_rest();
-        responseAuto_move();
+    
+    // === 低速循环 ===
+    // 低速循环执行
+    public void lowAutoLoop(){
+        lowAuto_touch();
+        lowAuto_rest();
+        lowAuto_move();
     };
     // 抚摸反应
-    public void responseAuto_touch(){
+    public void lowAuto_touch(){
         if(touchNum>=touchThreshold){isTouching=true;}else{isTouching=false;}
         if(touchNum>0){
             touchNum-=touchThreshold;
@@ -353,14 +377,14 @@ public class PetBase extends JPanel {
         }
     }
     // 过久不操作休息
-    public void responseAuto_rest(){
+    public void lowAuto_rest(){
         if(!isResting && isFree()){
             if(restNum<restThreshold){restNum++;}
             else{isResting=true;restNum=0;}
         }
     }
     // 自主移动
-    public void responseAuto_move(){
+    public void lowAuto_move(){
         if(!isAutoMoving && isFree()){
             if(moveNum<moveThreshold){moveNum++;}
             else{

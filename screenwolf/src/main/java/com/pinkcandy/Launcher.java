@@ -28,7 +28,6 @@ import com.pinkcandy.screenwolf.bean.PetData;
 
 // 启动器
 public class Launcher {
-    private TransparentScreen screen;
     private JPanel welcomePanel;
     private JPanel petSelectionPanel;
     private ArrayList<PetBase> petsList;
@@ -37,6 +36,7 @@ public class Launcher {
     private JButton clearButton;
     private JButton reloadButton;
     private JButton exitButton;
+    private TransparentScreen screen;
     public WindowBase welcomeWindow;
     public GameTray gameTray;
     public Launcher(){
@@ -125,7 +125,8 @@ public class Launcher {
                 public void actionPerformed(ActionEvent e){
                     PetBase pet = (PetBase)GArea.loadObjFromJarByClass(
                         GArea.GAME_petsPath+petid+"/pet.jar",
-                        "com.pinkcandy."+petid
+                        "com.pinkcandy."+petid,
+                        Launcher.this // this 和 class.this 不一样！此处为 class.this 类的对象
                     );
                     petsList.add(pet);
                     petButton.setEnabled(false);

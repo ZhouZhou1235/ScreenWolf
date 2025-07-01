@@ -14,6 +14,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
@@ -34,8 +35,10 @@ public class GArea {
     static public int GAME_maxFrameLength = 1024;
     // 渲染时钟间隔
     static public int GAME_renderTime = 32;
-    // 宠物事件更新间隔
-    static public int GAME_petUpdateTime = 16;
+    // 高速循环间隔
+    static public int GAME_updateTime = 16;
+    // 低速循环间隔
+    static public int GAME_lowUpdateTime = 1024;
     // 程序工作地址
     static public String GAME_workPath = System.getProperty("user.dir").replace("\\", "/");
     // 游戏数据保存位置
@@ -46,8 +49,6 @@ public class GArea {
     static public Dimension SCREEN_dimension = Toolkit.getDefaultToolkit().getScreenSize();
     // 默认动画播放间隔
     static public int DEFAULT_animationPlaySpeed = 96;
-    // 默认宠物反应间隔
-    static public int DEFAULT_petResponseTime = 1024;
     // 默认窗口大小
     static public Dimension DEFAULT_windowSize = new Dimension(SCREEN_dimension.width/2,SCREEN_dimension.height/2);
     // 默认字体大小
@@ -124,12 +125,17 @@ public class GArea {
         return distanse;
     }
     // 在jar包中指定类 返回一个实例
-    static public Object loadObjFromJarByClass(String jarPath,String jarClass){
-        try {
+    static public Object loadObjFromJarByClass(String jarPath,String jarClass,Object... constructorArgs){
+        try{
             File jarFile = new File(jarPath);
             URLClassLoader classLoader = new URLClassLoader(new URL[]{jarFile.toURI().toURL()});
             Class<?> loadedClass = classLoader.loadClass(jarClass);
-            Object instance = loadedClass.getDeclaredConstructor().newInstance();
+            Class<?>[] paramTypes = new Class<?>[constructorArgs.length];
+            for(int i=0;i<constructorArgs.length;i++){
+                paramTypes[i] = constructorArgs[i].getClass();
+            }
+            Constructor<?> constructor = loadedClass.getDeclaredConstructor(paramTypes);
+            Object instance = constructor.newInstance(constructorArgs);
             classLoader.close();
             return instance;
         }catch(Exception e){System.out.println(e);return null;}
