@@ -52,9 +52,11 @@ public class PetBase extends JPanel {
     private int touchNum = 0; // 抚摸值
     private int restNum = 0; // 休息值
     private int moveNum = 0; // 移动值
-    private int restThreshold = 60*10; // 休息阈值
+    private int talkNum = 0; // 说话值
     private int touchThreshold = 5; // 抚摸阈值
+    private int restThreshold = 60*10; // 休息阈值
     private int moveThreshold = 30; // 移动阈值
+    private int talkThreshold = 60*2; // 说话阈值
     // === 状态 ===
     public boolean isFollow = false; // 跟随
     public boolean isFocus = false; // 聚焦
@@ -176,10 +178,12 @@ public class PetBase extends JPanel {
         String jsonString = GArea.jsonEncode(playPetData);
         GArea.saveToFile(savePath,jsonString);
     }
-    // 回应值置零
+    // 反应值置零
     public void ZeroingResponseNum(){
+        touchNum = 0;
         restNum = 0;
         moveNum = 0;
+        talkNum = 0;
         isResting = false;
         isAutoMoving = false;
         isTargetAnimationPlaying = false;
@@ -373,7 +377,7 @@ public class PetBase extends JPanel {
         if(touchNum>=touchThreshold){isTouching=true;}else{isTouching=false;}
         if(touchNum>0){
             touchNum-=touchThreshold;
-            if(touchNum<0){touchNum=0;}
+            if(touchNum<0 || isFree()){touchNum=0;}
         }
     }
     // 过久不操作休息
@@ -391,6 +395,16 @@ public class PetBase extends JPanel {
                 autoMoveTarget = GArea.getRandomPointOnScreen();
                 isAutoMoving = true;
                 moveNum = 0;
+            }
+        }
+    }
+    // 说话
+    public void lowAuto_talk(){
+        if(isFree()){
+            if(talkNum<talkThreshold){talkNum++;}
+            else{
+                // ...
+                talkNum = 0;
             }
         }
     }

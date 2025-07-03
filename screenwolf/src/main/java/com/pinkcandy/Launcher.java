@@ -1,6 +1,7 @@
 package com.pinkcandy;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -22,16 +23,17 @@ import com.alibaba.fastjson.JSON;
 import com.pinkcandy.screenwolf.GArea;
 import com.pinkcandy.screenwolf.TransparentScreen;
 import com.pinkcandy.screenwolf.GameTray;
+import com.pinkcandy.screenwolf.base.ItemBase;
 import com.pinkcandy.screenwolf.base.PetBase;
 import com.pinkcandy.screenwolf.base.WindowBase;
 import com.pinkcandy.screenwolf.bean.PetData;
 
 // 启动器
 public class Launcher {
+    private ArrayList<PetBase> petList;
+    private ArrayList<JButton> petButtonsList;
     private JPanel welcomePanel;
     private JPanel petSelectionPanel;
-    private ArrayList<PetBase> petsList;
-    private ArrayList<JButton> petButtonsList;
     private JButton playButton;
     private JButton clearButton;
     private JButton reloadButton;
@@ -43,7 +45,7 @@ public class Launcher {
         GArea.initFileDirs();
         GArea.initGlobalFont(new Font("SansSerif",Font.BOLD,GArea.DEFAULT_textSize));
         this.screen = new TransparentScreen(GArea.SCREEN_dimension);
-        this.petsList = new ArrayList<>();
+        this.petList = new ArrayList<>();
         this.petButtonsList = new ArrayList<>();
         initWelcomeWindow();
         this.welcomeWindow.updateWindow();
@@ -128,7 +130,7 @@ public class Launcher {
                         "com.pinkcandy."+petid,
                         Launcher.this // this 和 class.this 不一样！此处为 class.this 类的对象
                     );
-                    petsList.add(pet);
+                    petList.add(pet);
                     petButton.setEnabled(false);
                 }
             });
@@ -146,7 +148,7 @@ public class Launcher {
     }
     // 开始游戏
     public void playGame(){
-        for(PetBase pet:petsList){screen.add(pet);}
+        for(PetBase pet:petList){screen.add(pet);}
         for(JButton petButton:petButtonsList){petButton.setEnabled(false);}
         playButton.setEnabled(false);
         clearButton.setEnabled(true);
@@ -157,9 +159,9 @@ public class Launcher {
     }
     // 结束游戏
     public void stopGame(){
-        for(PetBase pet:petsList){pet.dispose();pet=null;}
+        for(PetBase pet:petList){pet.dispose();pet=null;}
         for(JButton petButton:petButtonsList){petButton.setEnabled(true);}
-        petsList.clear();
+        petList.clear();
         playButton.setEnabled(true);
         clearButton.setEnabled(false);
         exitButton.setEnabled(true);
@@ -174,9 +176,19 @@ public class Launcher {
         welcomeWindow.removeAll();
         welcomeWindow.setVisible(false);
         welcomeWindow = null;
-        petsList.clear();
+        petList.clear();
         petButtonsList.clear();
         System.gc();
         initWelcomeWindow();
+    }
+    // 添加组件到屏幕
+    public void addItemToScreen(ItemBase item){screen.add(item);}
+    // 清空屏幕组件（保留桌宠）
+    public void clearScreenItems(){
+        Component[] items = screen.getComponents();
+        for(Component item:items){
+            if(item instanceof PetBase){continue;}
+            screen.remove(item);
+        }
     }
 }
