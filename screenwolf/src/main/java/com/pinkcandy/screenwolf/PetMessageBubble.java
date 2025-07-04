@@ -16,7 +16,8 @@ public class PetMessageBubble extends ItemBase {
     public PetMessageBubble(String text){
         super(text);
         getBody().setFont(new Font(Font.DIALOG,Font.CENTER_BASELINE,GArea.DEFAULT_textSize));
-        this.setBackground(new Color(255,255,255,50));
+        getBody().setForeground(Color.WHITE);
+        this.setBackground(new Color(0,0,0,100));
         this.setOpaque(true);
         setFontAdjustText(text);
         autoHideTimer = new Timer(displayTime,e->{
@@ -24,7 +25,6 @@ public class PetMessageBubble extends ItemBase {
             autoHideTimer.stop();
         });
         autoHideTimer.setRepeats(false);
-        autoHideTimer.start();   
     }
     // 显示时间
     public void setDisplayTime(int milliseconds){
@@ -34,6 +34,7 @@ public class PetMessageBubble extends ItemBase {
     @Override
     public void ready(){
         super.ready();
+        PetMessageBubble bubble = this;
         // 鼠标悬停暂停消失
         this.addMouseListener(new MouseAdapter(){
             @Override
@@ -43,6 +44,13 @@ public class PetMessageBubble extends ItemBase {
             @Override
             public void mouseExited(MouseEvent e) {
                 autoHideTimer.restart();
+            }
+            @Override
+            public void mouseClicked(MouseEvent e){
+                if(e.getButton()==MouseEvent.BUTTON3){
+                    if(bubble.getParent()!=null){bubble.getParent().remove(bubble);}
+                    autoHideTimer.stop();
+                }
             }
         });
     }

@@ -6,6 +6,7 @@ public class PetData {
     private String name;
     private String info;
     private String[] animationNames;
+    private String[] messageBubbleList;
     public String getId() {
         return id;
     }
@@ -18,6 +19,9 @@ public class PetData {
     public String[] getAnimationNames() {
         return animationNames;
     }
+    public String[] getMessageBubbleList() {
+        return messageBubbleList;
+    }
     public void setId(String id) {
         this.id = id;
     }
@@ -29,5 +33,8 @@ public class PetData {
     }
     public void setAnimationNames(String[] animationNames) {
         this.animationNames = animationNames;
+    }
+    public void setMessageBubbleList(String[] messageBubbleList) {
+        this.messageBubbleList = messageBubbleList;
     }
 }

@@ -38,7 +38,7 @@ public class GArea {
     // 高速循环间隔
     static public int GAME_updateTime = 16;
     // 低速循环间隔
-    static public int GAME_lowUpdateTime = 1024;
+    static public int GAME_slowUpdateTime = 1024;
     // 程序工作地址
     static public String GAME_workPath = System.getProperty("user.dir").replace("\\", "/");
     // 游戏数据保存位置

@@ -26,6 +26,7 @@ import com.pinkcandy.Launcher;
 import com.pinkcandy.screenwolf.AnimationSprite;
 import com.pinkcandy.screenwolf.GArea;
 import com.pinkcandy.screenwolf.ImageSelection;
+import com.pinkcandy.screenwolf.PetMessageBubble;
 import com.pinkcandy.screenwolf.PetOption;
 import com.pinkcandy.screenwolf.bean.PetData;
 import com.pinkcandy.screenwolf.bean.PlayPetData;
@@ -49,14 +50,14 @@ public class PetBase extends JPanel {
     private Point pressPetPoint; // 宠物点按处
     private Point autoMoveTarget; // 自动移动目标位置
     // === 反应 ===
-    private int touchNum = 0; // 抚摸值
-    private int restNum = 0; // 休息值
-    private int moveNum = 0; // 移动值
-    private int talkNum = 0; // 说话值
-    private int touchThreshold = 5; // 抚摸阈值
-    private int restThreshold = 60*10; // 休息阈值
-    private int moveThreshold = 30; // 移动阈值
-    private int talkThreshold = 60*2; // 说话阈值
+    protected int touchNum = 0; // 抚摸值
+    protected int restNum = 0; // 休息值
+    protected int moveNum = 0; // 移动值
+    protected int talkNum = 0; // 说话值
+    protected int touchThreshold = 5; // 抚摸阈值
+    protected int restThreshold = 60*10; // 休息阈值
+    protected int moveThreshold = 30; // 移动阈值
+    protected int talkThreshold = 60*2; // 说话阈值
     // === 状态 ===
     public boolean isFollow = false; // 跟随
     public boolean isFocus = false; // 聚焦
@@ -72,7 +73,6 @@ public class PetBase extends JPanel {
     public PetBase(Launcher theLauncher){
         this.launcher = theLauncher;
         initPet();
-        System.err.println(launcher);
     }
     // 空参构造 - 仅测试
     public PetBase(){initPet();}
@@ -99,7 +99,7 @@ public class PetBase extends JPanel {
         // 定时器
         this.updateTimer = new Timer(GArea.GAME_updateTime,e->autoLoop());
         this.updateTimer.start();
-        this.lowUpdateTimer = new Timer(GArea.GAME_lowUpdateTime,e->lowAutoLoop());
+        this.lowUpdateTimer = new Timer(GArea.GAME_slowUpdateTime,e->slowAutoLoop());
         this.lowUpdateTimer.start();        
         // 宠物选项
         this.petOption = new PetOption(
@@ -367,13 +367,14 @@ public class PetBase extends JPanel {
     
     // === 低速循环 ===
     // 低速循环执行
-    public void lowAutoLoop(){
-        lowAuto_touch();
-        lowAuto_rest();
-        lowAuto_move();
+    public void slowAutoLoop(){
+        slowAuto_touch();
+        slowAuto_rest();
+        slowAuto_move();
+        slowAuto_talk();
     };
     // 抚摸反应
-    public void lowAuto_touch(){
+    public void slowAuto_touch(){
         if(touchNum>=touchThreshold){isTouching=true;}else{isTouching=false;}
         if(touchNum>0){
             touchNum-=touchThreshold;
@@ -381,14 +382,14 @@ public class PetBase extends JPanel {
         }
     }
     // 过久不操作休息
-    public void lowAuto_rest(){
+    public void slowAuto_rest(){
         if(!isResting && isFree()){
             if(restNum<restThreshold){restNum++;}
             else{isResting=true;restNum=0;}
         }
     }
     // 自主移动
-    public void lowAuto_move(){
+    public void slowAuto_move(){
         if(!isAutoMoving && isFree()){
             if(moveNum<moveThreshold){moveNum++;}
             else{
@@ -399,11 +400,20 @@ public class PetBase extends JPanel {
         }
     }
     // 说话
-    public void lowAuto_talk(){
+    public void slowAuto_talk(){
         if(isFree()){
             if(talkNum<talkThreshold){talkNum++;}
             else{
-                // ...
+                if(launcher!=null){
+                    String[] messageBubbleList = petData.getMessageBubbleList();
+                    String message = messageBubbleList[(int)Math.round(Math.random()*(messageBubbleList.length-1))];
+                    PetMessageBubble messageBubble = new PetMessageBubble(message);
+                    Point bubblePos = new Point(getPetPosition().x-body.getSize().width/2,getPetPosition().y-body.getSize().height/2);
+                    messageBubble.setLocation(bubblePos);
+                    launcher.addItemToScreen(messageBubble);
+                    messageBubble.revalidate();
+                    messageBubble.repaint();
+                }
                 talkNum = 0;
             }
         }
