@@ -27,8 +27,6 @@ import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.plaf.FontUIResource;
 
-import com.alibaba.fastjson.JSON;
-
 // 全局通用类
 public class GArea {
     // 最大帧长度
@@ -78,10 +76,6 @@ public class GArea {
         int x = (SCREEN_dimension.width/2)-(size.width/2);
         int y = (SCREEN_dimension.height/2)-(size.height/2);
         jFrame.setLocation(x,y);
-    }
-    // 编码json
-    static public String jsonEncode(Object object){
-        return JSON.toJSONString(object);
     }
     // 创建文件
     static public int createFile(String path){

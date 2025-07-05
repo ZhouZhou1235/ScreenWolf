@@ -21,10 +21,10 @@ import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import com.alibaba.fastjson.JSON;
 import com.pinkcandy.Launcher;
 import com.pinkcandy.screenwolf.AnimationSprite;
 import com.pinkcandy.screenwolf.GArea;
+import com.pinkcandy.screenwolf.GsonUtil;
 import com.pinkcandy.screenwolf.ImageSelection;
 import com.pinkcandy.screenwolf.PetMessageBubble;
 import com.pinkcandy.screenwolf.PetOption;
@@ -84,7 +84,7 @@ public class PetBase extends JPanel {
         this.savePath = GArea.GAME_dataPath+id+".json";
         // 宠物数据
         String jsonpetdata = GArea.readFile(GArea.GAME_petsPath + id + "/pet_data.json");
-        this.petData = JSON.parseObject(jsonpetdata).toJavaObject(PetData.class);
+        this.petData = GsonUtil.json2Bean(jsonpetdata,PetData.class);
         // 动画
         String[] animationNames = petData.getAnimationNames();
         HashMap<String, String> imageFrameHashmap = new HashMap<>();
@@ -175,7 +175,7 @@ public class PetBase extends JPanel {
     }
     // 保存桌宠游玩数据
     public void savePetData(){
-        String jsonString = GArea.jsonEncode(playPetData);
+        String jsonString = GsonUtil.bean2Json(playPetData);
         GArea.saveToFile(savePath,jsonString);
     }
     // 反应值置零
@@ -238,11 +238,11 @@ public class PetBase extends JPanel {
     public void ready_loadPlayPetData(){
         if(GArea.createFile(savePath)==1){
             PlayPetData playPetData = new PlayPetData();
-            GArea.saveToFile(savePath,GArea.jsonEncode(playPetData));
+            GArea.saveToFile(savePath,GsonUtil.bean2Json(playPetData));
             this.playPetData = playPetData;
         }
         else{
-            PlayPetData playPetData = JSON.parseObject(GArea.readFile(savePath)).toJavaObject(PlayPetData.class);
+            PlayPetData playPetData = GsonUtil.json2Bean(GArea.readFile(savePath),PlayPetData.class);
             this.playPetData = playPetData;
         }
     }

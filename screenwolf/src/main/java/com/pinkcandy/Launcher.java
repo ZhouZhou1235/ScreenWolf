@@ -19,10 +19,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
-import com.alibaba.fastjson.JSON;
 import com.pinkcandy.screenwolf.GArea;
 import com.pinkcandy.screenwolf.TransparentScreen;
 import com.pinkcandy.screenwolf.GameTray;
+import com.pinkcandy.screenwolf.GsonUtil;
 import com.pinkcandy.screenwolf.base.ItemBase;
 import com.pinkcandy.screenwolf.base.PetBase;
 import com.pinkcandy.screenwolf.base.WindowBase;
@@ -118,7 +118,7 @@ public class Launcher {
         String[] petsidList = GArea.scanDir(GArea.GAME_petsPath);
         for(String petid:petsidList){
             String jsonpetdata = GArea.readFile(GArea.GAME_petsPath + petid + "/pet_data.json");
-            PetData petData = JSON.parseObject(jsonpetdata).toJavaObject(PetData.class);
+            PetData petData = GsonUtil.json2Bean(jsonpetdata,PetData.class);
             JPanel petEntryPanel = new JPanel(new BorderLayout(10,5));
             petEntryPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
             JButton petButton = new JButton(petData.getName());
