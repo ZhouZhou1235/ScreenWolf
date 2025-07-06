@@ -54,10 +54,14 @@ public class PetBase extends JPanel {
     protected int restNum = 0; // 休息值
     protected int moveNum = 0; // 移动值
     protected int talkNum = 0; // 说话值
+    protected int emotionNum = 0; // 情绪表达值
     protected int touchThreshold = 5; // 抚摸阈值
     protected int restThreshold = 60*10; // 休息阈值
     protected int moveThreshold = 30; // 移动阈值
     protected int talkThreshold = 60*2; // 说话阈值
+    protected int affectLevelUp = 100; // 好感升级所需值
+    protected int affectTopLevel = 100; // 好感最高等级
+    protected int emotionThreshold = 30; // 情绪表达阈值
     // === 状态 ===
     public boolean isFollow = false; // 跟随
     public boolean isFocus = false; // 聚焦
@@ -184,6 +188,7 @@ public class PetBase extends JPanel {
         restNum = 0;
         moveNum = 0;
         talkNum = 0;
+        // emotionNum = 0; 情绪不中断
         isResting = false;
         isAutoMoving = false;
         isTargetAnimationPlaying = false;
@@ -227,7 +232,35 @@ public class PetBase extends JPanel {
             }
         },time+50);
     }
-    
+    // 增加好感
+    public void addAffectPoint(int affectPointNum){
+        if(playPetData.getAffectionLevel()<affectTopLevel){
+            playPetData.setAffectionPoints(playPetData.getAffectionPoints()+affectPointNum);
+            if(playPetData.getAffectionPoints()>affectLevelUp){
+                playPetData.setAffectionLevel(playPetData.getAffectionLevel()+1);
+                playPetData.setAffectionPoints(playPetData.getAffectionPoints()-affectLevelUp);
+            }
+        }
+        else{
+            playPetData.setAffectionLevel(affectTopLevel);
+            playPetData.setAffectionPoints(affectLevelUp);
+        }
+    }
+    // 减少好感
+    public void reduceAffectPoint(int affectPointNum){
+        if(playPetData.getAffectionLevel()>0){
+            playPetData.setAffectionPoints(playPetData.getAffectionLevel()-affectPointNum);
+            if(playPetData.getAffectionPoints()<=0){
+                playPetData.setAffectionLevel(playPetData.getAffectionLevel()-1);
+                int num = Math.abs(playPetData.getAffectionPoints());
+                playPetData.setAffectionPoints(affectLevelUp-num);
+            }
+        }
+        else{
+            playPetData.setAffectionLevel(0);
+            playPetData.setAffectionPoints(0);
+        }
+    }
     // === 实例化完成调用 ===
     // 初始化完成时执行
     public void ready(){
@@ -305,14 +338,18 @@ public class PetBase extends JPanel {
                     int x = petPosition.x+e.getX()-pressPetPoint.x;
                     int y = petPosition.y+e.getY()-pressPetPoint.y;
                     petBase.setLocation(x,y);
+                    // 等级过低的拖拽减少好感
+                    if(playPetData.getAffectionLevel()<20){
+                        playPetData.setAffectionPoints(playPetData.getAffectionPoints()-1);
+                    }
                 }
             }
         });
         petBase.addMouseWheelListener(new MouseWheelListener(){
             @Override
             public void mouseWheelMoved(MouseWheelEvent e){
-                ZeroingResponseNum();
                 touchNum += 1;
+                addAffectPoint(1);
             }
         });
     }
@@ -331,8 +368,25 @@ public class PetBase extends JPanel {
             Point petPosition = this.getPetPosition();
             double distanse = GArea.getDistanse2Point(mousePoint,petPosition);
             if(distanse>followDistanse){
-                gotoPoint(mousePoint);
+                // 等级过低概率不跟随
+                if(
+                    playPetData.getAffectionLevel()<20
+                    &&
+                    Math.random()<0.75
+                ){return;}
+                else if(
+                    playPetData.getAffectionLevel()<40
+                    &&
+                    Math.random()<0.5
+                ){return;}
+                else if(
+                    playPetData.getAffectionLevel()<60
+                    &&
+                    Math.random()<0.25
+                ){return;}
                 if(!isMoving){isMoving=true;}
+                gotoPoint(mousePoint);
+                playPetData.setFollowMouseDistance(playPetData.getFollowMouseDistance()+1);
             }
             else if(isMoving){isMoving=false;}
         }
@@ -372,6 +426,7 @@ public class PetBase extends JPanel {
         slowAuto_rest();
         slowAuto_move();
         slowAuto_talk();
+        slowAuto_showEmotion();
     };
     // 抚摸反应
     public void slowAuto_touch(){
@@ -416,6 +471,25 @@ public class PetBase extends JPanel {
                 }
                 talkNum = 0;
             }
+        }
+    }
+    // 根据好感等级表达情绪
+    public void slowAuto_showEmotion(){
+        int level = playPetData.getAffectionLevel();
+        if(level<20){
+            // ... 伤心
+        }
+        else if(level<40){
+            // ... 不高兴
+        }
+        else if(level<60){
+            // ... 一般
+        }
+        else if(level<80){
+            // ... 高兴
+        }
+        else{
+            // ... 开心
         }
     }
 }
