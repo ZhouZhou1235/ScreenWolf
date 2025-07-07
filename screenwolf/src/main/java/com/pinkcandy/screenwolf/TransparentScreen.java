@@ -5,8 +5,6 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
-import com.pinkcandy.screenwolf.tools.Tool;
-
 // 屏幕透明窗体
 public class TransparentScreen extends JFrame {
     private Timer renderTimer; // 渲染时钟
@@ -22,7 +20,7 @@ public class TransparentScreen extends JFrame {
         this.setLayout(null);
         this.setType(JFrame.Type.UTILITY);
         this.setVisible(true);
-        renderTimer = new Timer(Tool.GAME_renderTime,e->{
+        renderTimer = new Timer(GArea.GAME_renderTime,e->{
             this.repaint();
             this.update(getGraphics());
         });

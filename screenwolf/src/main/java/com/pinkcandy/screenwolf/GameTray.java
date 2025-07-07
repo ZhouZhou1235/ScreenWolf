@@ -14,7 +14,6 @@ import java.awt.event.MouseEvent;
 import javax.swing.ImageIcon;
 
 import com.pinkcandy.Launcher;
-import com.pinkcandy.screenwolf.tools.Tool;
 
 // 系统托盘
 public class GameTray {
@@ -23,8 +22,8 @@ public class GameTray {
     private PopupMenu popupMenu;
     private Launcher launcher;
     public GameTray(Launcher theLauncher){
-        Image iconImage = new ImageIcon(Tool.GAME_workPath+"/assets/images/icon.png").getImage();
-        String tooltip = "ScreenWolf - DesktopPetGame";
+        Image iconImage = new ImageIcon(GArea.GAME_workPath+"/assets/images/icon.png").getImage();
+        String tooltip = "ScreenWolf - 屏幕有狼";
         this.systemTray = SystemTray.getSystemTray();
         this.popupMenu = new PopupMenu();
         this.trayIcon = new TrayIcon(iconImage,tooltip,popupMenu);
@@ -39,7 +38,7 @@ public class GameTray {
         });
         try{systemTray.add(trayIcon);}catch(AWTException e){throw new RuntimeException(e);}
         // 托盘选项
-        addMenuItem("show begin window",new ActionListener(){
+        addMenuItem("显示开始",new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
                 launcher.welcomeWindow.setVisible(true);

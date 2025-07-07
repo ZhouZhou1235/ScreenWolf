@@ -7,13 +7,12 @@ import java.awt.FontMetrics;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
-import com.pinkcandy.screenwolf.tools.Tool;
-
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+
+import com.pinkcandy.screenwolf.GArea;
 
 // 物体基类
 public class ItemBase extends JPanel {
@@ -40,7 +39,7 @@ public class ItemBase extends JPanel {
     }
     public ItemBase(String theItemName,ImageIcon imageIcon,Dimension theSize){
         itemName = theItemName;
-        imageIcon = Tool.scaleImageIcon(imageIcon,theSize.width);
+        imageIcon = GArea.scaleImageIcon(imageIcon,theSize.width);
         body = new JLabel(imageIcon);
         this.setSize(theSize);
         this.setBackground(new Color(0,0,0,0));

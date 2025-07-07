@@ -7,13 +7,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.Timer;
 
-import com.pinkcandy.screenwolf.tools.Tool;
-
 // 动画精灵
 public class AnimationSprite extends JLabel {
-    private Dimension size = Tool.DEFAULT_bodySize;
-    private Timer playTimer = new Timer(Tool.DEFAULT_animationPlaySpeed,null);
-    private ImageIcon[] frames = new ImageIcon[Tool.GAME_maxFrameLength];
+    private Dimension size = GArea.DEFAULT_bodySize;
+    private Timer playTimer = new Timer(GArea.DEFAULT_animationPlaySpeed,null);
+    private ImageIcon[] frames = new ImageIcon[GArea.GAME_maxFrameLength];
     private int frameIndex;
     private int frameLength;
     private Map<String,String> animations;
@@ -39,20 +37,20 @@ public class AnimationSprite extends JLabel {
         String path = animations.get(animationName);if(path==null){return;}
         this.animationName = animationName;
         int index = 0;
-        String[] imageFiles = Tool.scanDir(path);
+        String[] imageFiles = GArea.scanDir(path);
         for(String file:imageFiles){
             String imagePath = path+file;
             ImageIcon image = new ImageIcon(imagePath);
-            if(filp_h){image=new ImageIcon(Tool.flipImage(image.getImage()));}
-            frames[index] = Tool.scaleImageIcon(image,size.width);
+            if(filp_h){image=new ImageIcon(GArea.flipImage(image.getImage()));}
+            frames[index] = GArea.scaleImageIcon(image,size.width);
             index++;
         }
         frameIndex = 0;
         frameLength = imageFiles.length;
-        Tool.clearTimerListeners(playTimer);
+        GArea.clearTimerListeners(playTimer);
         playTimer.addActionListener(e->{
             ImageIcon imageIcon = frames[frameIndex];
-            if(filp_h){imageIcon=new ImageIcon(Tool.flipImage(imageIcon.getImage()));}
+            if(filp_h){imageIcon=new ImageIcon(GArea.flipImage(imageIcon.getImage()));}
             this.setIcon(imageIcon);
             frameIndex++;if(frameIndex>=frameLength){frameIndex=0;}
         });

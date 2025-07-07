@@ -1,4 +1,4 @@
-package com.pinkcandy.screenwolf.tools;
+package com.pinkcandy.screenwolf;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -28,7 +28,7 @@ import javax.swing.UIManager;
 import javax.swing.plaf.FontUIResource;
 
 // 全局通用类
-public class Tool {
+public class GArea {
     // 最大帧长度
     static public int GAME_maxFrameLength = 1024;
     // 渲染时钟间隔
@@ -40,9 +40,9 @@ public class Tool {
     // 程序工作地址
     static public String GAME_workPath = System.getProperty("user.dir").replace("\\", "/");
     // 游戏数据保存位置
-    static public String GAME_dataPath = Tool.GAME_workPath+"/data/";
-    // 桌宠包资源保存位置
-    static public String GAME_modPath = Tool.GAME_workPath+"/mods/";
+    static public String GAME_dataPath = GArea.GAME_workPath+"/data/";
+    // 桌宠资源保存位置
+    static public String GAME_petsPath = GArea.GAME_workPath+"/pets/";
     // 屏幕大小
     static public Dimension SCREEN_dimension = Toolkit.getDefaultToolkit().getScreenSize();
     // 默认动画播放间隔
@@ -138,7 +138,7 @@ public class Tool {
     static public void initFileDirs(){
         File assetsDir = new File(GAME_workPath+"/assets/");
         File dataDir = new File(GAME_workPath+"/data/");
-        File petsDir = new File(GAME_workPath+"/mods/");
+        File petsDir = new File(GAME_workPath+"/pets/");
         File[] fileList = {assetsDir,dataDir,petsDir};
         for(File file:fileList){if(!file.exists()){file.mkdir();}}
     }

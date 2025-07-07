@@ -1,11 +1,19 @@
-# 开发环境配置
-.vscode
+# Godot4 项目产生数据忽略
+.godot/
+/android/
 
 # 编译产物
 build
 target
 *.class
 
+# 工作配置
+.vscode
+
 # 游戏产生
 data
-mods
+pets
+
+# 自己的模组
+# mod 官方模组
+mymod
