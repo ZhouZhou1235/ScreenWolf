@@ -1,4 +1,4 @@
-package com.pinkcandy.screenwolf;
+package com.pinkcandy.screenwolf.tools;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;

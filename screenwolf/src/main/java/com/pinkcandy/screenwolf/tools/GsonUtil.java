@@ -1,4 +1,4 @@
-package com.pinkcandy.screenwolf;
+package com.pinkcandy.screenwolf.tools;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

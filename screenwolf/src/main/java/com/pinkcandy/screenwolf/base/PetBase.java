@@ -23,13 +23,13 @@ import javax.swing.Timer;
 
 import com.pinkcandy.Launcher;
 import com.pinkcandy.screenwolf.AnimationSprite;
-import com.pinkcandy.screenwolf.GArea;
-import com.pinkcandy.screenwolf.GsonUtil;
-import com.pinkcandy.screenwolf.ImageSelection;
 import com.pinkcandy.screenwolf.PetMessageBubble;
 import com.pinkcandy.screenwolf.PetOption;
 import com.pinkcandy.screenwolf.bean.PetData;
 import com.pinkcandy.screenwolf.bean.PlayPetData;
+import com.pinkcandy.screenwolf.tools.Tool;
+import com.pinkcandy.screenwolf.tools.GsonUtil;
+import com.pinkcandy.screenwolf.tools.ImageSelection;
 
 // 桌面宠物
 public class PetBase extends JPanel {
@@ -39,8 +39,8 @@ public class PetBase extends JPanel {
     private Robot robot; // 自动机器
     private Launcher launcher; // 启动器的引用
     // === 数值 ===
-    private int followDistanse = (int)GArea.DEFAULT_bodySize.getWidth(); // 跟随距离
-    private int moveSpeed = (int)GArea.DEFAULT_bodySize.getWidth()/10; // 移动速度
+    private int followDistanse = (int)Tool.DEFAULT_bodySize.getWidth(); // 跟随距离
+    private int moveSpeed = (int)Tool.DEFAULT_bodySize.getWidth()/10; // 移动速度
     // === 数据 ===
     private String id; // 宠物号码
     private Map<String,String> animations; // 动画数据
@@ -83,11 +83,11 @@ public class PetBase extends JPanel {
     // 初始化桌宠
     public void initPet(){
         // 基本属性
-        Dimension size = GArea.DEFAULT_bodySize;
+        Dimension size = Tool.DEFAULT_bodySize;
         this.id = this.getClass().getSimpleName();
-        this.savePath = GArea.GAME_dataPath+id+".json";
+        this.savePath = Tool.GAME_dataPath+id+".json";
         // 宠物数据
-        String jsonpetdata = GArea.readFile(GArea.GAME_petsPath + id + "/pet_data.json");
+        String jsonpetdata = Tool.readFile(Tool.GAME_modPath + id + "/pet_data.json");
         this.petData = GsonUtil.json2Bean(jsonpetdata,PetData.class);
         // 动画
         String[] animationNames = petData.getAnimationNames();
@@ -95,15 +95,15 @@ public class PetBase extends JPanel {
         for(String animationName:animationNames){
             imageFrameHashmap.put(
                 animationName,
-                GArea.GAME_petsPath+id+"/frames/"+animationName+"/"
+                Tool.GAME_modPath+id+"/frames/"+animationName+"/"
             );
         }
         this.animations = imageFrameHashmap;
         this.body = new AnimationSprite(size,animations);
         // 定时器
-        this.updateTimer = new Timer(GArea.GAME_updateTime,e->autoLoop());
+        this.updateTimer = new Timer(Tool.GAME_updateTime,e->autoLoop());
         this.updateTimer.start();
-        this.lowUpdateTimer = new Timer(GArea.GAME_slowUpdateTime,e->slowAutoLoop());
+        this.lowUpdateTimer = new Timer(Tool.GAME_slowUpdateTime,e->slowAutoLoop());
         this.lowUpdateTimer.start();        
         // 宠物选项
         this.petOption = new PetOption(
@@ -180,7 +180,7 @@ public class PetBase extends JPanel {
     // 保存桌宠游玩数据
     public void savePetData(){
         String jsonString = GsonUtil.bean2Json(playPetData);
-        GArea.saveToFile(savePath,jsonString);
+        Tool.saveToFile(savePath,jsonString);
     }
     // 反应值置零
     public void ZeroingResponseNum(){
@@ -206,7 +206,7 @@ public class PetBase extends JPanel {
     }
     // 屏幕截图
     public BufferedImage copyScreenImage(){
-        Rectangle rectangle = new Rectangle(GArea.SCREEN_dimension);
+        Rectangle rectangle = new Rectangle(Tool.SCREEN_dimension);
         BufferedImage bufferedImage = robot.createScreenCapture(rectangle);
         ImageSelection imageSelection = new ImageSelection(bufferedImage);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -269,13 +269,13 @@ public class PetBase extends JPanel {
     }
     // 加载游玩数据
     public void ready_loadPlayPetData(){
-        if(GArea.createFile(savePath)==1){
+        if(Tool.createFile(savePath)==1){
             PlayPetData playPetData = new PlayPetData();
-            GArea.saveToFile(savePath,GsonUtil.bean2Json(playPetData));
+            Tool.saveToFile(savePath,GsonUtil.bean2Json(playPetData));
             this.playPetData = playPetData;
         }
         else{
-            PlayPetData playPetData = GsonUtil.json2Bean(GArea.readFile(savePath),PlayPetData.class);
+            PlayPetData playPetData = GsonUtil.json2Bean(Tool.readFile(savePath),PlayPetData.class);
             this.playPetData = playPetData;
         }
     }
@@ -364,9 +364,9 @@ public class PetBase extends JPanel {
     // 跟随鼠标
     public void auto_followMouse(){
         if(isFollow){
-            Point mousePoint = GArea.getMousePoint();
+            Point mousePoint = Tool.getMousePoint();
             Point petPosition = this.getPetPosition();
-            double distanse = GArea.getDistanse2Point(mousePoint,petPosition);
+            double distanse = Tool.getDistanse2Point(mousePoint,petPosition);
             if(distanse>followDistanse){
                 // 等级过低概率不跟随
                 if(
@@ -410,7 +410,7 @@ public class PetBase extends JPanel {
     public void auto_move(){
         if(isAutoMoving){
             Point petPosition = this.getPetPosition();
-            double distanse = GArea.getDistanse2Point(autoMoveTarget,petPosition);
+            double distanse = Tool.getDistanse2Point(autoMoveTarget,petPosition);
             if(distanse>followDistanse){
                 gotoPoint(autoMoveTarget);
                 if(!isAutoMoving){isAutoMoving=true;}
@@ -448,7 +448,7 @@ public class PetBase extends JPanel {
         if(!isAutoMoving && isFree()){
             if(moveNum<moveThreshold){moveNum++;}
             else{
-                autoMoveTarget = GArea.getRandomPointOnScreen();
+                autoMoveTarget = Tool.getRandomPointOnScreen();
                 isAutoMoving = true;
                 moveNum = 0;
             }
