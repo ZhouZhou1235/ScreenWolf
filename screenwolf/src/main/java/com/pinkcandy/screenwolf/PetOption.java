@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 
 import com.pinkcandy.screenwolf.base.PetBase;
 import com.pinkcandy.screenwolf.base.WindowBase;
+import com.pinkcandy.screenwolf.utils.GUtil;
 
 // 宠物选项窗口
 public class PetOption extends WindowBase {
@@ -31,7 +32,7 @@ public class PetOption extends WindowBase {
         mainPanel.add(petNameLabel);
         JLabel petInfoLabel = new JLabel(thePet.getPetData().getInfo());
         petInfoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        petInfoLabel.setFont(new Font(Font.DIALOG,Font.CENTER_BASELINE,GArea.DEFAULT_textSize/2));
+        petInfoLabel.setFont(new Font(Font.DIALOG,Font.CENTER_BASELINE,GUtil.DEFAULT_textSize/2));
         mainPanel.add(petInfoLabel);
         addOption("休息",new ActionListener(){
             @Override

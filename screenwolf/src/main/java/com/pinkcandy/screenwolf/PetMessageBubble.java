@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.Timer;
 
 import com.pinkcandy.screenwolf.base.ItemBase;
+import com.pinkcandy.screenwolf.utils.GUtil;
 
 // 宠物消息气泡
 public class PetMessageBubble extends ItemBase {
@@ -15,7 +16,7 @@ public class PetMessageBubble extends ItemBase {
     private int displayTime = 5000;
     public PetMessageBubble(String text){
         super(text);
-        getBody().setFont(new Font(Font.DIALOG,Font.CENTER_BASELINE,GArea.DEFAULT_textSize));
+        getBody().setFont(new Font(Font.DIALOG,Font.CENTER_BASELINE,GUtil.DEFAULT_textSize));
         getBody().setForeground(Color.WHITE);
         this.setBackground(new Color(0,0,0,100));
         this.setOpaque(true);

@@ -7,11 +7,13 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.Timer;
 
+import com.pinkcandy.screenwolf.utils.GUtil;
+
 // 动画精灵
 public class AnimationSprite extends JLabel {
-    private Dimension size = GArea.DEFAULT_bodySize;
-    private Timer playTimer = new Timer(GArea.DEFAULT_animationPlaySpeed,null);
-    private ImageIcon[] frames = new ImageIcon[GArea.GAME_maxFrameLength];
+    private Dimension size = GUtil.DEFAULT_bodySize;
+    private Timer playTimer = new Timer(GUtil.DEFAULT_animationPlaySpeed,null);
+    private ImageIcon[] frames = new ImageIcon[GUtil.GAME_maxFrameLength];
     private int frameIndex;
     private int frameLength;
     private Map<String,String> animations;
@@ -37,20 +39,20 @@ public class AnimationSprite extends JLabel {
         String path = animations.get(animationName);if(path==null){return;}
         this.animationName = animationName;
         int index = 0;
-        String[] imageFiles = GArea.scanDir(path);
+        String[] imageFiles = GUtil.scanDir(path);
         for(String file:imageFiles){
             String imagePath = path+file;
             ImageIcon image = new ImageIcon(imagePath);
-            if(filp_h){image=new ImageIcon(GArea.flipImage(image.getImage()));}
-            frames[index] = GArea.scaleImageIcon(image,size.width);
+            if(filp_h){image=new ImageIcon(GUtil.flipImage(image.getImage()));}
+            frames[index] = GUtil.scaleImageIcon(image,size.width);
             index++;
         }
         frameIndex = 0;
         frameLength = imageFiles.length;
-        GArea.clearTimerListeners(playTimer);
+        GUtil.clearTimerListeners(playTimer);
         playTimer.addActionListener(e->{
             ImageIcon imageIcon = frames[frameIndex];
-            if(filp_h){imageIcon=new ImageIcon(GArea.flipImage(imageIcon.getImage()));}
+            if(filp_h){imageIcon=new ImageIcon(GUtil.flipImage(imageIcon.getImage()));}
             this.setIcon(imageIcon);
             frameIndex++;if(frameIndex>=frameLength){frameIndex=0;}
         });

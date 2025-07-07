@@ -19,14 +19,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
-import com.pinkcandy.screenwolf.GArea;
 import com.pinkcandy.screenwolf.TransparentScreen;
 import com.pinkcandy.screenwolf.GameTray;
-import com.pinkcandy.screenwolf.GsonUtil;
 import com.pinkcandy.screenwolf.base.ItemBase;
 import com.pinkcandy.screenwolf.base.PetBase;
 import com.pinkcandy.screenwolf.base.WindowBase;
 import com.pinkcandy.screenwolf.bean.PetData;
+import com.pinkcandy.screenwolf.utils.GUtil;
+import com.pinkcandy.screenwolf.utils.GsonUtil;
 
 // 启动器
 public class Launcher {
@@ -42,9 +42,9 @@ public class Launcher {
     public WindowBase welcomeWindow;
     public GameTray gameTray;
     public Launcher(){
-        GArea.initFileDirs();
-        GArea.initGlobalFont(new Font("SansSerif",Font.BOLD,GArea.DEFAULT_textSize));
-        this.screen = new TransparentScreen(GArea.SCREEN_dimension);
+        GUtil.initFileDirs();
+        GUtil.initGlobalFont(new Font("SansSerif",Font.BOLD,GUtil.DEFAULT_textSize));
+        this.screen = new TransparentScreen(GUtil.SCREEN_dimension);
         this.petList = new ArrayList<>();
         this.petButtonsList = new ArrayList<>();
         initWelcomeWindow();
@@ -56,9 +56,9 @@ public class Launcher {
     public void initWelcomeWindow(){
         this.welcomePanel = new JPanel(new BorderLayout(10,10));
         this.welcomePanel.setBorder(BorderFactory.createEmptyBorder(15,15,15,15));
-        welcomeWindow = new WindowBase("ScreenWolf", GArea.DEFAULT_windowSize);
+        welcomeWindow = new WindowBase("ScreenWolf", GUtil.DEFAULT_windowSize);
         welcomeWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        GArea.setWindowCenter(welcomeWindow);
+        GUtil.setWindowCenter(welcomeWindow);
         loadBasic();
         loadPets();
         // 自动布局 渲染刷新
@@ -69,11 +69,11 @@ public class Launcher {
     }
     // 加载窗口固定项
     private void loadBasic(){
-        ImageIcon logoImageIcon = new ImageIcon(GArea.GAME_workPath+"/assets/images/logo.png");
-        logoImageIcon = GArea.scaleImageIcon(logoImageIcon,(int)(GArea.DEFAULT_windowSize.width*0.75));
+        ImageIcon logoImageIcon = new ImageIcon(GUtil.GAME_workPath+"/assets/images/logo.png");
+        logoImageIcon = GUtil.scaleImageIcon(logoImageIcon,(int)(GUtil.DEFAULT_windowSize.width*0.75));
         // 标题
         JLabel titleLabel = new JLabel(logoImageIcon,SwingConstants.CENTER);
-        titleLabel.setFont(new Font(titleLabel.getFont().getName(),Font.BOLD,GArea.DEFAULT_textSize*2));
+        titleLabel.setFont(new Font(titleLabel.getFont().getName(),Font.BOLD,GUtil.DEFAULT_textSize*2));
         JPanel titlePanel = new JPanel();
         titlePanel.add(titleLabel);
         welcomePanel.add(titlePanel,BorderLayout.NORTH);
@@ -115,9 +115,9 @@ public class Launcher {
         petSelectionPanel.setLayout(new BoxLayout(petSelectionPanel, BoxLayout.Y_AXIS));
         JScrollPane scrollPane = new JScrollPane(petSelectionPanel);
         welcomePanel.add(scrollPane,BorderLayout.CENTER);
-        String[] petsidList = GArea.scanDir(GArea.GAME_petsPath);
+        String[] petsidList = GUtil.scanDir(GUtil.GAME_petsPath);
         for(String petid:petsidList){
-            String jsonpetdata = GArea.readFile(GArea.GAME_petsPath + petid + "/pet_data.json");
+            String jsonpetdata = GUtil.readFile(GUtil.GAME_petsPath + petid + "/pet_data.json");
             PetData petData = GsonUtil.json2Bean(jsonpetdata,PetData.class);
             JPanel petEntryPanel = new JPanel(new BorderLayout(10,5));
             petEntryPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
@@ -125,8 +125,8 @@ public class Launcher {
             petButton.addActionListener(new ActionListener(){
                 @Override
                 public void actionPerformed(ActionEvent e){
-                    PetBase pet = (PetBase)GArea.loadObjFromJarByClass(
-                        GArea.GAME_petsPath+petid+"/pet.jar",
+                    PetBase pet = (PetBase)GUtil.loadObjFromJarByClass(
+                        GUtil.GAME_petsPath+petid+"/pet.jar",
                         "com.pinkcandy."+petid,
                         Launcher.this // this 和 class.this 不一样！此处为 class.this 类的对象
                     );

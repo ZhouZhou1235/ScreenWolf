@@ -1,4 +1,4 @@
-package com.pinkcandy.screenwolf;
+package com.pinkcandy.screenwolf.utils;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -28,7 +28,7 @@ import javax.swing.UIManager;
 import javax.swing.plaf.FontUIResource;
 
 // 全局通用类
-public class GArea {
+public class GUtil {
     // 最大帧长度
     static public int GAME_maxFrameLength = 1024;
     // 渲染时钟间隔
@@ -40,9 +40,9 @@ public class GArea {
     // 程序工作地址
     static public String GAME_workPath = System.getProperty("user.dir").replace("\\", "/");
     // 游戏数据保存位置
-    static public String GAME_dataPath = GArea.GAME_workPath+"/data/";
+    static public String GAME_dataPath = GUtil.GAME_workPath+"/data/";
     // 桌宠资源保存位置
-    static public String GAME_petsPath = GArea.GAME_workPath+"/pets/";
+    static public String GAME_petsPath = GUtil.GAME_workPath+"/pets/";
     // 屏幕大小
     static public Dimension SCREEN_dimension = Toolkit.getDefaultToolkit().getScreenSize();
     // 默认动画播放间隔
