@@ -21,7 +21,7 @@ public class PetOption extends WindowBase {
     private PetBase pet;
     private JPanel mainPanel;
     public PetOption(PetBase thePet,Dimension size){
-        super(thePet.getPetData().getId(),size);
+        super(thePet.getId(),size);
         this.pet = thePet;
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setVisible(false);

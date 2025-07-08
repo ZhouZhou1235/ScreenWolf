@@ -14,11 +14,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -42,10 +40,12 @@ public class GUtil {
     static public int GAME_slowUpdateTime = 1024;
     // 程序工作地址
     static public String GAME_workPath = System.getProperty("user.dir").replace("\\", "/");
-    // 游戏数据保存位置
+    // 游戏数据位置
     static public String GAME_dataPath = GUtil.GAME_workPath+"/data/";
+    // 桌宠数据保存位置
+    static public String GAME_savePath = GUtil.GAME_workPath+"/data/save/";
     // 桌宠资源保存位置
-    static public String GAME_petsPath = GUtil.GAME_workPath+"/pets/";
+    static public String GAME_petsPath = GUtil.GAME_workPath+"/data/pets/";
     // 屏幕大小
     static public Dimension SCREEN_dimension = Toolkit.getDefaultToolkit().getScreenSize();
     // 默认动画播放间隔
@@ -139,10 +139,10 @@ public class GUtil {
     }
     // 构建游戏文件结构
     static public void initFileDirs(){
-        File assetsDir = new File(GAME_workPath+"/assets/");
-        File dataDir = new File(GAME_workPath+"/data/");
-        File petsDir = new File(GAME_workPath+"/pets/");
-        File[] fileList = {assetsDir,dataDir,petsDir};
+        File dataDir = new File(GAME_dataPath);
+        File saveDir = new File(GAME_savePath);
+        File petsDir = new File(GAME_petsPath);
+        File[] fileList = {dataDir,saveDir,petsDir};
         for(File file:fileList){if(!file.exists()){file.mkdir();}}
     }
     // awt 翻转图像
@@ -179,31 +179,13 @@ public class GUtil {
         int h = (int)(height*Math.random());
         return new Point(w,h);
     }
-
-    // 在GUtil类中添加
-    static public String[] scanDir(String path, String extension) {
+    // 文件夹扫描指定类型文件
+    static public String[] scanDir(String path,String extension){
         File dir = new File(path);
-        if (!dir.exists() || !dir.isDirectory()) {
-            return new String[0];
-        }
-        
+        if(!dir.exists()||!dir.isDirectory()){return new String[0];}
         return Arrays.stream(dir.listFiles())
-                .filter(file -> file.getName().toLowerCase().endsWith(extension))
-                .map(File::getName)
-                .toArray(String[]::new);
+            .filter(file -> file.getName().toLowerCase().endsWith(extension))
+            .map(File::getName)
+            .toArray(String[]::new);
     }
-
-    // 添加一个从类路径读取文件的方法
-    static public String readFileFromClasspath(String path, ClassLoader classLoader) {
-        try (InputStream is = classLoader.getResourceAsStream(path)) {
-            if (is != null) {
-                return new String(is.readAllBytes(), StandardCharsets.UTF_8);
-            }
-            throw new IOException("Resource not found: " + path);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "";
-        }
-    }
-
 }

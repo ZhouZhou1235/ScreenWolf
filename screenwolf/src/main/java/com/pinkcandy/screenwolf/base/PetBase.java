@@ -9,7 +9,6 @@ import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.TimerTask;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -33,25 +32,25 @@ import com.pinkcandy.screenwolf.bean.PlayPetData;
 import com.pinkcandy.screenwolf.utils.GUtil;
 import com.pinkcandy.screenwolf.utils.GsonUtil;
 import com.pinkcandy.screenwolf.utils.ImageSelection;
+import com.pinkcandy.screenwolf.utils.JarFileUtil;
 
 // 桌面宠物
 public class PetBase extends JPanel {
     // === 组成 ===
-    private AnimationSprite body; // 动画精灵
-    private PetOption petOption; // 宠物选项窗口
-    private Robot robot; // 自动机器
-    private Launcher launcher; // 启动器的引用
+    protected AnimationSprite animationSprite; // 动画精灵
+    protected PetOption petOption; // 宠物选项窗口
+    protected Robot robot; // 自动机器
+    protected Launcher launcher; // 启动器的引用
     // === 数值 ===
-    private int followDistanse = (int)GUtil.DEFAULT_bodySize.getWidth(); // 跟随距离
-    private int moveSpeed = (int)GUtil.DEFAULT_bodySize.getWidth()/10; // 移动速度
+    protected int followDistanse = (int)GUtil.DEFAULT_bodySize.getWidth(); // 跟随距离
+    protected int moveSpeed = (int)GUtil.DEFAULT_bodySize.getWidth()/10; // 移动速度
     // === 数据 ===
-    private String id; // 宠物号码
-    private Map<String,String> animations; // 动画数据
-    private PetData petData; // 宠物数据
-    private String savePath; // 数据保存地址
-    private PlayPetData playPetData; // 游玩数据
-    private Point pressPetPoint; // 宠物点按处
-    private Point autoMoveTarget; // 自动移动目标位置
+    protected String id; // 宠物号码
+    protected PetData petData; // 宠物数据
+    protected String savePath; // 数据保存地址
+    protected PlayPetData playPetData; // 游玩数据
+    protected Point pressPetPoint; // 宠物点按处
+    protected Point autoMoveTarget; // 自动移动目标位置
     // === 反应 ===
     protected int touchNum = 0; // 抚摸值
     protected int restNum = 0; // 休息值
@@ -75,72 +74,44 @@ public class PetBase extends JPanel {
     public boolean isAutoMoving = false; // 正在自主移动
     public boolean isTargetAnimationPlaying = false; // 正在播放特定动画
     // 计时器
-    private Timer updateTimer; // 高速循环计时器
-    private Timer lowUpdateTimer; // 低速循环计时器
-
-    protected ClassLoader classLoader; // 添加这个字段
-
+    protected Timer updateTimer; // 高速循环计时器
+    protected Timer lowUpdateTimer; // 低速循环计时器
     public PetBase(Launcher theLauncher){
         this.launcher = theLauncher;
         initPet();
     }
-
-    // 添加设置ClassLoader的方法
-    public void setClassLoader(ClassLoader classLoader) {
-        this.classLoader = classLoader;
-    }
-
     // 初始化桌宠
     public void initPet(){
-
-        // 确保classLoader不为null
-        if (classLoader == null) {
-            classLoader = this.getClass().getClassLoader();
-        }
-
         // 基本属性
         Dimension size = GUtil.DEFAULT_bodySize;
         this.id = this.getClass().getSimpleName();
-        this.savePath = GUtil.GAME_dataPath+id+".json";
-        // // 宠物数据
-        // String jsonpetdata = GUtil.readFile(GUtil.GAME_petsPath + id + "/pet_data.json");
-        // this.petData = GsonUtil.json2Bean(jsonpetdata,PetData.class);
-        // // 动画
-        // String[] animationNames = petData.getAnimationNames();
-        // HashMap<String, String> imageFrameHashmap = new HashMap<>();
-        // for(String animationName:animationNames){
-        //     imageFrameHashmap.put(
-        //         animationName,
-        //         GUtil.GAME_petsPath+id+"/frames/"+animationName+"/"
-        //     );
-        // }
-        // this.animations = imageFrameHashmap;
-        // this.body = new AnimationSprite(size,animations);
-        
-        // 修改这里 - 从类路径加载pet_data.json
-        try (InputStream is = classLoader.getResourceAsStream("META-INF/pet_data.json")) {
-            if (is != null) {
-                String jsonpetdata = new String(is.readAllBytes(), StandardCharsets.UTF_8);
-                this.petData = GsonUtil.json2Bean(jsonpetdata, PetData.class);
-            } else {
-                throw new RuntimeException("Pet data file not found in JAR");
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to load pet data", e);
+        this.savePath = GUtil.GAME_savePath+id+".json";
+        // 宠物数据
+        ClassLoader classLoader = this.getClass().getClassLoader();
+        try(InputStream is = classLoader.getResourceAsStream("META-INF/pet_data.json")){
+            if(is!=null){
+                String jsonpetdata = new String(is.readAllBytes(),StandardCharsets.UTF_8);
+                this.petData = GsonUtil.json2Bean(jsonpetdata,PetData.class);
+            }else{throw new RuntimeException("PINKCANDY: pet_data not found");}
+        }catch(IOException e){
+            throw new RuntimeException("PINKCANDY: Failed to load pet data",e);
         }
-        
-        // 修改动画资源加载方式
+        // 动画资源
         HashMap<String, String> imageFrameHashmap = new HashMap<>();
-        for (String animationName : petData.getAnimationNames()) {
-            // 使用资源路径而不是文件系统路径
+        for(String animationName:JarFileUtil.listJarDirNamesByPath(
+            GUtil.GAME_petsPath+petData.getJarName(),
+            "assets/animations"
+        )){
             imageFrameHashmap.put(
                 animationName,
-                "assets/animations/" + animationName + "/"
+                "assets/animations/"+animationName+"/"
             );
         }
-        this.animations = imageFrameHashmap;
-        this.body = new AnimationSprite(size, animations, this.getClass().getClassLoader());
-        
+        this.animationSprite = new AnimationSprite(
+            size,
+            imageFrameHashmap,
+            GUtil.GAME_petsPath+petData.getJarName()
+        );
         // 定时器
         this.updateTimer = new Timer(GUtil.GAME_updateTime,e->autoLoop());
         this.updateTimer.start();
@@ -157,7 +128,7 @@ public class PetBase extends JPanel {
         // 面板属性
         this.setSize(size);
         this.setBackground(new Color(0,0,0,0));
-        this.add(body);
+        this.add(animationSprite);
         // 完毕
         this.ready();
     }
@@ -165,34 +136,21 @@ public class PetBase extends JPanel {
     public void dispose(){
         savePetData();
         this.petOption.setVisible(false);
-        this.body.stopAnimation();
+        this.animationSprite.stopAnimation();
         this.updateTimer.stop();
         this.lowUpdateTimer.stop();
         this.removeAll();
         this.getParent().remove(this);
         System.gc();
     }
-    // 获取宠物号码
-    public String getid(){return this.id;}
+
+    // === 获取 ===
+    // 获取号码
+    public String getId(){return id;}
     // 获取宠物数据
     public PetData getPetData(){return this.petData;}
     // 获取游玩数据
     public PlayPetData getPlayPetData(){return this.playPetData;}
-    // 切换动画
-    public void updateBodyAnimation(String animationName){
-        if(animations.get(animationName)==null){return;}
-        body.setAnimation(animationName);
-    }
-    // 获取播放的动画名称
-    public String getAnimationName(){return this.body.currentAnimation;}
-    // 改变一次到指定动画
-    public void updateAnimationOnce(String animationName){
-        String theAnimationName = this.getAnimationName();
-        if(theAnimationName!=animationName){
-            System.out.println(animationName);
-            this.updateBodyAnimation(animationName);
-        }
-    }
     // 获取宠物中心位置
     public Point getPetPosition(){
         Point o = this.getLocation();
@@ -201,105 +159,7 @@ public class PetBase extends JPanel {
         int y = o.y+size.height/2;
         return new Point(x,y);
     }
-    // 向目标点移动一次
-    public void gotoPoint(Point target) {
-        Point currentPos = this.getLocation();
-        int dx = target.x-currentPos.x;
-        int dy = target.y-currentPos.y;
-        double distance = Math.sqrt(dx*dx+dy*dy);
-        if(distance<=moveSpeed){this.setLocation(target);return;}
-        double directionX = dx/distance;
-        double directionY = dy/distance;
-        int nextX = currentPos.x+(int)(directionX*moveSpeed);
-        int nextY = currentPos.y+(int)(directionY*moveSpeed);
-        this.setLocation(new Point(nextX, nextY));
-        if(dx>0&&!body.flip_h){body.flip_h=true;}
-        else if(dx<0&&body.flip_h){body.flip_h=false;}
-    }
-    // 保存桌宠游玩数据
-    public void savePetData(){
-        String jsonString = GsonUtil.bean2Json(playPetData);
-        GUtil.saveToFile(savePath,jsonString);
-    }
-    // 反应值置零
-    public void ZeroingResponseNum(){
-        touchNum = 0;
-        restNum = 0;
-        moveNum = 0;
-        talkNum = 0;
-        // emotionNum = 0; 情绪不中断
-        isResting = false;
-        isAutoMoving = false;
-        isTargetAnimationPlaying = false;
-    }
-    // 是否空闲
-    public boolean isFree(){
-        return
-        isFocus || isFollow || isMoving || isPress || isResting || isTargetAnimationPlaying
-        ?false:true;
-    }
-    // 命令休息
-    public void doRest(){
-        ZeroingResponseNum();
-        isResting = true;
-    }
-    // 屏幕截图
-    public BufferedImage copyScreenImage(){
-        Rectangle rectangle = new Rectangle(GUtil.SCREEN_dimension);
-        BufferedImage bufferedImage = robot.createScreenCapture(rectangle);
-        ImageSelection imageSelection = new ImageSelection(bufferedImage);
-        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        clipboard.setContents(imageSelection,null);
-        return bufferedImage;
-    }
-    // 指定播放目标动画
-    public void playTargetAnimation(String animationName,int time){
-        java.util.Timer timer = new java.util.Timer();
-        timer.schedule(new TimerTask(){
-            @Override
-            public void run(){
-                isTargetAnimationPlaying = true;
-                updateAnimationOnce(animationName);
-            }
-        },50); // 保留微小延迟确保调用
-        timer.schedule(new TimerTask(){
-            @Override
-            public void run(){
-                isTargetAnimationPlaying = false;
-                updateAnimationOnce(animationName);
-                timer.cancel();
-            }
-        },time+50);
-    }
-    // 增加好感
-    public void addAffectPoint(int affectPointNum){
-        if(playPetData.getAffectionLevel()<affectTopLevel){
-            playPetData.setAffectionPoints(playPetData.getAffectionPoints()+affectPointNum);
-            if(playPetData.getAffectionPoints()>affectLevelUp){
-                playPetData.setAffectionLevel(playPetData.getAffectionLevel()+1);
-                playPetData.setAffectionPoints(playPetData.getAffectionPoints()-affectLevelUp);
-            }
-        }
-        else{
-            playPetData.setAffectionLevel(affectTopLevel);
-            playPetData.setAffectionPoints(affectLevelUp);
-        }
-    }
-    // 减少好感
-    public void reduceAffectPoint(int affectPointNum){
-        if(playPetData.getAffectionLevel()>0){
-            playPetData.setAffectionPoints(playPetData.getAffectionLevel()-affectPointNum);
-            if(playPetData.getAffectionPoints()<=0){
-                playPetData.setAffectionLevel(playPetData.getAffectionLevel()-1);
-                int num = Math.abs(playPetData.getAffectionPoints());
-                playPetData.setAffectionPoints(affectLevelUp-num);
-            }
-        }
-        else{
-            playPetData.setAffectionLevel(0);
-            playPetData.setAffectionPoints(0);
-        }
-    }
+
     // === 实例化完成调用 ===
     // 初始化完成时执行
     public void ready(){
@@ -363,7 +223,28 @@ public class PetBase extends JPanel {
                 ZeroingResponseNum();
                 if(e.getButton()==MouseEvent.BUTTON1){
                     int num = e.getClickCount();
-                    if(num>=2){isFollow = !isFollow;}
+                    if(num>=2){
+                        // 等级过低概率不跟随
+                        if(!isFollow){
+                            double randomFollowNum = Math.random();
+                            if(
+                                playPetData.getAffectionLevel()<20
+                                &&
+                                randomFollowNum<0.75
+                            ){return;}
+                            else if(
+                                playPetData.getAffectionLevel()<40
+                                &&
+                                randomFollowNum<0.5
+                            ){return;}
+                            else if(
+                                playPetData.getAffectionLevel()<60
+                                &&
+                                randomFollowNum<0.25
+                            ){return;}
+                        }
+                        isFollow = !isFollow;
+                    }
                 }
             }
         });
@@ -407,22 +288,6 @@ public class PetBase extends JPanel {
             Point petPosition = this.getPetPosition();
             double distanse = GUtil.getDistanse2Point(mousePoint,petPosition);
             if(distanse>followDistanse){
-                // 等级过低概率不跟随
-                if(
-                    playPetData.getAffectionLevel()<20
-                    &&
-                    Math.random()<0.75
-                ){return;}
-                else if(
-                    playPetData.getAffectionLevel()<40
-                    &&
-                    Math.random()<0.5
-                ){return;}
-                else if(
-                    playPetData.getAffectionLevel()<60
-                    &&
-                    Math.random()<0.25
-                ){return;}
                 if(!isMoving){isMoving=true;}
                 gotoPoint(mousePoint);
                 playPetData.setFollowMouseDistance(playPetData.getFollowMouseDistance()+1);
@@ -434,16 +299,16 @@ public class PetBase extends JPanel {
     public void auto_playAnimations(){
         if(!isResting){
             if(!isTargetAnimationPlaying){
-                if(isPress){this.updateAnimationOnce("press");}
-                else if(isMoving || isAutoMoving){this.updateAnimationOnce("move");}
+                if(isPress){animationSprite.setAndPlayAnimation("press");}
+                else if(isMoving || isAutoMoving){animationSprite.setAndPlayAnimation("move");}
                 else if(isFocus){
-                    if(isTouching){this.updateAnimationOnce("touch");}
-                    else{this.updateAnimationOnce("focus");}
+                    if(isTouching){animationSprite.setAndPlayAnimation("touch");}
+                    else{animationSprite.setAndPlayAnimation("focus");}
                 }
-                else{this.updateAnimationOnce("default");}
+                else{animationSprite.setAndPlayAnimation("default");}
             }
         }
-        else{this.updateAnimationOnce("rest");}
+        else{animationSprite.setAndPlayAnimation("rest");}
     }
     // 执行自主移动
     public void auto_move(){
@@ -502,7 +367,10 @@ public class PetBase extends JPanel {
                     String[] messageBubbleList = petData.getMessageBubbleList();
                     String message = messageBubbleList[(int)Math.round(Math.random()*(messageBubbleList.length-1))];
                     PetMessageBubble messageBubble = new PetMessageBubble(message);
-                    Point bubblePos = new Point(getPetPosition().x-body.getSize().width/2,getPetPosition().y-body.getSize().height/2);
+                    Point bubblePos = new Point(
+                        getPetPosition().x-animationSprite.getSize().width/2,
+                        getPetPosition().y-animationSprite.getSize().height/2
+                    );
                     messageBubble.setLocation(bubblePos);
                     launcher.addItemToScreen(messageBubble);
                     messageBubble.revalidate();
@@ -530,5 +398,105 @@ public class PetBase extends JPanel {
         else{
             // ... 开心
         }
+    }
+
+    // 向目标点移动一次
+    public void gotoPoint(Point target) {
+        Point currentPos = this.getLocation();
+        int dx = target.x-currentPos.x;
+        int dy = target.y-currentPos.y;
+        double distance = Math.sqrt(dx*dx+dy*dy);
+        if(distance<=moveSpeed){this.setLocation(target);return;}
+        double directionX = dx/distance;
+        double directionY = dy/distance;
+        int nextX = currentPos.x+(int)(directionX*moveSpeed);
+        int nextY = currentPos.y+(int)(directionY*moveSpeed);
+        this.setLocation(new Point(nextX, nextY));
+        if(dx>0&&!animationSprite.flip_h){animationSprite.flip_h=true;}
+        else if(dx<0&&animationSprite.flip_h){animationSprite.flip_h=false;}
+    }
+    // 保存桌宠游玩数据
+    public void savePetData(){
+        String jsonString = GsonUtil.bean2Json(playPetData);
+        GUtil.saveToFile(savePath,jsonString);
+    }
+    // 反应值置零
+    public void ZeroingResponseNum(){
+        touchNum = 0;
+        restNum = 0;
+        moveNum = 0;
+        talkNum = 0;
+        // emotionNum = 0; 情绪不中断
+        isResting = false;
+        isAutoMoving = false;
+        isTargetAnimationPlaying = false;
+    }
+    // 是否空闲
+    public boolean isFree(){
+        return
+        isFocus || isFollow || isMoving || isPress || isResting || isTargetAnimationPlaying
+        ?false:true;
+    }
+    // 命令休息
+    public void doRest(){
+        ZeroingResponseNum();
+        isResting = true;
+    }
+    // 屏幕截图
+    public BufferedImage copyScreenImage(){
+        Rectangle rectangle = new Rectangle(GUtil.SCREEN_dimension);
+        BufferedImage bufferedImage = robot.createScreenCapture(rectangle);
+        ImageSelection imageSelection = new ImageSelection(bufferedImage);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(imageSelection,null);
+        return bufferedImage;
+    }
+    // 增加好感
+    public void addAffectPoint(int affectPointNum){
+        if(playPetData.getAffectionLevel()<affectTopLevel){
+            playPetData.setAffectionPoints(playPetData.getAffectionPoints()+affectPointNum);
+            if(playPetData.getAffectionPoints()>affectLevelUp){
+                playPetData.setAffectionLevel(playPetData.getAffectionLevel()+1);
+                playPetData.setAffectionPoints(playPetData.getAffectionPoints()-affectLevelUp);
+            }
+        }
+        else{
+            playPetData.setAffectionLevel(affectTopLevel);
+            playPetData.setAffectionPoints(affectLevelUp);
+        }
+    }
+    // 减少好感
+    public void reduceAffectPoint(int affectPointNum){
+        if(playPetData.getAffectionLevel()>0){
+            playPetData.setAffectionPoints(playPetData.getAffectionLevel()-affectPointNum);
+            if(playPetData.getAffectionPoints()<=0){
+                playPetData.setAffectionLevel(playPetData.getAffectionLevel()-1);
+                int num = Math.abs(playPetData.getAffectionPoints());
+                playPetData.setAffectionPoints(affectLevelUp-num);
+            }
+        }
+        else{
+            playPetData.setAffectionLevel(0);
+            playPetData.setAffectionPoints(0);
+        }
+    }
+    // 指定播放目标动画
+    public void playTargetAnimation(String animationName,int time){
+        java.util.Timer timer = new java.util.Timer();
+        timer.schedule(new TimerTask(){
+            @Override
+            public void run(){
+                isTargetAnimationPlaying = true;
+                animationSprite.setAndPlayAnimation(animationName);
+            }
+        },50); // 保留微小延迟确保调用
+        timer.schedule(new TimerTask(){
+            @Override
+            public void run(){
+                isTargetAnimationPlaying = false;
+                animationSprite.setAndPlayAnimation(animationName);
+                timer.cancel();
+            }
+        },time+50);
     }
 }
