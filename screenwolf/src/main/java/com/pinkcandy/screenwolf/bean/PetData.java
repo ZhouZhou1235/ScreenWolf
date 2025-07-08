@@ -7,6 +7,8 @@ public class PetData {
     private String info;
     private String[] animationNames;
     private String[] messageBubbleList;
+    private String iconPath;
+    private String mainClass;
     public String getId() {
         return id;
     }
@@ -22,6 +24,12 @@ public class PetData {
     public String[] getMessageBubbleList() {
         return messageBubbleList;
     }
+    public String getIconPath() {
+        return iconPath;
+    }
+    public String getMainClass() {
+        return mainClass;
+    }
     public void setId(String id) {
         this.id = id;
     }
@@ -36,5 +44,11 @@ public class PetData {
     }
     public void setMessageBubbleList(String[] messageBubbleList) {
         this.messageBubbleList = messageBubbleList;
+    }
+    public void setIconPath(String iconPath) {
+        this.iconPath = iconPath;
+    }
+    public void setMainClass(String mainClass) {
+        this.mainClass = mainClass;
     }
 }

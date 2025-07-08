@@ -17,6 +17,9 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -74,32 +77,70 @@ public class PetBase extends JPanel {
     // 计时器
     private Timer updateTimer; // 高速循环计时器
     private Timer lowUpdateTimer; // 低速循环计时器
+
+    protected ClassLoader classLoader; // 添加这个字段
+
     public PetBase(Launcher theLauncher){
         this.launcher = theLauncher;
         initPet();
     }
-    // 空参构造 - 仅测试
-    public PetBase(){initPet();}
+
+    // 添加设置ClassLoader的方法
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
+
     // 初始化桌宠
     public void initPet(){
+
+        // 确保classLoader不为null
+        if (classLoader == null) {
+            classLoader = this.getClass().getClassLoader();
+        }
+
         // 基本属性
         Dimension size = GUtil.DEFAULT_bodySize;
         this.id = this.getClass().getSimpleName();
         this.savePath = GUtil.GAME_dataPath+id+".json";
-        // 宠物数据
-        String jsonpetdata = GUtil.readFile(GUtil.GAME_petsPath + id + "/pet_data.json");
-        this.petData = GsonUtil.json2Bean(jsonpetdata,PetData.class);
-        // 动画
-        String[] animationNames = petData.getAnimationNames();
+        // // 宠物数据
+        // String jsonpetdata = GUtil.readFile(GUtil.GAME_petsPath + id + "/pet_data.json");
+        // this.petData = GsonUtil.json2Bean(jsonpetdata,PetData.class);
+        // // 动画
+        // String[] animationNames = petData.getAnimationNames();
+        // HashMap<String, String> imageFrameHashmap = new HashMap<>();
+        // for(String animationName:animationNames){
+        //     imageFrameHashmap.put(
+        //         animationName,
+        //         GUtil.GAME_petsPath+id+"/frames/"+animationName+"/"
+        //     );
+        // }
+        // this.animations = imageFrameHashmap;
+        // this.body = new AnimationSprite(size,animations);
+        
+        // 修改这里 - 从类路径加载pet_data.json
+        try (InputStream is = classLoader.getResourceAsStream("META-INF/pet_data.json")) {
+            if (is != null) {
+                String jsonpetdata = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+                this.petData = GsonUtil.json2Bean(jsonpetdata, PetData.class);
+            } else {
+                throw new RuntimeException("Pet data file not found in JAR");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load pet data", e);
+        }
+        
+        // 修改动画资源加载方式
         HashMap<String, String> imageFrameHashmap = new HashMap<>();
-        for(String animationName:animationNames){
+        for (String animationName : petData.getAnimationNames()) {
+            // 使用资源路径而不是文件系统路径
             imageFrameHashmap.put(
                 animationName,
-                GUtil.GAME_petsPath+id+"/frames/"+animationName+"/"
+                "assets/animations/" + animationName + "/"
             );
         }
         this.animations = imageFrameHashmap;
-        this.body = new AnimationSprite(size,animations);
+        this.body = new AnimationSprite(size, animations, this.getClass().getClassLoader());
+        
         // 定时器
         this.updateTimer = new Timer(GUtil.GAME_updateTime,e->autoLoop());
         this.updateTimer.start();
@@ -142,17 +183,15 @@ public class PetBase extends JPanel {
         if(animations.get(animationName)==null){return;}
         body.setAnimation(animationName);
     }
-    // 载入新的动画数据
-    public void setAnimations(Map<String,String> animations){
-        this.animations = animations;
-        this.body = new AnimationSprite(this.getSize(),animations);
-    }
     // 获取播放的动画名称
-    public String getAnimationName(){return this.body.animationName;}
+    public String getAnimationName(){return this.body.currentAnimation;}
     // 改变一次到指定动画
     public void updateAnimationOnce(String animationName){
         String theAnimationName = this.getAnimationName();
-        if(theAnimationName!=animationName){this.updateBodyAnimation(animationName);}
+        if(theAnimationName!=animationName){
+            System.out.println(animationName);
+            this.updateBodyAnimation(animationName);
+        }
     }
     // 获取宠物中心位置
     public Point getPetPosition(){
@@ -174,8 +213,8 @@ public class PetBase extends JPanel {
         int nextX = currentPos.x+(int)(directionX*moveSpeed);
         int nextY = currentPos.y+(int)(directionY*moveSpeed);
         this.setLocation(new Point(nextX, nextY));
-        if(dx>0&&!body.filp_h){body.filp_h=true;}
-        else if(dx<0&&body.filp_h){body.filp_h=false;}
+        if(dx>0&&!body.flip_h){body.flip_h=true;}
+        else if(dx<0&&body.flip_h){body.flip_h=false;}
     }
     // 保存桌宠游玩数据
     public void savePetData(){
