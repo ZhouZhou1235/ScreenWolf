@@ -5,6 +5,7 @@
 build
 target
 *.class
+*-bin
 
 # 游戏产生
 data

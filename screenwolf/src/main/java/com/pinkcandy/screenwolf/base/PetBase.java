@@ -185,7 +185,7 @@ public class PetBase extends JPanel {
             @Override
             public void mousePressed(MouseEvent e){
                 super.mousePressed(e);
-                ZeroingResponseNum();
+                zeroingResponseNum();
                 if(e.getButton()==MouseEvent.BUTTON1){
                     isPress = true;
                     pressPetPoint = e.getPoint();
@@ -212,7 +212,7 @@ public class PetBase extends JPanel {
             @Override
             public void mouseReleased(MouseEvent e){
                 super.mouseReleased(e);
-                ZeroingResponseNum();
+                zeroingResponseNum();
                 if(e.getButton()==MouseEvent.BUTTON1){
                     isPress = false;
                 }
@@ -220,7 +220,7 @@ public class PetBase extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e){
                 super.mouseClicked(e);
-                ZeroingResponseNum();
+                zeroingResponseNum();
                 if(e.getButton()==MouseEvent.BUTTON1){
                     int num = e.getClickCount();
                     if(num>=2){
@@ -252,7 +252,7 @@ public class PetBase extends JPanel {
             @Override
             public void mouseDragged(MouseEvent e){
                 super.mouseDragged(e);
-                ZeroingResponseNum();
+                zeroingResponseNum();
                 if(isPress){
                     Point petPosition = petBase.getLocation();
                     int x = petPosition.x+e.getX()-pressPetPoint.x;
@@ -421,7 +421,7 @@ public class PetBase extends JPanel {
         GUtil.saveToFile(savePath,jsonString);
     }
     // 反应值置零
-    public void ZeroingResponseNum(){
+    public void zeroingResponseNum(){
         touchNum = 0;
         restNum = 0;
         moveNum = 0;
@@ -439,7 +439,7 @@ public class PetBase extends JPanel {
     }
     // 命令休息
     public void doRest(){
-        ZeroingResponseNum();
+        zeroingResponseNum();
         isResting = true;
     }
     // 屏幕截图

@@ -12,8 +12,8 @@
     <artifactId>wolf-pet</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
-    <name>屏幕有狼 桌宠示例</name>
-    <description>一个基本的模板</description>
+    <name>ScreenWolf Pet Demo</name>
+    <description>ScreenWolf Pet Basic Template</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
