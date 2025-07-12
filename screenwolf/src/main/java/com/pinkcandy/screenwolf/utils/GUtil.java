@@ -53,7 +53,9 @@ public class GUtil {
     // 默认窗口大小
     static public Dimension DEFAULT_windowSize = new Dimension(SCREEN_dimension.width/2,SCREEN_dimension.height/2);
     // 默认字体大小
-    static public int DEFAULT_textSize = SCREEN_dimension.width/54;
+    static public int DEFAULT_textSize = SCREEN_dimension.width/90;
+    // 默认字体
+    static public Font DEFAULT_font = new Font(Font.DIALOG,Font.PLAIN,DEFAULT_textSize);
     // 默认宠物大小
     static public Dimension DEFAULT_bodySize = new Dimension((int)(SCREEN_dimension.getWidth()/10),(int)(SCREEN_dimension.getWidth()/10));
     // 扫描文件夹内容

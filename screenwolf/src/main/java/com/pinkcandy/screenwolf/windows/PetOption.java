@@ -1,4 +1,4 @@
-package com.pinkcandy.screenwolf;
+package com.pinkcandy.screenwolf.windows;
 
 import java.awt.Component;
 import java.awt.Dimension;

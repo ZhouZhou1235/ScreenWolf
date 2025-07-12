@@ -1,18 +1,18 @@
-package com.pinkcandy.screenwolf;
+package com.pinkcandy.screenwolf.windows;
 
 import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
+import com.pinkcandy.screenwolf.base.WindowBase;
 import com.pinkcandy.screenwolf.utils.GUtil;
 
 // 屏幕透明窗体
-public class TransparentScreen extends JFrame {
+public class TransparentScreen extends WindowBase {
     private Timer renderTimer; // 渲染时钟
     public TransparentScreen(Dimension size){
         this.setTitle("ScreenWolf TransparentScreen");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setBounds(0,0,size.width,size.height);
         this.setAlwaysOnTop(true);
         this.setLocationRelativeTo(null);

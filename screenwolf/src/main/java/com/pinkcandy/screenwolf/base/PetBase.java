@@ -26,13 +26,13 @@ import javax.swing.Timer;
 import com.pinkcandy.Launcher;
 import com.pinkcandy.screenwolf.AnimationSprite;
 import com.pinkcandy.screenwolf.PetMessageBubble;
-import com.pinkcandy.screenwolf.PetOption;
 import com.pinkcandy.screenwolf.bean.PetData;
 import com.pinkcandy.screenwolf.bean.PlayPetData;
 import com.pinkcandy.screenwolf.utils.GUtil;
 import com.pinkcandy.screenwolf.utils.GsonUtil;
 import com.pinkcandy.screenwolf.utils.ImageSelection;
 import com.pinkcandy.screenwolf.utils.JarFileUtil;
+import com.pinkcandy.screenwolf.windows.PetOption;
 
 // 桌面宠物
 public class PetBase extends JPanel {
