@@ -10,5 +10,13 @@ target
 # 游戏产生
 data
 
-#外部资产
+#外部资源
 /download
+
+# 工具
+/tools/MavenPetPackager/jdk
+/tools/MavenPetPackager/lib
+/tools/MavenPetPackager/projects
+
+#临时文件
+tmp

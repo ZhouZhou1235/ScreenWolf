@@ -10,25 +10,24 @@ import java.util.function.Consumer;
 
 // 文件导入器
 public class FileImporter extends WindowBase {
-    private Consumer<byte[]> fileCallback; // 回调事件
-    private JPanel mainPanel = new JPanel();
+    public Consumer<byte[]> fileCallback; // 回调事件
+    public JPanel mainPanel = new JPanel();
     public FileImporter(Consumer<byte[]> callback){
         super("文件导入器",new Dimension(
-            (int)(GUtil.DEFAULT_windowSize.width/2),
-            GUtil.DEFAULT_windowSize.height
+            (int)(GUtil.DEFAULT_windowSize.width*0.75),
+            (int)(GUtil.DEFAULT_windowSize.height*0.75)
         ));
         this.fileCallback = callback;
         initUI();
-        this.setVisible(true);
     }
-    private void initUI(){
+    public void initUI(){
         JButton importButton = new JButton("导入文件");
         importButton.addActionListener(e->importFile());
         mainPanel.add(importButton);
         this.add(mainPanel);
     }
     // 导入文件
-    private void importFile(){
+    public void importFile(){
         JFileChooser chooser = new JFileChooser();
         chooser.setDialogTitle("选择文件");
         if(chooser.showOpenDialog(this)==JFileChooser.APPROVE_OPTION){

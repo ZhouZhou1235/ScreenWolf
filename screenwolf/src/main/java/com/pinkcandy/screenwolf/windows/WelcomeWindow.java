@@ -23,7 +23,6 @@ public class WelcomeWindow extends WindowBase {
     private JPanel welcomePanel = new JPanel();
     private JButton playButton,clearButton,reloadButton,exitButton,infoButton,createorButton,addPetButton;
     private Launcher launcher;
-    
     public WelcomeWindow(Launcher launcher){
         super("ScreenWolf",GUtil.DEFAULT_windowSize);
         this.launcher = launcher;
@@ -85,11 +84,7 @@ public class WelcomeWindow extends WindowBase {
         exitButton.addActionListener(e->System.exit(0));
         infoButton.addActionListener(e->launcher.infoWindow.setVisible(true));
         createorButton.addActionListener(e->launcher.petCreateorWindow.setVisible(true));
-        addPetButton.addActionListener(e->{
-            // TODO 添加宠物
-            // new FileImporter(null);
-        });
-        
+        addPetButton.addActionListener(e->launcher.jarFileImporterWindow.setVisible(true));
         buttonPanel.add(playButton);
         buttonPanel.add(clearButton);
         buttonPanel.add(reloadButton);

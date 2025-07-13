@@ -7,7 +7,8 @@ import com.pinkcandy.screenwolf.GameTray;
 import com.pinkcandy.screenwolf.base.ItemBase;
 import com.pinkcandy.screenwolf.base.PetBase;
 import com.pinkcandy.screenwolf.utils.GUtil;
-import com.pinkcandy.screenwolf.windows.InfoWindow;
+import com.pinkcandy.screenwolf.windows.AboutWindow;
+import com.pinkcandy.screenwolf.windows.JarFileImporterWindow;
 import com.pinkcandy.screenwolf.windows.PetCreateorWindow;
 import com.pinkcandy.screenwolf.windows.TransparentScreen;
 import com.pinkcandy.screenwolf.windows.WelcomeWindow;
@@ -17,8 +18,9 @@ public class Launcher {
     private TransparentScreen screen;
     private ArrayList<PetBase> petList;
     public WelcomeWindow welcomeWindow;
-    public InfoWindow infoWindow;
+    public AboutWindow infoWindow;
     public PetCreateorWindow petCreateorWindow;
+    public JarFileImporterWindow jarFileImporterWindow;
     public GameTray gameTray;
     public Launcher(){
         GUtil.initFileDirs();
@@ -26,14 +28,14 @@ public class Launcher {
         this.screen = new TransparentScreen(GUtil.SCREEN_dimension);
         this.petList = new ArrayList<>();
         this.gameTray = new GameTray(this);
-        this.screen.setVisible(false);
         this.welcomeWindow = new WelcomeWindow(this);
-        this.infoWindow = new InfoWindow();
-        this.infoWindow.setVisible(false);
+        this.infoWindow = new AboutWindow();
         this.petCreateorWindow = new PetCreateorWindow();
-        this.petCreateorWindow.setVisible(false);
+        this.jarFileImporterWindow = new JarFileImporterWindow(
+            null,
+            GUtil.GAME_petsPath
+        );
     };
-
     // === 启动器公开方法 ===
     // 开始游戏
     public void playGame(){
@@ -43,6 +45,7 @@ public class Launcher {
         welcomeWindow.setVisible(false);
         infoWindow.setVisible(false);
         petCreateorWindow.setVisible(false);
+        jarFileImporterWindow.setVisible(false);
     }
     // 结束游戏
     public void stopGame(){
@@ -56,7 +59,13 @@ public class Launcher {
     public void reloadLauncher(){
         petList.clear();
         welcomeWindow.dispose();welcomeWindow=new WelcomeWindow(this);
-        infoWindow.dispose();infoWindow=new InfoWindow();infoWindow.setVisible(false);
+        infoWindow.dispose();infoWindow=new AboutWindow();
+        petCreateorWindow.dispose();petCreateorWindow=new PetCreateorWindow();
+        jarFileImporterWindow.dispose();
+        jarFileImporterWindow = new JarFileImporterWindow(
+            null,
+            GUtil.GAME_petsPath
+        );
     }
     // 获取宠物列表的副本
     public ArrayList<PetBase> getPetListCopy(){return new ArrayList<>(petList);}
