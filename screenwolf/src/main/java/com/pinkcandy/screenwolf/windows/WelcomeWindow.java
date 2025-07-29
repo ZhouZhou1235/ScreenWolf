@@ -40,6 +40,10 @@ public class WelcomeWindow extends WindowBase {
         ));
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setIconImage(ResourceReader.getResourceAsImageIcon("images/icon.png").getImage());
+        this.setSize(
+            (int)(GUtil.SCREEN_dimension.width/1.5),
+            (int)(GUtil.SCREEN_dimension.height/1.5)
+        );
         GUtil.setWindowCenter(this);
         loadBasic();
         loadPetsFromJars();
@@ -50,7 +54,7 @@ public class WelcomeWindow extends WindowBase {
     private void loadBasic(){
         // 标题
         ImageIcon logo = ResourceReader.getResourceAsImageIcon("images/logo.png");
-        int logoWidth = (int)(GUtil.DEFAULT_windowSize.width*0.6);
+        int logoWidth = (int)(GUtil.DEFAULT_windowSize.width*0.5);
         logo = GUtil.scaleImageIcon(logo, logoWidth);
         JLabel titleLabel = new JLabel(logo,SwingConstants.CENTER);
         titleLabel.setBorder(BorderFactory.createEmptyBorder(
@@ -82,14 +86,22 @@ public class WelcomeWindow extends WindowBase {
         reloadButton.addActionListener(e->launcher.reloadLauncher());
         exitButton.addActionListener(e->System.exit(0));
         infoButton.addActionListener(e->launcher.infoWindow.setVisible(true));
-        addPetButton.addActionListener(e->launcher.jarFileImporterWindow.setVisible(true));
+        addPetButton.addActionListener(e->{
+            int copiedCount = GUtil.copyFilesWithDialog(
+                this, 
+                "选择宠物JAR文件", 
+                "JAR文件", 
+                "jar",
+                GUtil.GAME_petsPath
+            );
+            if(copiedCount>0){launcher.reloadLauncher();}
+        });
         buttonPanel.add(playButton);
         buttonPanel.add(clearButton);
         buttonPanel.add(reloadButton);
         buttonPanel.add(exitButton);
         buttonPanel.add(infoButton);
         buttonPanel.add(addPetButton);
-        
         // 底部操作和版本
         GameInfoData gameInfoData = GsonUtil.json2Bean(ResourceReader.readResourceAsString("screenwolf.json"),GameInfoData.class);
         JLabel versionLabel = new JLabel("version "+gameInfoData.getVersion()+" by "+gameInfoData.getOwner(), SwingConstants.CENTER);

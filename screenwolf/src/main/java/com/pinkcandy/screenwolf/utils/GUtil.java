@@ -1,5 +1,6 @@
 package com.pinkcandy.screenwolf.utils;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -23,12 +24,15 @@ import java.util.Arrays;
 import java.util.Enumeration;
 
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import javax.swing.UIManager;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.FontUIResource;
 
-// 全局通用类
+// 全局通用工具
 public class GUtil {
     // 最大帧长度
     static public int GAME_maxFrameLength = 1024;
@@ -189,5 +193,65 @@ public class GUtil {
             .filter(file -> file.getName().toLowerCase().endsWith(extension))
             .map(File::getName)
             .toArray(String[]::new);
+    }
+    // 选择文件复制事件
+    public static int copyFilesWithDialog(
+        Component parent,String dialogTitle, 
+        String fileTypeDesc,
+        String fileExtension, 
+        String destDir
+    ){
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle(dialogTitle);
+        fileChooser.setMultiSelectionEnabled(true);
+        fileChooser.setFileFilter(new FileNameExtensionFilter(
+            String.format("%s (*.%s)",fileTypeDesc,fileExtension), 
+            fileExtension
+        ));
+        int returnValue = fileChooser.showOpenDialog(parent);
+        if (returnValue != JFileChooser.APPROVE_OPTION){
+            return 0;
+        }
+        File[] selectedFiles = fileChooser.getSelectedFiles();
+        int copiedCount = 0;
+        for (File file : selectedFiles) {
+            try {
+                File destFile = new File(destDir + file.getName());
+                if (destFile.exists()) {
+                    int overwrite = JOptionPane.showConfirmDialog(
+                        parent,
+                        String.format("文件 %s 已存在，是否覆盖？", file.getName()),
+                        "确认覆盖",
+                        JOptionPane.YES_NO_OPTION
+                    );
+                    if (overwrite != JOptionPane.YES_OPTION) {
+                        continue;
+                    }
+                }
+                java.nio.file.Files.copy(
+                    file.toPath(), 
+                    destFile.toPath(), 
+                    java.nio.file.StandardCopyOption.REPLACE_EXISTING
+                );
+                copiedCount++;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(
+                    parent,
+                    String.format("复制文件 %s 失败: %s", file.getName(), ex.getMessage()),
+                    "错误",
+                    JOptionPane.ERROR_MESSAGE
+                );
+            }
+        }
+        if (copiedCount > 0) {
+            JOptionPane.showMessageDialog(
+                parent,
+                String.format("成功添加 %d 个文件", copiedCount),
+                "操作完成",
+                JOptionPane.INFORMATION_MESSAGE
+            );
+        }
+        return copiedCount;
     }
 }
