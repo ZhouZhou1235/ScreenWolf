@@ -17,6 +17,7 @@ import com.pinkcandy.screenwolf.base.WindowBase;
 import com.pinkcandy.screenwolf.utils.GUtil;
 
 // 宠物选项窗口
+// TODO 完善选项窗口 或 替换为 ItemBase
 public class PetOption extends WindowBase {
     private PetBase pet;
     private JPanel mainPanel;

@@ -14,6 +14,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.function.Consumer;
 
 // JAR文件导入器窗口
+// TODO 考虑直接使用 JFileChooser 不用包装为类
 public class JarFileImporterWindow extends FileImporter {
     private Path targetDirectory; // 目标目录路径
     public JarFileImporterWindow(Consumer<byte[]> callback, String targetDirectory){

@@ -21,7 +21,7 @@ import com.pinkcandy.screenwolf.utils.JarFileUtil;
 public class WelcomeWindow extends WindowBase {
     private ArrayList<JButton> petButtonsList = new ArrayList<>();
     private JPanel welcomePanel = new JPanel();
-    private JButton playButton,clearButton,reloadButton,exitButton,infoButton,createorButton,addPetButton;
+    private JButton playButton,clearButton,reloadButton,exitButton,infoButton,addPetButton;
     private Launcher launcher;
     public WelcomeWindow(Launcher launcher){
         super("ScreenWolf",GUtil.DEFAULT_windowSize);
@@ -71,7 +71,6 @@ public class WelcomeWindow extends WindowBase {
         reloadButton = createIconButton("images/button_reload.png","重新加载",buttonSize);
         exitButton = createIconButton("images/button_exit.png","退出程序",buttonSize);
         infoButton = createIconButton("images/button_info.png","游戏介绍",buttonSize);
-        createorButton = createIconButton("images/button_creator.png","宠物制作器",buttonSize);
         addPetButton = createIconButton("images/button_add_pet.png","添加宠物",buttonSize);
 
         clearButton.setEnabled(false);
@@ -83,14 +82,12 @@ public class WelcomeWindow extends WindowBase {
         reloadButton.addActionListener(e->launcher.reloadLauncher());
         exitButton.addActionListener(e->System.exit(0));
         infoButton.addActionListener(e->launcher.infoWindow.setVisible(true));
-        createorButton.addActionListener(e->launcher.petCreateorWindow.setVisible(true));
         addPetButton.addActionListener(e->launcher.jarFileImporterWindow.setVisible(true));
         buttonPanel.add(playButton);
         buttonPanel.add(clearButton);
         buttonPanel.add(reloadButton);
         buttonPanel.add(exitButton);
         buttonPanel.add(infoButton);
-        buttonPanel.add(createorButton);
         buttonPanel.add(addPetButton);
         
         // 底部操作和版本
@@ -253,7 +250,6 @@ public class WelcomeWindow extends WindowBase {
         clearButton.setEnabled(true);
         exitButton.setEnabled(false);
         reloadButton.setEnabled(false);
-        createorButton.setEnabled(false);
         addPetButton.setEnabled(false);
     }
     // 更新窗口为结束游戏状态
@@ -263,7 +259,6 @@ public class WelcomeWindow extends WindowBase {
         clearButton.setEnabled(false);
         exitButton.setEnabled(true);
         reloadButton.setEnabled(true);
-        createorButton.setEnabled(true);
         addPetButton.setEnabled(true);
     }
 }

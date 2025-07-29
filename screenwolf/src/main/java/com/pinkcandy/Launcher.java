@@ -9,7 +9,6 @@ import com.pinkcandy.screenwolf.base.PetBase;
 import com.pinkcandy.screenwolf.utils.GUtil;
 import com.pinkcandy.screenwolf.windows.AboutWindow;
 import com.pinkcandy.screenwolf.windows.JarFileImporterWindow;
-import com.pinkcandy.screenwolf.windows.PetCreateorWindow;
 import com.pinkcandy.screenwolf.windows.TransparentScreen;
 import com.pinkcandy.screenwolf.windows.WelcomeWindow;
 
@@ -19,7 +18,6 @@ public class Launcher {
     private ArrayList<PetBase> petList;
     public WelcomeWindow welcomeWindow;
     public AboutWindow infoWindow;
-    public PetCreateorWindow petCreateorWindow;
     public JarFileImporterWindow jarFileImporterWindow;
     public GameTray gameTray;
     public Launcher(){
@@ -30,7 +28,6 @@ public class Launcher {
         this.gameTray = new GameTray(this);
         this.welcomeWindow = new WelcomeWindow(this);
         this.infoWindow = new AboutWindow();
-        this.petCreateorWindow = new PetCreateorWindow();
         this.jarFileImporterWindow = new JarFileImporterWindow(
             null,
             GUtil.GAME_petsPath
@@ -44,7 +41,6 @@ public class Launcher {
         welcomeWindow.updateWindowToPlayState();
         welcomeWindow.setVisible(false);
         infoWindow.setVisible(false);
-        petCreateorWindow.setVisible(false);
         jarFileImporterWindow.setVisible(false);
     }
     // 结束游戏
@@ -60,7 +56,6 @@ public class Launcher {
         petList.clear();
         welcomeWindow.dispose();welcomeWindow=new WelcomeWindow(this);
         infoWindow.dispose();infoWindow=new AboutWindow();
-        petCreateorWindow.dispose();petCreateorWindow=new PetCreateorWindow();
         jarFileImporterWindow.dispose();
         jarFileImporterWindow = new JarFileImporterWindow(
             null,

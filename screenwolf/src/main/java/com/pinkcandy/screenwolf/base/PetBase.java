@@ -35,6 +35,7 @@ import com.pinkcandy.screenwolf.utils.JarFileUtil;
 import com.pinkcandy.screenwolf.windows.PetOption;
 
 // 桌面宠物
+// TODO 检查方法以及默认行为的规范
 public class PetBase extends JPanel {
     // === 组成 ===
     protected AnimationSprite animationSprite; // 动画精灵
@@ -360,21 +361,24 @@ public class PetBase extends JPanel {
     }
     // 说话
     public void slowAuto_talk(){
+        // TODO 修改消息气泡内容
         if(isFree()){
             if(talkNum<talkThreshold){talkNum++;}
             else{
                 if(launcher!=null){
-                    String[] messageBubbleList = petData.getMessageBubbleList();
-                    String message = messageBubbleList[(int)Math.round(Math.random()*(messageBubbleList.length-1))];
-                    PetMessageBubble messageBubble = new PetMessageBubble(message);
-                    Point bubblePos = new Point(
-                        getPetPosition().x-animationSprite.getSize().width/2,
-                        getPetPosition().y-animationSprite.getSize().height/2
-                    );
-                    messageBubble.setLocation(bubblePos);
-                    launcher.addItemToScreen(messageBubble);
-                    messageBubble.revalidate();
-                    messageBubble.repaint();
+                    String[] messageBubbleList = playPetData.getMessageBubbleList();
+                    if(messageBubbleList.length>0){
+                        String message = messageBubbleList[(int)Math.round(Math.random()*(messageBubbleList.length-1))];
+                        PetMessageBubble messageBubble = new PetMessageBubble(message);
+                        Point bubblePos = new Point(
+                            getPetPosition().x-animationSprite.getSize().width/2,
+                            getPetPosition().y-animationSprite.getSize().height/2
+                        );
+                        messageBubble.setLocation(bubblePos);
+                        launcher.addItemToScreen(messageBubble);
+                        messageBubble.revalidate();
+                        messageBubble.repaint();
+                    }
                 }
                 talkNum = 0;
             }

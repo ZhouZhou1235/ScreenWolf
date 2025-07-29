@@ -9,6 +9,7 @@ import com.pinkcandy.screenwolf.utils.GsonUtil;
 import com.pinkcandy.screenwolf.utils.ResourceReader;
 
 // 关于
+// TODO 游戏介绍窗口
 public class AboutWindow extends WindowBase {
     public AboutWindow(){
         super("Info",GUtil.DEFAULT_windowSize);

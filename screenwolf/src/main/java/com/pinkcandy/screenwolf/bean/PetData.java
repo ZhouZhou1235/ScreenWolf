@@ -6,7 +6,6 @@ public class PetData {
     private String info;
     private String jarName;
     private String mainClass;
-    private String[] messageBubbleList;
     public String getName() {
         return name;
     }
@@ -19,9 +18,6 @@ public class PetData {
     public String getMainClass() {
         return mainClass;
     }
-    public String[] getMessageBubbleList() {
-        return messageBubbleList;
-    }
     public void setName(String name) {
         this.name = name;
     }
@@ -33,8 +29,5 @@ public class PetData {
     }
     public void setMainClass(String mainClass) {
         this.mainClass = mainClass;
-    }
-    public void setMessageBubbleList(String[] messageBubbleList) {
-        this.messageBubbleList = messageBubbleList;
     }
 }
