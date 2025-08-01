@@ -36,12 +36,12 @@ import com.pinkcandy.screenwolf.windows.PetOption;
 
 // 桌面宠物
 // TODO 检查方法以及默认行为的规范
+// TODO 完善好感系统的运用
 public class PetBase extends JPanel {
     // === 组成 ===
-    protected AnimationSprite animationSprite; // 动画精灵
-    protected PetOption petOption; // 宠物选项窗口
     protected Robot robot; // 自动机器
     protected Launcher launcher; // 启动器的引用
+    public AnimationSprite animationSprite; // 动画精灵
     // === 数值 ===
     protected int followDistanse = (int)GUtil.DEFAULT_bodySize.getWidth(); // 跟随距离
     protected int moveSpeed = (int)GUtil.DEFAULT_bodySize.getWidth()/10; // 移动速度
@@ -62,7 +62,7 @@ public class PetBase extends JPanel {
     protected int restThreshold = 60*10; // 休息阈值
     protected int moveThreshold = 30; // 移动阈值
     protected int talkThreshold = 60*2; // 说话阈值
-    protected int affectLevelUp = 100; // 好感升级所需值
+    public int affectLevelUp = 100; // 好感升级所需值
     protected int affectTopLevel = 100; // 好感最高等级
     protected int emotionThreshold = 30; // 情绪表达阈值
     // === 状态 ===
@@ -118,11 +118,6 @@ public class PetBase extends JPanel {
         this.updateTimer.start();
         this.lowUpdateTimer = new Timer(GUtil.GAME_slowUpdateTime,e->slowAutoLoop());
         this.lowUpdateTimer.start();        
-        // 宠物选项
-        this.petOption = new PetOption(
-            this,
-            new Dimension(size.width*2,size.width*2)
-        );
         // 自动机器
         try{this.robot = new Robot();}
         catch(AWTException e){e.printStackTrace();}
@@ -136,7 +131,6 @@ public class PetBase extends JPanel {
     // 释放宠物对象
     public void dispose(){
         savePetData();
-        this.petOption.setVisible(false);
         this.animationSprite.stopAnimation();
         this.updateTimer.stop();
         this.lowUpdateTimer.stop();
@@ -196,8 +190,7 @@ public class PetBase extends JPanel {
                     copyScreenImage();
                 }
                 else if(e.getButton()==MouseEvent.BUTTON3){
-                    petOption.setLocation(petBase.getPetPosition());
-                    petOption.setVisible(true);
+                    PetOption.showForPet(petBase);
                 }
             }
             @Override

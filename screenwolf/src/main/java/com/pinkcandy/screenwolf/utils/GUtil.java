@@ -1,6 +1,7 @@
 package com.pinkcandy.screenwolf.utils;
 
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -23,7 +24,9 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Enumeration;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -253,5 +256,16 @@ public class GUtil {
             );
         }
         return copiedCount;
+    }
+    // 创建图标按钮
+    public static JButton createIconButton(String path,String tooltip,int size){
+        ImageIcon icon = ResourceReader.getResourceAsImageIcon(path);
+        icon = GUtil.scaleImageIcon(icon,size);
+        JButton button = new JButton(icon);
+        button.setToolTipText(tooltip);
+        button.setContentAreaFilled(false);
+        button.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return button;
     }
 }

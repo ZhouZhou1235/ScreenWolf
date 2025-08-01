@@ -70,12 +70,12 @@ public class WelcomeWindow extends WindowBase {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER,15,5));
         
         int buttonSize = GUtil.DEFAULT_textSize * 2;
-        playButton = createIconButton("images/button_play.png","开始游戏",buttonSize);
-        clearButton = createIconButton("images/button_stop.png","结束游戏",buttonSize);
-        reloadButton = createIconButton("images/button_reload.png","重新加载",buttonSize);
-        exitButton = createIconButton("images/button_exit.png","退出程序",buttonSize);
-        infoButton = createIconButton("images/button_info.png","游戏介绍",buttonSize);
-        addPetButton = createIconButton("images/button_add_pet.png","添加宠物",buttonSize);
+        playButton = GUtil.createIconButton("images/button_play.png","开始游戏",buttonSize);
+        clearButton = GUtil.createIconButton("images/button_stop.png","结束游戏",buttonSize);
+        reloadButton = GUtil.createIconButton("images/button_reload.png","重新加载",buttonSize);
+        exitButton = GUtil.createIconButton("images/button_exit.png","退出程序",buttonSize);
+        infoButton = GUtil.createIconButton("images/button_info.png","游戏介绍",buttonSize);
+        addPetButton = GUtil.createIconButton("images/button_add_pet.png","添加宠物",buttonSize);
 
         clearButton.setEnabled(false);
         playButton.addActionListener(e->{
@@ -111,17 +111,6 @@ public class WelcomeWindow extends WindowBase {
         bottomPanel.add(buttonPanel, BorderLayout.CENTER);
         bottomPanel.add(versionLabel, BorderLayout.SOUTH);
         welcomePanel.add(bottomPanel, BorderLayout.SOUTH);
-    }
-    // 创建图标按钮
-    private JButton createIconButton(String path,String tooltip,int size){
-        ImageIcon icon = ResourceReader.getResourceAsImageIcon(path);
-        icon = GUtil.scaleImageIcon(icon,size);
-        JButton button = new JButton(icon);
-        button.setToolTipText(tooltip);
-        button.setContentAreaFilled(false);
-        button.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        return button;
     }
     // 从JAR文件加载宠物
     private void loadPetsFromJars(){
@@ -185,7 +174,7 @@ public class WelcomeWindow extends WindowBase {
         topPanel.add(nameLabel,BorderLayout.WEST);
         
         // 选择按钮
-        JButton selectButton = createIconButton("images/button_import.png",petData.getName(),GUtil.DEFAULT_textSize*2);
+        JButton selectButton = GUtil.createIconButton("images/button_import.png",petData.getName(),GUtil.DEFAULT_textSize*2);
         selectButton.addActionListener(e->{
             try{
                 PetBase pet = loadPetFromJar(jarPath,petData.getMainClass(),launcher);
