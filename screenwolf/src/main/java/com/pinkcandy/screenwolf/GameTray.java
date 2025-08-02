@@ -43,6 +43,12 @@ public class GameTray {
                 launcher.welcomeWindow.setVisible(true);
             }
         });
+        addMenuItem("clear screen",new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                launcher.clearScreenItems();                
+            }
+        });
         // addSeparator();
         // ...
     }

@@ -58,7 +58,7 @@ public class Launcher {
     public void addItemToScreen(ItemBase item){screen.add(item);}
     // 清空屏幕组件（保留桌宠）
     public void clearScreenItems(){
-        Component[] items = screen.getComponents();
+        Component[] items = screen.getAllComponents();
         for(Component item:items){
             if(item instanceof PetBase){continue;}
             screen.remove(item);

@@ -8,6 +8,7 @@ import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
 import java.util.HashMap;
 import java.util.TimerTask;
 import java.awt.event.MouseAdapter;
@@ -56,15 +57,13 @@ public class PetBase extends JPanel {
     protected int touchNum = 0; // 抚摸值
     protected int restNum = 0; // 休息值
     protected int moveNum = 0; // 移动值
-    protected int talkNum = 0; // 说话值
     protected int emotionNum = 0; // 情绪表达值
     protected int touchThreshold = 5; // 抚摸阈值
     protected int restThreshold = 60*10; // 休息阈值
     protected int moveThreshold = 30; // 移动阈值
-    protected int talkThreshold = 60*2; // 说话阈值
-    public int affectLevelUp = 100; // 好感升级所需值
     protected int affectTopLevel = 100; // 好感最高等级
     protected int emotionThreshold = 30; // 情绪表达阈值
+    public int affectLevelUp = 100; // 好感升级所需值
     // === 状态 ===
     public boolean isFollow = false; // 跟随
     public boolean isFocus = false; // 聚焦
@@ -74,6 +73,7 @@ public class PetBase extends JPanel {
     public boolean isResting = false; // 正在休息
     public boolean isAutoMoving = false; // 正在自主移动
     public boolean isTargetAnimationPlaying = false; // 正在播放特定动画
+    public int showMessageIndex = 0; // 阅读消息气泡索引
     // 计时器
     protected Timer updateTimer; // 高速循环计时器
     protected Timer lowUpdateTimer; // 低速循环计时器
@@ -131,6 +131,7 @@ public class PetBase extends JPanel {
     // 释放宠物对象
     public void dispose(){
         savePetData();
+        this.setVisible(false);
         this.animationSprite.stopAnimation();
         this.updateTimer.stop();
         this.lowUpdateTimer.stop();
@@ -187,7 +188,7 @@ public class PetBase extends JPanel {
                     playPetData.setMouseClickNum(playPetData.getMouseClickNum()+1);
                 }
                 else if(e.getButton()==MouseEvent.BUTTON2){
-                    copyScreenImage();
+                    readMessageList();
                 }
                 else if(e.getButton()==MouseEvent.BUTTON3){
                     PetOption.showForPet(petBase);
@@ -323,7 +324,6 @@ public class PetBase extends JPanel {
         slowAuto_touch();
         slowAuto_rest();
         slowAuto_move();
-        slowAuto_talk();
         slowAuto_showEmotion();
     };
     // 抚摸反应
@@ -349,31 +349,6 @@ public class PetBase extends JPanel {
                 autoMoveTarget = GUtil.getRandomPointOnScreen();
                 isAutoMoving = true;
                 moveNum = 0;
-            }
-        }
-    }
-    // 说话
-    public void slowAuto_talk(){
-        // TODO 修改消息气泡内容
-        if(isFree()){
-            if(talkNum<talkThreshold){talkNum++;}
-            else{
-                if(launcher!=null){
-                    String[] messageBubbleList = playPetData.getMessageBubbleList();
-                    if(messageBubbleList.length>0){
-                        String message = messageBubbleList[(int)Math.round(Math.random()*(messageBubbleList.length-1))];
-                        PetMessageBubble messageBubble = new PetMessageBubble(message);
-                        Point bubblePos = new Point(
-                            getPetPosition().x-animationSprite.getSize().width/2,
-                            getPetPosition().y-animationSprite.getSize().height/2
-                        );
-                        messageBubble.setLocation(bubblePos);
-                        launcher.addItemToScreen(messageBubble);
-                        messageBubble.revalidate();
-                        messageBubble.repaint();
-                    }
-                }
-                talkNum = 0;
             }
         }
     }
@@ -422,7 +397,6 @@ public class PetBase extends JPanel {
         touchNum = 0;
         restNum = 0;
         moveNum = 0;
-        talkNum = 0;
         // emotionNum = 0; 情绪不中断
         isResting = false;
         isAutoMoving = false;
@@ -495,5 +469,36 @@ public class PetBase extends JPanel {
                 timer.cancel();
             }
         },time+50);
+    }
+    // 显示消息气泡
+    public void showMessage(String message){
+        PetMessageBubble bubble=new PetMessageBubble(message);
+        bubble.setLocation(this.getLocation());
+        launcher.addItemToScreen(bubble);
+        bubble.revalidate();
+        bubble.repaint();
+    }
+    // 从剪贴板获取文本然后保存
+    public void copyTextFromClipboard(){
+        try {
+            String text = Toolkit.getDefaultToolkit()
+                .getSystemClipboard()
+                .getData(DataFlavor.stringFlavor)
+                .toString();
+            if(text != null && !text.trim().isEmpty()){
+                String[] messages = GUtil.splitTextIntoMessages(text);
+                playPetData.setMessageBubbleList(messages);
+            }
+        }catch(Exception e){e.printStackTrace();}
+    }
+    // 阅读消息气泡列表
+    public void readMessageList(){
+        String[] messageList = playPetData.getMessageBubbleList();
+        if(messageList.length>0){
+            String message = messageList[showMessageIndex];
+            showMessageIndex++;
+            if(showMessageIndex>messageList.length-1){showMessageIndex=0;}
+            showMessage(message);
+        }
     }
 }
