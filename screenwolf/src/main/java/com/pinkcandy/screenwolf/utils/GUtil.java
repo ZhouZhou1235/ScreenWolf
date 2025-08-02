@@ -21,8 +21,10 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -267,5 +269,22 @@ public class GUtil {
         button.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
         return button;
+    }
+    // 长文本分割算法
+    public static String[] splitTextIntoMessages(String text){
+        String[] sentences = text.split("(?<=[.!?。！？])");
+        List<String> messages = new ArrayList<>();
+        StringBuilder currentMsg = new StringBuilder();
+        for(String sentence:sentences){
+            if(currentMsg.length() + sentence.length()>50){
+                messages.add(currentMsg.toString().trim());
+                currentMsg = new StringBuilder();
+            }
+            currentMsg.append(sentence);
+        }
+        if(currentMsg.length()>0){
+            messages.add(currentMsg.toString().trim());
+        }
+        return messages.toArray(new String[0]);
     }
 }

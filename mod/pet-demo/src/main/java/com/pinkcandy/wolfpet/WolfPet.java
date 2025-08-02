@@ -42,13 +42,6 @@ public class WolfPet extends PetBase {
         // 自定义动画......
     }
 
-    // 说话
-    @Override
-    public void slowAuto_talk(){
-        super.slowAuto_talk();
-        // 这只宠物如何说话......
-    }
-
     // 情绪表达
     @Override
     public void slowAuto_showEmotion(){
