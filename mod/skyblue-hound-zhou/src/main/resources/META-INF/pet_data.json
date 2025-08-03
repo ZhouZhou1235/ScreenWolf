@@ -1,0 +1,16 @@
+{
+    "name": "小蓝狗",
+    "info": "小蓝狗正在制作java桌面宠物！",
+    "jarName":"skyblue-hound-zhou-1.0.0.jar",
+    "mainClass": "com.pinkcandy.Pet_SkyblueHoundZhou",
+    "specialMessages": [
+        "嗷嗷嗷！",
+        "开心摇尾巴~",
+        "（舒适的坐下）"
+    ],
+    "sadMessages": [
+        "别忘记我......",
+        "能理理小蓝狗吗？",
+        "十分抱歉......"
+    ]
+}

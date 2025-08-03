@@ -10,8 +10,11 @@ target
 # 游戏产生
 data
 
-#外部资源
+# 外部资源
 /download
 
-#临时文件
+# 临时文件
 tmp
+
+# 自己的模组
+mymod

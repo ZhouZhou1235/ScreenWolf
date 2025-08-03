@@ -1,8 +1,8 @@
 {
     "name": "桌宠示例",
     "info": "只有游戏基本功能的模板",
-    "jarName":"wolf-pet-1.0.0.jar",
-    "mainClass": "com.pinkcandy.wolfpet.WolfPet",
+    "jarName":"pet-demo-1.0.0.jar",
+    "mainClass": "com.pinkcandy.Pet_Demo",
     "specialMessages":["特殊消息气泡"],
     "sadMessages":["伤心消息气泡"]
 }

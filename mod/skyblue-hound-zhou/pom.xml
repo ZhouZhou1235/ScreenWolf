@@ -9,11 +9,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.pinkcandy</groupId>
-    <artifactId>pet-demo</artifactId>
+    <artifactId>skyblue-hound-zhou</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
-    <name>ScreenWolf Pet Demo</name>
-    <description>ScreenWolf Pet Basic Template</description>
+    <name>Game Master ZHOU</name>
+    <description>a skyblue hound is programming java game!</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
