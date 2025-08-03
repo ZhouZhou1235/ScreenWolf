@@ -77,12 +77,13 @@ public class PetOption extends WindowBase {
         gbc.insets = new Insets(5,5,5,5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
         // 添加按钮
-        addButton(buttonPanel, gbc, "images/emote_sleeps.png", "休息", e->pet.doRest());
+        addButton(buttonPanel, gbc, "images/button_rest.png", "休息", e->pet.doRest());
         addButton(buttonPanel, gbc, "images/button_screenshot.png", "截图", e->{
             pet.copyScreenImage();
             pet.showMessage("截图已复制到剪贴板");
         });
         addButton(buttonPanel, gbc, "images/button_copy_text.png", "复制文本", e->pet.copyTextFromClipboard());
+        addButton(buttonPanel, gbc, "images/button_follow.png", "跟随", e->pet.followMouse());
         addButton(buttonPanel, gbc, "images/button_close.png", "关闭", e->closeWindow());
         // addButton...
     }
@@ -93,7 +94,7 @@ public class PetOption extends WindowBase {
         
         panel.add(button, gbc);
         gbc.gridx++;
-        if(gbc.gridx>3){
+        if(gbc.gridx>4){
             gbc.gridx = 0;
             gbc.gridy++;
         }

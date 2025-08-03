@@ -39,6 +39,7 @@ public class AnimationSprite extends JLabel {
     public void setAndPlayAnimation(String animationName){
         if(animationName.equals(currentAnimation)){return;}
         String framePath = animations.get(animationName);
+        if(framePath==null){return;}
         currentAnimation = animationName;
         frameIndex = 0;
         frameCount = 0;

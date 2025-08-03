@@ -6,6 +6,8 @@ public class PetData {
     private String info;
     private String jarName;
     private String mainClass;
+    private String[] specialMessages;
+    private String[] sadMessages;
     public String getName() {
         return name;
     }
@@ -18,6 +20,12 @@ public class PetData {
     public String getMainClass() {
         return mainClass;
     }
+    public String[] getSpecialMessages() {
+        return specialMessages;
+    }
+    public String[] getSadMessages() {
+        return sadMessages;
+    }
     public void setName(String name) {
         this.name = name;
     }
@@ -29,5 +37,11 @@ public class PetData {
     }
     public void setMainClass(String mainClass) {
         this.mainClass = mainClass;
+    }
+    public void setSpecialMessages(String[] specialMessages) {
+        this.specialMessages = specialMessages;
+    }
+    public void setSadMessages(String[] sadMessages) {
+        this.sadMessages = sadMessages;
     }
 }

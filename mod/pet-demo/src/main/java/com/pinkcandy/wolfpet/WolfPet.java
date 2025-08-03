@@ -1,7 +1,5 @@
 package com.pinkcandy.wolfpet;
 
-import javax.swing.event.MouseInputAdapter;
-
 import com.pinkcandy.Launcher;
 import com.pinkcandy.screenwolf.base.PetBase;
 
@@ -25,28 +23,17 @@ public class WolfPet extends PetBase {
         // 调整成员变量
         // ...
     }
-
     // 鼠标事件
     @Override
     public void ready_addMouseAction(){
         super.ready_addMouseAction();
-        this.addMouseListener(new MouseInputAdapter(){
-            // 更多鼠标监听处理......
-        });
+        // 更多鼠标监听处理......
     }
-
     // 宠物动画
     @Override
     public void auto_playAnimations(){
         super.auto_playAnimations();
         // 自定义动画......
-    }
-
-    // 情绪表达
-    @Override
-    public void slowAuto_showEmotion(){
-        super.slowAuto_showEmotion();
-        // 怎么表达情绪（特殊动画、消息气泡、动作等）......
     }
 
     // 可以阅读 PetBase 源码写更多定制化动作

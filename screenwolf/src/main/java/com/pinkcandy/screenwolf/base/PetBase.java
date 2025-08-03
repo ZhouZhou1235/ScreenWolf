@@ -36,8 +36,6 @@ import com.pinkcandy.screenwolf.utils.JarFileUtil;
 import com.pinkcandy.screenwolf.windows.PetOption;
 
 // 桌面宠物
-// TODO 检查方法以及默认行为的规范
-// TODO 完善好感系统的运用
 public class PetBase extends JPanel {
     // === 组成 ===
     protected Robot robot; // 自动机器
@@ -81,6 +79,12 @@ public class PetBase extends JPanel {
         this.launcher = theLauncher;
         initPet();
     }
+    // 计数器
+    protected int dragCounter = 0; // 拖拽计数器
+    protected int followCounter = 0; // 跟随计数器
+    protected int inactiveCounter = 0; // 不活跃计数器
+    protected int clickCounter = 0; // 点击计数器
+
     // 初始化桌宠
     public void initPet(){
         // 基本属性
@@ -186,6 +190,13 @@ public class PetBase extends JPanel {
                     isPress = true;
                     pressPetPoint = e.getPoint();
                     playPetData.setMouseClickNum(playPetData.getMouseClickNum()+1);
+                    clickCounter++;
+                    inactiveCounter = 0;
+                }
+                if(e.getButton()==MouseEvent.BUTTON1){
+                    isPress = true;
+                    pressPetPoint = e.getPoint();
+                    playPetData.setMouseClickNum(playPetData.getMouseClickNum()+1);
                 }
                 else if(e.getButton()==MouseEvent.BUTTON2){
                     readMessageList();
@@ -217,29 +228,7 @@ public class PetBase extends JPanel {
                 super.mouseClicked(e);
                 zeroingResponseNum();
                 if(e.getButton()==MouseEvent.BUTTON1){
-                    int num = e.getClickCount();
-                    if(num>=2){
-                        // 等级过低概率不跟随
-                        if(!isFollow){
-                            double randomFollowNum = Math.random();
-                            if(
-                                playPetData.getAffectionLevel()<20
-                                &&
-                                randomFollowNum<0.75
-                            ){return;}
-                            else if(
-                                playPetData.getAffectionLevel()<40
-                                &&
-                                randomFollowNum<0.5
-                            ){return;}
-                            else if(
-                                playPetData.getAffectionLevel()<60
-                                &&
-                                randomFollowNum<0.25
-                            ){return;}
-                        }
-                        isFollow = !isFollow;
-                    }
+                    followMouse();
                 }
             }
         });
@@ -253,28 +242,28 @@ public class PetBase extends JPanel {
                     int x = petPosition.x+e.getX()-pressPetPoint.x;
                     int y = petPosition.y+e.getY()-pressPetPoint.y;
                     petBase.setLocation(x,y);
-                    // 等级过低的拖拽减少好感
-                    if(playPetData.getAffectionLevel()<20){
-                        playPetData.setAffectionPoints(playPetData.getAffectionPoints()-1);
-                    }
                 }
             }
         });
         petBase.addMouseWheelListener(new MouseWheelListener(){
             @Override
             public void mouseWheelMoved(MouseWheelEvent e){
-                touchNum += 1;
-                addAffectPoint(1);
+                if(!isResting){
+                    touchNum += 1;
+                    inactiveCounter = 0;
+                    addAffectPoint(1);
+                }
             }
         });
     }
-    
+
     // === 高速循环 ===
     // 高速循环执行
     public void autoLoop(){
         auto_playAnimations();
         auto_followMouse();
         auto_move();
+        auto_affectionReceive();
     }
     // 跟随鼠标
     public void auto_followMouse(){
@@ -317,14 +306,39 @@ public class PetBase extends JPanel {
             else if(isAutoMoving){isAutoMoving=false;}
         }
     }
-    
+    // 好感接收
+    public void auto_affectionReceive(){
+        if(playPetData==null){return;}
+        // 拖拽太久
+        if(isPress){
+            dragCounter++;
+            if(dragCounter>60){
+                reduceAffectPoint(2);
+                dragCounter=0;
+            }
+        }else{dragCounter=0;}
+        // 跟随鼠标
+        if(isFollow && isMoving){
+            followCounter++;
+            if(followCounter>100){
+                addAffectPoint(3);
+                followCounter = 0;
+            }
+        }else{followCounter = 0;}
+        // 点击太多次
+        if(clickCounter > 20){
+            reduceAffectPoint(clickCounter / 5);
+            clickCounter = 0;
+        }
+    }
+
     // === 低速循环 ===
     // 低速循环执行
     public void slowAutoLoop(){
         slowAuto_touch();
         slowAuto_rest();
         slowAuto_move();
-        slowAuto_showEmotion();
+        slowAuto_affectReact();
     };
     // 抚摸反应
     public void slowAuto_touch(){
@@ -352,23 +366,43 @@ public class PetBase extends JPanel {
             }
         }
     }
-    // 根据好感等级表达情绪
-    public void slowAuto_showEmotion(){
+    // 好感反应
+    public void slowAuto_affectReact(){
+        if(playPetData==null){return;}
         int level = playPetData.getAffectionLevel();
-        if(level<20){
-            // ... 伤心
+        // 太久不理宠物
+        inactiveCounter++;
+        if(inactiveCounter>300){
+            if(isResting){reduceAffectPoint(5);}
+            else{reduceAffectPoint(10);}
+            inactiveCounter = 0;
         }
-        else if(level<40){
-            // ... 不高兴
+        // 根据等级做出不同反应
+        if(emotionNum>=emotionThreshold){
+            emotionNum = 0;
+            String[] specialMessages = petData.getSpecialMessages();
+            String[] sadMessages = petData.getSadMessages();
+            // 等级高播放特殊动画
+            if(level >= 80 && Math.random()<0.3){
+                playTargetAnimation("special",5000);
+                showMessage(specialMessages[(int)(Math.random()*specialMessages.length)]);
+            }
+            // 等级低播放特殊动画
+            else if(level < 20 && Math.random()<0.3){
+                playTargetAnimation("sad",5000);
+                showMessage(sadMessages[(int)(Math.random()*sadMessages.length)]);
+            }
+        }else{emotionNum++;}
+        // 影响功能
+        if(level >= 60) {
+            followDistanse = (int)(GUtil.DEFAULT_bodySize.getWidth()*0.75);
+        }else{
+            followDistanse = (int)GUtil.DEFAULT_bodySize.getWidth();
         }
-        else if(level<60){
-            // ... 一般
-        }
-        else if(level<80){
-            // ... 高兴
-        }
-        else{
-            // ... 开心
+        if(level<30){
+            moveThreshold = 60;
+        }else{
+            moveThreshold = 30;
         }
     }
 
@@ -398,6 +432,7 @@ public class PetBase extends JPanel {
         restNum = 0;
         moveNum = 0;
         // emotionNum = 0; 情绪不中断
+        isMoving = false;
         isResting = false;
         isAutoMoving = false;
         isTargetAnimationPlaying = false;
@@ -439,7 +474,7 @@ public class PetBase extends JPanel {
     // 减少好感
     public void reduceAffectPoint(int affectPointNum){
         if(playPetData.getAffectionLevel()>0){
-            playPetData.setAffectionPoints(playPetData.getAffectionLevel()-affectPointNum);
+            playPetData.setAffectionPoints(playPetData.getAffectionPoints()-affectPointNum);
             if(playPetData.getAffectionPoints()<=0){
                 playPetData.setAffectionLevel(playPetData.getAffectionLevel()-1);
                 int num = Math.abs(playPetData.getAffectionPoints());
@@ -494,11 +529,20 @@ public class PetBase extends JPanel {
     // 阅读消息气泡列表
     public void readMessageList(){
         String[] messageList = playPetData.getMessageBubbleList();
-        if(messageList.length>0){
+        if(messageList.length>0 && showMessageIndex<=messageList.length-1){
             String message = messageList[showMessageIndex];
             showMessageIndex++;
             if(showMessageIndex>messageList.length-1){showMessageIndex=0;}
             showMessage(message);
         }
+        else{showMessageIndex=0;}
     }
+    // 跟随鼠标
+    public void followMouse(){if(!isResting){
+        isFollow=!isFollow;
+        if(!isFollow){
+            zeroingResponseNum();
+            
+        }
+    }}
 }

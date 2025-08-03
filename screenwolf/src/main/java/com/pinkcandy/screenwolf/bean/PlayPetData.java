@@ -6,7 +6,7 @@ public class PlayPetData {
     private int followMouseDistance = 0; // 跟随鼠标距离
     private int affectionLevel = 50; // 好感等级
     private int affectionPoints = 0; // 好感度点数
-    private String[] messageBubbleList; // 消息气泡
+    private String[] messageBubbleList = {}; // 消息气泡
     public int getMouseClickNum() {
         return mouseClickNum;
     }
