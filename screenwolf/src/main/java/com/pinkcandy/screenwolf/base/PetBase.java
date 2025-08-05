@@ -15,7 +15,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -180,81 +179,9 @@ public class PetBase extends JPanel {
     }
     // 添加鼠标事件回应
     public void ready_addMouseAction(){
-        PetBase petBase = this;
-        petBase.addMouseListener(new MouseAdapter(){
-            @Override
-            public void mousePressed(MouseEvent e){
-                super.mousePressed(e);
-                zeroingResponseNum();
-                if(e.getButton()==MouseEvent.BUTTON1){
-                    isPress = true;
-                    pressPetPoint = e.getPoint();
-                    playPetData.setMouseClickNum(playPetData.getMouseClickNum()+1);
-                    clickCounter++;
-                    inactiveCounter = 0;
-                }
-                if(e.getButton()==MouseEvent.BUTTON1){
-                    isPress = true;
-                    pressPetPoint = e.getPoint();
-                    playPetData.setMouseClickNum(playPetData.getMouseClickNum()+1);
-                }
-                else if(e.getButton()==MouseEvent.BUTTON2){
-                    readMessageList();
-                }
-                else if(e.getButton()==MouseEvent.BUTTON3){
-                    PetOption.showForPet(petBase);
-                }
-            }
-            @Override
-            public void mouseEntered(MouseEvent e){
-                super.mouseEntered(e);
-                isFocus = true;
-            }
-            @Override
-            public void mouseExited(MouseEvent e){
-                super.mouseExited(e);
-                isFocus = false;
-            }
-            @Override
-            public void mouseReleased(MouseEvent e){
-                super.mouseReleased(e);
-                zeroingResponseNum();
-                if(e.getButton()==MouseEvent.BUTTON1){
-                    isPress = false;
-                }
-            }
-            @Override
-            public void mouseClicked(MouseEvent e){
-                super.mouseClicked(e);
-                zeroingResponseNum();
-                if(e.getButton()==MouseEvent.BUTTON1){
-                    followMouse();
-                }
-            }
-        });
-        petBase.addMouseMotionListener(new MouseMotionAdapter(){
-            @Override
-            public void mouseDragged(MouseEvent e){
-                super.mouseDragged(e);
-                zeroingResponseNum();
-                if(isPress){
-                    Point petPosition = petBase.getLocation();
-                    int x = petPosition.x+e.getX()-pressPetPoint.x;
-                    int y = petPosition.y+e.getY()-pressPetPoint.y;
-                    petBase.setLocation(x,y);
-                }
-            }
-        });
-        petBase.addMouseWheelListener(new MouseWheelListener(){
-            @Override
-            public void mouseWheelMoved(MouseWheelEvent e){
-                if(!isResting){
-                    touchNum += 1;
-                    inactiveCounter = 0;
-                    addAffectPoint(1);
-                }
-            }
-        });
+        addMouseListeners();
+        addMouseMotionListeners();
+        addMouseWheelListeners();
     }
 
     // === 高速循环 ===
@@ -382,15 +309,17 @@ public class PetBase extends JPanel {
             emotionNum = 0;
             String[] specialMessages = petData.getSpecialMessages();
             String[] sadMessages = petData.getSadMessages();
-            // 等级高播放特殊动画
-            if(level >= 80 && Math.random()<0.3){
-                playTargetAnimation("special",5000);
-                showMessage(specialMessages[(int)(Math.random()*specialMessages.length)]);
-            }
-            // 等级低播放特殊动画
-            else if(level < 20 && Math.random()<0.3){
-                playTargetAnimation("sad",5000);
-                showMessage(sadMessages[(int)(Math.random()*sadMessages.length)]);
+            if(!isResting){
+                // 等级高播放特殊动画
+                if(level >= 80 && Math.random()<0.1){
+                    playTargetAnimation("special",5000);
+                    showMessage(specialMessages[(int)(Math.random()*specialMessages.length)]);
+                }
+                // 等级低播放特殊动画
+                else if(level < 20 && Math.random()<0.3){
+                    playTargetAnimation("sad",5000);
+                    showMessage(sadMessages[(int)(Math.random()*sadMessages.length)]);
+                }
             }
         }else{emotionNum++;}
         // 影响功能
@@ -403,6 +332,115 @@ public class PetBase extends JPanel {
             moveThreshold = 60;
         }else{
             moveThreshold = 30;
+        }
+    }
+
+    // === 鼠标事件 ===
+    // 添加鼠标点击相关监听器
+    protected void addMouseListeners() {
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                handleMousePressed(e);
+            }
+            
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                handleMouseEntered();
+            }
+            
+            @Override
+            public void mouseExited(MouseEvent e) {
+                handleMouseExited();
+            }
+            
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                handleMouseReleased(e);
+            }
+            
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                handleMouseClicked(e);
+            }
+        });
+    }
+    // 添加鼠标移动相关监听器
+    protected void addMouseMotionListeners() {
+        addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                handleMouseDragged(e);
+            }
+        });
+    }
+    // 添加鼠标滚轮监听器
+    protected void addMouseWheelListeners(){
+        addMouseWheelListener(e -> {
+            handleMouseWheelMoved(e);
+        });
+    }
+    // 处理鼠标按下事件
+    protected void handleMousePressed(MouseEvent e){
+        zeroingResponseNum();
+        switch(e.getButton()) {
+            case MouseEvent.BUTTON1:
+                handleLeftButtonPress(e);
+                break;
+            case MouseEvent.BUTTON2:
+                readMessageList();
+                break;
+            case MouseEvent.BUTTON3:
+                PetOption.showForPet(this);
+                break;
+        }
+    }
+    // 处理左键按下
+    protected void handleLeftButtonPress(MouseEvent e) {
+        isPress = true;
+        pressPetPoint = e.getPoint();
+        playPetData.setMouseClickNum(playPetData.getMouseClickNum() + 1);
+        clickCounter++;
+        inactiveCounter = 0;
+    }
+    // 处理鼠标进入
+    protected void handleMouseEntered() {
+        isFocus = true;
+    }
+    // 处理鼠标离开
+    protected void handleMouseExited() {
+        isFocus = false;
+    }
+    // 处理鼠标释放
+    protected void handleMouseReleased(MouseEvent e) {
+        zeroingResponseNum();
+        if(e.getButton() == MouseEvent.BUTTON1) {
+            isPress = false;
+        }
+    }
+    // 处理鼠标点击
+    protected void handleMouseClicked(MouseEvent e) {
+        zeroingResponseNum();
+        if(e.getButton() == MouseEvent.BUTTON1) {
+            followMouse();
+        }
+    }
+    // 处理鼠标拖动
+    protected void handleMouseDragged(MouseEvent e) {
+        zeroingResponseNum();
+        if(isPress) {
+            Point petPosition = getLocation();
+            int x = petPosition.x + e.getX() - pressPetPoint.x;
+            int y = petPosition.y + e.getY() - pressPetPoint.y;
+            setLocation(x, y);
+        }
+    }
+    // 处理鼠标滚轮
+    protected void handleMouseWheelMoved(MouseWheelEvent e) {
+        if(!isResting) {
+            touchNum += 1;
+            inactiveCounter = 0;
+            addAffectPoint(1);
         }
     }
 
@@ -545,4 +583,8 @@ public class PetBase extends JPanel {
             
         }
     }}
+    // 创建选项面板
+    public PetOption createPetOptionWindow(){
+        return new PetOption(this);
+    }
 }

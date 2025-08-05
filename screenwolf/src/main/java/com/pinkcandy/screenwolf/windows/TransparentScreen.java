@@ -35,11 +35,11 @@ public class TransparentScreen extends WindowBase {
         contentPane.setOpaque(false);
         this.setContentPane(contentPane);
     }
+    public Component[] getAllComponents(){
+        return contentPane.getComponents();
+    }
     @Override
     public Component add(Component comp){
         return contentPane.add(comp);
-    }
-    public Component[] getAllComponents(){
-        return contentPane.getComponents();
     }
 }

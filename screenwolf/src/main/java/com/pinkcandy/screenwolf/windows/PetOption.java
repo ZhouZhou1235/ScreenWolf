@@ -7,14 +7,15 @@ import com.pinkcandy.screenwolf.base.PetBase;
 import com.pinkcandy.screenwolf.base.WindowBase;
 import com.pinkcandy.screenwolf.utils.GUtil;
 
-// 宠物选项窗口
+// 宠物选项面板
+// TODO 考虑重写 改成非静态放到宠物成员变量中 方便被模组宠物拓展
 public class PetOption extends WindowBase {
-    private PetBase pet;
-    private static PetOption currentInstance;
-    private JLabel statusLabel;
-    private Timer updateTimer;
-    private Point dragOffset;
-    private JPanel buttonPanel;
+    protected PetBase pet;
+    protected static PetOption currentInstance;
+    protected JLabel statusLabel;
+    protected Timer updateTimer;
+    protected Point dragOffset;
+    protected JPanel buttonPanel;
     public PetOption(PetBase thePet){
         super(
             thePet.getPetData().getName(),
@@ -88,7 +89,7 @@ public class PetOption extends WindowBase {
         // addButton...
     }
     // 添加单个按钮
-    private void addButton(JPanel panel, GridBagConstraints gbc, String iconPath, String tooltip, ActionListener listener){
+    public void addButton(JPanel panel, GridBagConstraints gbc, String iconPath, String tooltip, ActionListener listener){
         JButton button = GUtil.createIconButton(iconPath, tooltip, GUtil.DEFAULT_textSize*2);
         button.addActionListener(listener);
         
@@ -100,7 +101,7 @@ public class PetOption extends WindowBase {
         }
     }
     // 调整窗口大小
-    private void adjustWindowSize(){
+    public void adjustWindowSize(){
         Dimension preferredSize = this.getPreferredSize();
         int width = Math.min(Math.max(preferredSize.width,GUtil.DEFAULT_bodySize.width*2),GUtil.DEFAULT_bodySize.width*2);
         int height = Math.min(Math.max(preferredSize.height,GUtil.DEFAULT_bodySize.height),GUtil.DEFAULT_bodySize.height*2);
@@ -108,7 +109,7 @@ public class PetOption extends WindowBase {
         this.revalidate();
     }
     // 设置拖动行为
-    private void setupDragBehavior(){
+    public void setupDragBehavior(){
         this.addMouseListener(new MouseAdapter(){
             @Override
             public void mousePressed(MouseEvent e){
@@ -126,7 +127,7 @@ public class PetOption extends WindowBase {
         });
     }
     // 更新状态文本
-    private void updateStatusText(){
+    public void updateStatusText(){
         if(pet.getPlayPetData() == null){
             statusLabel.setText("");
             return;
@@ -139,7 +140,7 @@ public class PetOption extends WindowBase {
         statusLabel.setText(statusText);
     }
     // 启动状态更新定时器
-    private void startStatusUpdate(){
+    public void startStatusUpdate(){
         updateTimer = new Timer(GUtil.GAME_renderTime, e->{
             updateStatusText();
             if(!pet.isVisible()){
@@ -150,7 +151,7 @@ public class PetOption extends WindowBase {
         updateTimer.start();
     }
     // 关闭窗口
-    private void closeWindow(){
+    public void closeWindow(){
         if(updateTimer != null){
             updateTimer.stop();
         }
@@ -174,15 +175,5 @@ public class PetOption extends WindowBase {
         }
         currentInstance.setLocation(windowLocation);
         currentInstance.setVisible(true);
-    }
-    // 添加新按钮的公共方法
-    public void addOptionButton(String iconPath, String tooltip, ActionListener listener){
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = ((GridBagLayout)buttonPanel.getLayout()).getLayoutDimensions()[0].length;
-        gbc.gridy = ((GridBagLayout)buttonPanel.getLayout()).getLayoutDimensions()[1].length;
-        gbc.insets = new Insets(5,5,5,5);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        addButton(buttonPanel, gbc, iconPath, tooltip, listener);
-        adjustWindowSize();
     }
 }

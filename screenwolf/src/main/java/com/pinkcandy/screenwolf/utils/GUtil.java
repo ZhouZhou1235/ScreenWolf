@@ -74,7 +74,7 @@ public class GUtil {
         int w = icon.getIconWidth();
         int h = icon.getIconHeight();
         Image image = icon.getImage();
-        Image newImage = image.getScaledInstance(l,(int)l*h/w,Image.SCALE_DEFAULT);
+        Image newImage = image.getScaledInstance(l,(int)l*h/w,Image.SCALE_SMOOTH);
         return new ImageIcon(newImage);
     }
     // swing 清除计时器的所有事件
