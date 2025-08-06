@@ -39,6 +39,7 @@ public class PetBase extends JPanel {
     // === 组成 ===
     protected Robot robot; // 自动机器
     protected Launcher launcher; // 启动器的引用
+    protected PetOption petOption; // 选项面板
     public AnimationSprite animationSprite; // 动画精灵
     // === 数值 ===
     protected int followDistanse = (int)GUtil.DEFAULT_bodySize.getWidth(); // 跟随距离
@@ -162,11 +163,12 @@ public class PetBase extends JPanel {
     // === 实例化完成调用 ===
     // 初始化完成时执行
     public void ready(){
-        ready_loadPlayPetData();
+        ready_loadPlay();
         ready_addMouseAction();
     }
-    // 加载游玩数据
-    public void ready_loadPlayPetData(){
+    // 就绪时加载的内容
+    public void ready_loadPlay(){
+        // 游玩数据
         if(GUtil.createFile(savePath)==1){
             PlayPetData playPetData = new PlayPetData();
             GUtil.saveToFile(savePath,GsonUtil.bean2Json(playPetData));
@@ -176,6 +178,8 @@ public class PetBase extends JPanel {
             PlayPetData playPetData = GsonUtil.json2Bean(GUtil.readFile(savePath),PlayPetData.class);
             this.playPetData = playPetData;
         }
+        // 选项面板
+        this.petOption = new PetOption(this);
     }
     // 添加鼠标事件回应
     public void ready_addMouseAction(){
@@ -391,7 +395,7 @@ public class PetBase extends JPanel {
                 readMessageList();
                 break;
             case MouseEvent.BUTTON3:
-                PetOption.showForPet(this);
+                petOption.showWindow();
                 break;
         }
     }
@@ -580,11 +584,6 @@ public class PetBase extends JPanel {
         isFollow=!isFollow;
         if(!isFollow){
             zeroingResponseNum();
-            
         }
     }}
-    // 创建选项面板
-    public PetOption createPetOptionWindow(){
-        return new PetOption(this);
-    }
 }

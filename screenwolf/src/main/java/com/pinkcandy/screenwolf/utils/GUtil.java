@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -26,6 +27,7 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -270,6 +272,16 @@ public class GUtil {
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
         return button;
     }
+    // 创建图标按钮
+    public static JButton createIconButton(ImageIcon icon,String tooltip,int size){
+        icon = GUtil.scaleImageIcon(icon,size);
+        JButton button = new JButton(icon);
+        button.setToolTipText(tooltip);
+        button.setContentAreaFilled(false);
+        button.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return button;
+    }
     // 长文本分割算法
     public static String[] splitTextIntoMessages(String text){
         String[] sentences = text.split("(?<=[.!?。！？])");
@@ -286,5 +298,15 @@ public class GUtil {
             messages.add(currentMsg.toString().trim());
         }
         return messages.toArray(new String[0]);
+    }
+    // 用字节流创建一张ImageIcon图片
+    public static ImageIcon createImageIconFromBytes(byte[] imageData){
+        if(imageData == null||imageData.length==0){return new ImageIcon();}
+        try{
+            return new ImageIcon(ImageIO.read(new ByteArrayInputStream(imageData)));
+        }catch(IOException e){
+            e.printStackTrace();
+            return new ImageIcon();
+        }
     }
 }
