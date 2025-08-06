@@ -35,6 +35,7 @@ public class AnimationSprite extends JLabel {
             setAndPlayAnimation(animations.keySet().iterator().next());
         }
     }
+    public int getFrameCount(){return frameCount;}
     // 设置和播放动画
     public void setAndPlayAnimation(String animationName){
         if(animationName.equals(currentAnimation)){return;}

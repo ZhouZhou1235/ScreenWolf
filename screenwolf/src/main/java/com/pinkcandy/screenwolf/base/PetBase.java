@@ -34,7 +34,10 @@ import com.pinkcandy.screenwolf.utils.ImageSelection;
 import com.pinkcandy.screenwolf.utils.JarFileUtil;
 import com.pinkcandy.screenwolf.windows.PetOption;
 
-// 桌面宠物
+/**
+ * 桌面宠物基类
+ * 游戏核心类，具备桌宠基本功能，应该继承此类实现自己的桌宠。
+ */
 public class PetBase extends JPanel {
     // === 组成 ===
     protected Robot robot; // 自动机器
@@ -551,7 +554,7 @@ public class PetBase extends JPanel {
     public void showMessage(String message){
         PetMessageBubble bubble=new PetMessageBubble(message);
         bubble.setLocation(this.getLocation());
-        launcher.addItemToScreen(bubble);
+        launcher.getScreen().add(bubble);
         bubble.revalidate();
         bubble.repaint();
     }

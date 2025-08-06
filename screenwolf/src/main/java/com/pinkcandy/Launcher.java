@@ -4,7 +4,6 @@ import java.awt.*;
 import java.util.*;
 
 import com.pinkcandy.screenwolf.GameTray;
-import com.pinkcandy.screenwolf.base.ItemBase;
 import com.pinkcandy.screenwolf.base.PetBase;
 import com.pinkcandy.screenwolf.utils.GUtil;
 import com.pinkcandy.screenwolf.windows.AboutWindow;
@@ -27,6 +26,7 @@ public class Launcher {
         this.welcomeWindow = new WelcomeWindow(this);
         this.infoWindow = new AboutWindow();
     };
+    public TransparentScreen getScreen(){return screen;}
     // === 启动器公开方法 ===
     // 开始游戏
     public void playGame(){
@@ -54,8 +54,6 @@ public class Launcher {
     public ArrayList<PetBase> getPetListCopy(){return new ArrayList<>(petList);}
     // 添加桌宠到启动器
     public void addPetToLauncher(PetBase pet){petList.add(pet);}
-    // 添加组件到屏幕
-    public void addItemToScreen(ItemBase item){screen.add(item);}
     // 清空屏幕组件（保留桌宠）
     public void clearScreenItems(){
         Component[] items = screen.getAllComponents();

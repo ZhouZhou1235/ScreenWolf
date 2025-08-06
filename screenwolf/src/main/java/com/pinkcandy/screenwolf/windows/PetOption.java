@@ -26,11 +26,10 @@ public class PetOption extends WindowBase {
         );
         this.pet = thePet;
         initWindow();
-        setupDragBehavior();
-        startStatusUpdate();
+        readyToPaint();
     }
     // 初始化窗口
-    private void initWindow(){
+    protected void initWindow(){
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setUndecorated(true);
         this.setAlwaysOnTop(true);
@@ -39,7 +38,6 @@ public class PetOption extends WindowBase {
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.setOpaque(false);
-        // 拖动面板
         JPanel dragPanel = new JPanel();
         dragPanel.setOpaque(false);
         dragPanel.setPreferredSize(new Dimension(0, 30));
@@ -49,26 +47,20 @@ public class PetOption extends WindowBase {
         nameLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
         dragPanel.add(nameLabel);
         contentPanel.add(dragPanel);
-        // 状态标签
         statusLabel = new JLabel();
         statusLabel.setFont(GUtil.DEFAULT_font.deriveFont(Font.PLAIN, (int)(GUtil.DEFAULT_textSize * 0.8)));
         statusLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         statusLabel.setForeground(new Color(100, 100, 100));
-        updateStatusText();
         contentPanel.add(statusLabel);
         contentPanel.add(new JSeparator(JSeparator.HORIZONTAL));
         contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        // 按钮网格布局
         buttonGrid = new GridBagConstraints();
         buttonGrid.gridx = 0;
         buttonGrid.gridy = 0;
         buttonGrid.insets = new Insets(5,5,5,5);
         buttonGrid.fill = GridBagConstraints.HORIZONTAL;
-        adjustWindowSize();
-        // 按钮面板
         buttonPanel = new JPanel(new GridBagLayout());
         buttonPanel.setOpaque(false);
-        loadButtonsToPanel();
         JScrollPane scrollPane = new JScrollPane(buttonPanel);
         scrollPane.setBorder(null);
         scrollPane.setOpaque(false);
@@ -78,8 +70,16 @@ public class PetOption extends WindowBase {
         contentPanel.add(scrollPane);
         this.add(contentPanel,BorderLayout.CENTER);
     }
+    // 开始渲染
+    protected void readyToPaint(){
+        updateStatusText();
+        loadButtonsToPanel();
+        adjustWindowSize();
+        setupDragBehavior();
+        startStatusUpdate();
+    }
     // 加载按钮到面板
-    public void loadButtonsToPanel(){
+    protected void loadButtonsToPanel(){
         buttonPanel.removeAll();
         addButton("images/button_rest.png", "休息", e -> pet.doRest());
         addButton("images/button_screenshot.png", "截图", e -> {
@@ -91,30 +91,8 @@ public class PetOption extends WindowBase {
         addButton("images/button_close.png", "关闭", e -> closeWindow());
         // 重写加载更多......
     }
-    // 添加按钮 从主程序
-    protected void addButton(String iconPath,String tooltip,ActionListener listener){
-        JButton button = GUtil.createIconButton(iconPath,tooltip,GUtil.DEFAULT_textSize*2);
-        button.addActionListener(listener);
-        buttonPanel.add(button,buttonGrid);
-        buttonGrid.gridx++;
-        if(buttonGrid.gridx>buttonsPerRow-1){
-            buttonGrid.gridx = 0;
-            buttonGrid.gridy++;
-        }
-    }
-    // 添加按钮 从桌宠包
-    protected void addButton(ImageIcon icon,String tooltip,ActionListener listener){
-        JButton button = GUtil.createIconButton(icon,tooltip,GUtil.DEFAULT_textSize*2);
-        button.addActionListener(listener);
-        buttonPanel.add(button,buttonGrid);
-        buttonGrid.gridx++;
-        if(buttonGrid.gridx>buttonsPerRow-1){
-            buttonGrid.gridx = 0;
-            buttonGrid.gridy++;
-        }
-    }
     // 调整窗口大小
-    public void adjustWindowSize() {
+    public void adjustWindowSize(){
         Dimension preferredSize = this.getPreferredSize();
         int width = Math.min(Math.max(preferredSize.width, GUtil.DEFAULT_bodySize.width * 2), GUtil.DEFAULT_bodySize.width * 2);
         int height = Math.min(Math.max(preferredSize.height, GUtil.DEFAULT_bodySize.height), GUtil.DEFAULT_bodySize.height * 2);
@@ -184,5 +162,27 @@ public class PetOption extends WindowBase {
         }
         this.setLocation(windowLocation);
         this.setVisible(true);
+    }
+    // 添加按钮 从主程序
+    protected void addButton(String iconPath,String tooltip,ActionListener listener){
+        JButton button = GUtil.createIconButton(iconPath,tooltip,GUtil.DEFAULT_textSize*2);
+        button.addActionListener(listener);
+        buttonPanel.add(button,buttonGrid);
+        buttonGrid.gridx++;
+        if(buttonGrid.gridx>buttonsPerRow-1){
+            buttonGrid.gridx = 0;
+            buttonGrid.gridy++;
+        }
+    }
+    // 添加按钮 从桌宠包
+    protected void addButton(ImageIcon icon,String tooltip,ActionListener listener){
+        JButton button = GUtil.createIconButton(icon,tooltip,GUtil.DEFAULT_textSize*2);
+        button.addActionListener(listener);
+        buttonPanel.add(button,buttonGrid);
+        buttonGrid.gridx++;
+        if(buttonGrid.gridx>buttonsPerRow-1){
+            buttonGrid.gridx = 0;
+            buttonGrid.gridy++;
+        }
     }
 }
