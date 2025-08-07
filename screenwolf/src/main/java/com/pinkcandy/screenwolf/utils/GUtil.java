@@ -261,7 +261,7 @@ public class GUtil {
         }
         return copiedCount;
     }
-    // 创建图标按钮
+    // 用游戏资源路径创建图标按钮
     public static JButton createIconButton(String path,String tooltip,int size){
         ImageIcon icon = ResourceReader.getResourceAsImageIcon(path);
         icon = GUtil.scaleImageIcon(icon,size);
@@ -272,7 +272,7 @@ public class GUtil {
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
         return button;
     }
-    // 创建图标按钮
+    // 提供ImageIcon创建图标按钮
     public static JButton createIconButton(ImageIcon icon,String tooltip,int size){
         icon = GUtil.scaleImageIcon(icon,size);
         JButton button = new JButton(icon);

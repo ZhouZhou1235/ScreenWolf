@@ -17,9 +17,9 @@ import java.awt.event.MouseMotionAdapter;
 
 // 物体基类
 public class ItemBase extends JPanel {
-    private String itemName;
-    private JLabel body;
-    private Point pressPoint = new Point();
+    protected String itemName;
+    protected JLabel body;
+    protected Point pressPoint = new Point();
     public boolean isPress = false;
     public boolean canDrag = true;
     public ItemBase(){this("ItemBase");}

@@ -20,8 +20,8 @@ public class PetOption extends WindowBase {
         super(
             thePet.getPetData().getName(),
             new Dimension(
-                GUtil.DEFAULT_bodySize.width*2,
-                GUtil.DEFAULT_bodySize.height
+                (int)(GUtil.DEFAULT_bodySize.width*2),
+                (int)(GUtil.DEFAULT_bodySize.height*1.5)
             )
         );
         this.pet = thePet;
