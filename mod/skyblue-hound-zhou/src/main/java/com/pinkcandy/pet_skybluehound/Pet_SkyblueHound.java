@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import javax.swing.Timer;
 
-import com.pinkcandy.Launcher;
+import com.pinkcandy.screenwolf.Launcher;
 import com.pinkcandy.screenwolf.base.PetBase;
 import com.pinkcandy.screenwolf.utils.GUtil;
 import com.pinkcandy.screenwolf.utils.JarFileUtil;

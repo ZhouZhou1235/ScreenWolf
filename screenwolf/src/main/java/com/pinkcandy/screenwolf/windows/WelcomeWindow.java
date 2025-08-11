@@ -7,7 +7,7 @@ import java.net.URLClassLoader;
 
 import javax.swing.*;
 
-import com.pinkcandy.Launcher;
+import com.pinkcandy.screenwolf.Launcher;
 import com.pinkcandy.screenwolf.base.PetBase;
 import com.pinkcandy.screenwolf.base.WindowBase;
 import com.pinkcandy.screenwolf.utils.GUtil;

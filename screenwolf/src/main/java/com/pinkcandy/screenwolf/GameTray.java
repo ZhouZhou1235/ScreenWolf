@@ -11,7 +11,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import com.pinkcandy.Launcher;
 import com.pinkcandy.screenwolf.utils.ResourceReader;
 
 // 系统托盘

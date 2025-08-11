@@ -4,8 +4,10 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import javax.swing.Timer;
+import javax.swing.JLabel;
+import javax.swing.BorderFactory;
+import javax.swing.SwingConstants;
 
 import com.pinkcandy.screenwolf.base.ItemBase;
 import com.pinkcandy.screenwolf.utils.GUtil;
@@ -14,42 +16,64 @@ import com.pinkcandy.screenwolf.utils.GUtil;
 public class PetMessageBubble extends ItemBase {
     private Timer autoHideTimer;
     private int displayTime = 5000;
-    public PetMessageBubble(String text){
+    
+    public PetMessageBubble(String text) {
         super(text);
-        getBody().setFont(new Font(Font.DIALOG,Font.CENTER_BASELINE,GUtil.DEFAULT_textSize));
-        getBody().setForeground(Color.WHITE);
-        this.setBackground(new Color(0,0,0,100));
+        JLabel textLabel = getBody();
+        textLabel.setText(text);
+        textLabel.setFont(new Font(Font.DIALOG, Font.PLAIN, GUtil.DEFAULT_textSize));
+        textLabel.setForeground(Color.WHITE);
+        textLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        textLabel.setVerticalAlignment(SwingConstants.CENTER);
+        this.setBackground(new Color(0,0,0,200));
         this.setOpaque(true);
-        setFontAdjustText(text);
-        autoHideTimer = new Timer(displayTime,e->{
-            if(this.getParent()!=null){this.getParent().remove(this);}
+        this.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+        adjustSizeToText(text);
+        autoHideTimer = new Timer(displayTime, e -> {
+            if (this.getParent() != null) {
+                this.getParent().remove(this);
+            }
             autoHideTimer.stop();
         });
         autoHideTimer.setRepeats(false);
+        autoHideTimer.start();
     }
-    // 显示时间
-    public void setDisplayTime(int milliseconds){
+    // 调整大小适应文本
+    private void adjustSizeToText(String text) {
+        JLabel textLabel = getBody();
+        int width = textLabel.getFontMetrics(textLabel.getFont()).stringWidth(text)+30;
+        int height = textLabel.getFontMetrics(textLabel.getFont()).getHeight()+20;
+        this.setSize(width, height);
+        textLabel.setSize(width, height);
+    }
+    // 显示时间设置
+    public void setDisplayTime(int milliseconds) {
         this.displayTime = milliseconds;
-        if(autoHideTimer!=null){autoHideTimer.setInitialDelay(milliseconds);}
+        if (autoHideTimer != null) {
+            autoHideTimer.setInitialDelay(milliseconds);
+        }
     }
     @Override
     public void ready(){
         super.ready();
         PetMessageBubble bubble = this;
-        // 鼠标悬停暂停消失
-        this.addMouseListener(new MouseAdapter(){
+        this.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseEntered(MouseEvent e){
+            public void mouseEntered(MouseEvent e) {
                 autoHideTimer.stop();
             }
+            
             @Override
             public void mouseExited(MouseEvent e) {
                 autoHideTimer.restart();
             }
+            
             @Override
-            public void mouseClicked(MouseEvent e){
-                if(e.getButton()==MouseEvent.BUTTON3){
-                    if(bubble.getParent()!=null){bubble.getParent().remove(bubble);}
+            public void mouseClicked(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON3) {
+                    if (bubble.getParent() != null) {
+                        bubble.getParent().remove(bubble);
+                    }
                     autoHideTimer.stop();
                 }
             }

@@ -23,8 +23,8 @@ import java.nio.charset.StandardCharsets;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import com.pinkcandy.Launcher;
 import com.pinkcandy.screenwolf.AnimationSprite;
+import com.pinkcandy.screenwolf.Launcher;
 import com.pinkcandy.screenwolf.PetMessageBubble;
 import com.pinkcandy.screenwolf.bean.PetData;
 import com.pinkcandy.screenwolf.bean.PlayPetData;

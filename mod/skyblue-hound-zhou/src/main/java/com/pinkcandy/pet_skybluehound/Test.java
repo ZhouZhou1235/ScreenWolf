@@ -1,6 +1,6 @@
 package com.pinkcandy.pet_skybluehound;
 
-import com.pinkcandy.Launcher;
+import com.pinkcandy.screenwolf.Launcher;
 import com.pinkcandy.screenwolf.base.PetBase;
 
 

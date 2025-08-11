@@ -1,9 +1,8 @@
-package com.pinkcandy;
+package com.pinkcandy.screenwolf;
 
 import java.awt.*;
 import java.util.*;
 
-import com.pinkcandy.screenwolf.GameTray;
 import com.pinkcandy.screenwolf.base.PetBase;
 import com.pinkcandy.screenwolf.utils.GUtil;
 import com.pinkcandy.screenwolf.windows.AboutWindow;
