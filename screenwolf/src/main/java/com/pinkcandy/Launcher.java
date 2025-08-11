@@ -62,4 +62,9 @@ public class Launcher {
             screen.remove(item);
         }
     }
+    // 测试加载桌宠
+    public void testLoadPet(PetBase pet){
+        petList.add(pet);
+        screen.add(pet);
+    }
 }

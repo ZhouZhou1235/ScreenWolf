@@ -235,14 +235,16 @@ public class WelcomeWindow extends WindowBase {
         return GsonUtil.json2Bean(json,PetData.class);
     }
     // 从JAR加载宠物实现类
-    private PetBase loadPetFromJar(String jarPath,String className,Launcher launcher) throws Exception{
+    private PetBase loadPetFromJar(String jarPath, String className, Launcher launcher) throws Exception {
         @SuppressWarnings("deprecation")
-        URL jarUrl = new URL("file:"+jarPath);
-        try(URLClassLoader classLoader = new URLClassLoader(new URL[]{jarUrl})){
+        URL jarUrl = new URL("file:" + jarPath);
+        URLClassLoader classLoader = new URLClassLoader(new URL[]{jarUrl}, getClass().getClassLoader());
+        try{
             Class<?> petClass = classLoader.loadClass(className);
             PetBase pet = (PetBase)petClass.getConstructor(Launcher.class).newInstance(launcher);
+            pet.setClassLoader(classLoader);
             return pet;
-        }
+        }catch(Exception e){classLoader.close();throw e;}
     }
     // 更新窗口为开始游戏状态
     public void updateWindowToPlayState(){

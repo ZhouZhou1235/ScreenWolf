@@ -16,6 +16,15 @@ public class SwingTimerUtil {
         timer.start();
         return timer;
     }
+    // 执行循环延迟任务
+    public static Timer scheduleLoop(int delayMs,Runnable task){
+        Timer timer = new Timer(delayMs,e->{
+            task.run();
+        });
+        timer.setRepeats(true);
+        timer.start();
+        return timer;
+    }
     // 带参执行延迟任务
     public static <T> Timer schedule(int delayMs,Consumer<T> task,T arg){
         Timer timer = new Timer(delayMs,e->{

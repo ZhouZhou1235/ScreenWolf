@@ -36,7 +36,7 @@ import com.pinkcandy.screenwolf.windows.PetOption;
 
 /**
  * 桌面宠物基类
- * 游戏核心类，具备桌宠基本功能，应该继承此类实现自己的桌宠。
+ * 具备桌宠基本功能，应该继承此类实现自己的桌宠。
  */
 public class PetBase extends JPanel {
     // === 组成 ===
@@ -44,6 +44,7 @@ public class PetBase extends JPanel {
     protected Launcher launcher; // 启动器的引用
     protected PetOption petOption; // 选项面板
     public AnimationSprite animationSprite; // 动画精灵
+    protected ClassLoader classLoader; // 类加载器
     // === 数值 ===
     protected int followDistanse = (int)GUtil.DEFAULT_bodySize.getWidth(); // 跟随距离
     protected int moveSpeed = (int)GUtil.DEFAULT_bodySize.getWidth()/10; // 移动速度
@@ -147,7 +148,7 @@ public class PetBase extends JPanel {
         System.gc();
     }
 
-    // === 获取 ===
+    // === 获取和设置 ===
     // 获取号码
     public String getId(){return id;}
     // 获取宠物数据
@@ -162,6 +163,14 @@ public class PetBase extends JPanel {
         int y = o.y+size.height/2;
         return new Point(x,y);
     }
+    // 获取启动器引用
+    public Launcher getLauncher(){return this.launcher;}
+    // 获取类加载器
+    public ClassLoader getClassLoader(){
+        return classLoader != null?classLoader:getClass().getClassLoader();
+    }
+    // 设置类加载器
+    public void setClassLoader(ClassLoader classLoader){this.classLoader=classLoader;}
 
     // === 实例化完成调用 ===
     // 初始化完成时执行
@@ -552,11 +561,13 @@ public class PetBase extends JPanel {
     }
     // 显示消息气泡
     public void showMessage(String message){
-        PetMessageBubble bubble=new PetMessageBubble(message);
+        PetMessageBubble bubble = new PetMessageBubble(message);
         bubble.setLocation(this.getLocation());
-        launcher.getScreen().add(bubble);
         bubble.revalidate();
         bubble.repaint();
+        if(launcher!=null){
+            launcher.getScreen().add(bubble);
+        }
     }
     // 从剪贴板获取文本然后保存
     public void copyTextFromClipboard(){

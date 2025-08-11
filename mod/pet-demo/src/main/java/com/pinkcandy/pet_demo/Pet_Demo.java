@@ -1,5 +1,6 @@
-package com.pinkcandy;
+package com.pinkcandy.pet_demo;
 
+import com.pinkcandy.Launcher;
 import com.pinkcandy.screenwolf.base.PetBase;
 
 // 桌宠示例

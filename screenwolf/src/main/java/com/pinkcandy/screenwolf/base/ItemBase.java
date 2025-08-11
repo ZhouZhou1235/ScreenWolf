@@ -22,7 +22,7 @@ public class ItemBase extends JPanel {
     protected Point pressPoint = new Point();
     public boolean isPress = false;
     public boolean canDrag = true;
-    public ItemBase(){this("ItemBase");}
+    public ItemBase(){this("");}
     public ItemBase(String text){
         body = new JLabel(text);
         setFontAdjustText(text);
