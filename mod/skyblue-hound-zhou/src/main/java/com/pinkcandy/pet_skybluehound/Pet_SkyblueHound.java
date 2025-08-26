@@ -30,7 +30,7 @@ public class Pet_SkyblueHound extends PetBase {
             this.buttonsPerRow = 3;
             loadButtonsToPanel();
             adjustWindowSize();
-            this.setBackground(new Color(173,216,230,200));
+            this.setBackground(new Color(100,120,150,200));
         }
         @Override
         protected void readyToPaint(){
@@ -71,7 +71,7 @@ public class Pet_SkyblueHound extends PetBase {
         moveSpeed *= 2;
         int dashTime = 2000;
         playTargetAnimation("dash",dashTime);
-        final int snowCount = 30;
+        final int snowCount = 10;
         final int interval = dashTime / snowCount;
         Timer snowTimer = SwingTimerUtil.scheduleLoop(interval,()->{
             new Snow(this);

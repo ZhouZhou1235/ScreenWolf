@@ -14,7 +14,7 @@ public class PetOption extends WindowBase {
     protected Timer updateTimer;
     protected Point dragOffset;
     protected JPanel buttonPanel;
-    protected GridBagConstraints buttonGrid; // 按钮的网格布局
+    protected GridBagConstraints buttonGrid;
     protected int buttonsPerRow = 5; // 每行按钮数
     public PetOption(PetBase thePet){
         super(
@@ -33,7 +33,7 @@ public class PetOption extends WindowBase {
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setUndecorated(true);
         this.setAlwaysOnTop(true);
-        this.setBackground(new Color(245, 245, 250, 200));
+        this.setBackground(new Color(0, 0, 0, 200));
         this.setLayout(new BorderLayout(5, 5));
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
@@ -45,12 +45,13 @@ public class PetOption extends WindowBase {
         nameLabel.setFont(GUtil.DEFAULT_font.deriveFont(Font.BOLD, GUtil.DEFAULT_textSize));
         nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         nameLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
+        nameLabel.setForeground(new Color(240,240,240));
         dragPanel.add(nameLabel);
         contentPanel.add(dragPanel);
         statusLabel = new JLabel();
         statusLabel.setFont(GUtil.DEFAULT_font.deriveFont(Font.PLAIN, (int)(GUtil.DEFAULT_textSize * 0.8)));
         statusLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        statusLabel.setForeground(new Color(100, 100, 100));
+        statusLabel.setForeground(new Color(200, 200, 200));
         contentPanel.add(statusLabel);
         contentPanel.add(new JSeparator(JSeparator.HORIZONTAL));
         contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -134,7 +135,7 @@ public class PetOption extends WindowBase {
     public void startStatusUpdate(){
         updateTimer = new Timer(GUtil.GAME_renderTime,e->{
             updateStatusText();
-            if (!pet.isVisible()){
+            if(!pet.isVisible()){
                 closeWindow();
                 updateTimer.stop();
             }
@@ -153,7 +154,6 @@ public class PetOption extends WindowBase {
     public void showWindow(){
         Point petLocation = pet.getLocationOnScreen();
         Point windowLocation = new Point(petLocation.x + pet.getWidth() + 5, petLocation.y);
-        
         if (windowLocation.x + this.getWidth() > GUtil.SCREEN_dimension.width){
             windowLocation.x = petLocation.x - this.getWidth() - 5;
         }
@@ -162,6 +162,7 @@ public class PetOption extends WindowBase {
         }
         this.setLocation(windowLocation);
         this.setVisible(true);
+        if(!updateTimer.isRunning()){updateTimer.start();}
     }
     // 添加按钮 从主程序
     protected void addButton(String iconPath,String tooltip,ActionListener listener){

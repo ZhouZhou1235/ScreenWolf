@@ -3,6 +3,7 @@
 import os
 import shutil
 import subprocess
+import sys
 
 class MavenPetPackager:
     def __init__(self):
@@ -11,11 +12,10 @@ class MavenPetPackager:
             'mvn': f"{self.root}/bin/maven-bin/bin/mvn.cmd",
             'lib': f"{self.root}/bin/lib/ScreenWolf.jar",
             'projects_dir': f"{self.root}/pet-projects/",
-            'output_dir': f"{self.root}/data/pets/",
+            'output_dir': f"{self.root}/output/",
             'jdk': f"{self.root}/bin/jdk",
             'javac': f"{self.root}/bin/jdk/bin/javac.exe"
         }
-        
     def _exec(self, cmd):
         env = os.environ.copy()
         env["JAVA_HOME"] = os.path.normpath(self.paths['jdk'])
@@ -69,7 +69,8 @@ class MavenPetPackager:
 
 if __name__ == "__main__":
     if MavenPetPackager().run():
-        print("PINKCANDY: 成功")
+        print("PINKCANDY: pet package build done.")
+        input("PINKCANDY: task finished, press enter to exit.")
     else:
-        print("PINKCANDY: 失败")
-    input("按回车关闭")
+        input("PINKCANDY: build failed!")
+    sys.exit()

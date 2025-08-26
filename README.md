@@ -16,7 +16,8 @@ Created by a skyblue dog named zhou.
 **开发中**
 周周正在不定期更新该项目，敬请期待！
 进度
-1.0.0 正在开发
+1.0.0_windows 正在开发
+1.0.0_Beta_windows_2 2025.8.26 已发布
 1.0.0_Beta_windows 2025.7.5 已发布
 1.x.x 2025.5.16 项目创建
 
