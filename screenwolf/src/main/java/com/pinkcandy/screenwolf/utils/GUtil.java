@@ -39,7 +39,11 @@ import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.FontUIResource;
 
-// 全局通用工具
+
+/**
+ * 全局工具
+ * 在主程序中都可使用的统一工具类 提供实用的方法
+ */
 public class GUtil {
     // 最大帧长度
     static public int GAME_maxFrameLength = 1024;
@@ -283,18 +287,18 @@ public class GUtil {
         return button;
     }
     // 长文本分割算法
-    public static String[] splitTextIntoMessages(String text){
-        String[] sentences = text.split("(?<=[.!?。！？])");
+    public static String[] splitTextIntoMessages(String text) {
+        String[] segments = text.split("(?<=[\\s,.;!?，。；！？])|(?=[\\s,.;!?，。；！？])");
         List<String> messages = new ArrayList<>();
         StringBuilder currentMsg = new StringBuilder();
-        for(String sentence:sentences){
-            if(currentMsg.length() + sentence.length()>50){
+        for(String segment:segments){
+            if(currentMsg.length()+segment.length()>50 && currentMsg.length()>0){
                 messages.add(currentMsg.toString().trim());
                 currentMsg = new StringBuilder();
             }
-            currentMsg.append(sentence);
+            currentMsg.append(segment);
         }
-        if(currentMsg.length()>0){
+        if (currentMsg.length()>0){
             messages.add(currentMsg.toString().trim());
         }
         return messages.toArray(new String[0]);

@@ -3,7 +3,11 @@ package com.pinkcandy.screenwolf.base;
 import java.awt.Dimension;
 import javax.swing.JFrame;
 
-// 窗口
+
+/**
+ * 窗口基类
+ * 创建一个操作系统的窗体
+ */
 public class WindowBase extends JFrame {
     public WindowBase(){
         this.setTitle("window");

@@ -15,7 +15,7 @@ public class PetOption extends WindowBase {
     protected Point dragOffset;
     protected JPanel buttonPanel;
     protected GridBagConstraints buttonGrid;
-    protected int buttonsPerRow = 5; // 每行按钮数
+    protected int buttonsPerRow = 4; // 每行按钮数
     public PetOption(PetBase thePet){
         super(
             thePet.getPetData().getName(),
@@ -44,7 +44,6 @@ public class PetOption extends WindowBase {
         JLabel nameLabel = new JLabel(pet.getPetData().getName());
         nameLabel.setFont(GUtil.DEFAULT_font.deriveFont(Font.BOLD, GUtil.DEFAULT_textSize));
         nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        nameLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
         nameLabel.setForeground(new Color(240,240,240));
         dragPanel.add(nameLabel);
         contentPanel.add(dragPanel);
@@ -82,14 +81,15 @@ public class PetOption extends WindowBase {
     // 加载按钮到面板
     protected void loadButtonsToPanel(){
         buttonPanel.removeAll();
-        addButton("images/button_rest.png", "休息", e -> pet.doRest());
-        addButton("images/button_screenshot.png", "截图", e -> {
+        addButton("images/button_follow.png", "跟随",e->pet.followMouse());
+        addButton("images/button_rest.png", "休息",e->pet.doRest());
+        addButton("images/button_copy_text.png", "复制文本",e->pet.copyTextFromClipboard());
+        addButton("images/button_read.png", "阅读",e->pet.readMessageList());
+        addButton("images/button_screenshot.png", "截图",e->{
             pet.copyScreenImage();
             pet.showMessage("截图已复制到剪贴板");
         });
-        addButton("images/button_copy_text.png", "复制文本", e -> pet.copyTextFromClipboard());
-        addButton("images/button_follow.png", "跟随", e -> pet.followMouse());
-        addButton("images/button_close.png", "关闭", e -> closeWindow());
+        addButton("images/button_close.png", "关闭",e->closeWindow());
         // 重写加载更多......
     }
     // 调整窗口大小

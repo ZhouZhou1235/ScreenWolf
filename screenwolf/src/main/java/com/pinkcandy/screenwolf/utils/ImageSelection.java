@@ -6,7 +6,11 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-// 截获的图片传输
+
+/**
+ * 截获的图片传输
+ * 用于屏幕截图
+ */
 public class ImageSelection implements Transferable {
     private final BufferedImage image;
     public ImageSelection(BufferedImage image){this.image=image;}

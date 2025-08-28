@@ -1,5 +1,10 @@
 package com.pinkcandy.screenwolf.bean;
 
+
+/**
+ * 游戏信息bean
+ * 储存屏幕有狼游戏的描述，作者，版本号等基本信息
+ */
 public class GameInfoData {
     private String title;
     private String version;

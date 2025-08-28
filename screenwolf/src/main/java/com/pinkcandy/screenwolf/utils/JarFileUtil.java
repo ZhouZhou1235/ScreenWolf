@@ -8,7 +8,11 @@ import java.util.HashMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-// jar包文件工具类
+
+/**
+ * jar包文件工具类
+ * 可以读取jar包的内容
+ */
 public class JarFileUtil {
     // 读取jar指定目录下的文件夹名
     static public ArrayList<String> listJarDirNamesByPath(String jarPath,String dirPath){

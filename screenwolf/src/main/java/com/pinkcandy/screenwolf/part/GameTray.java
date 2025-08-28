@@ -1,4 +1,4 @@
-package com.pinkcandy.screenwolf;
+package com.pinkcandy.screenwolf.part;
 
 import java.awt.AWTException;
 import java.awt.Image;
@@ -11,9 +11,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import com.pinkcandy.screenwolf.Launcher;
 import com.pinkcandy.screenwolf.utils.ResourceReader;
 
-// 系统托盘
+
+/**
+ * 游戏托盘
+ * 游戏会在用户电脑系统中创建托盘以控制游戏进程
+ */
 public class GameTray {
     private SystemTray systemTray;
     private TrayIcon trayIcon;

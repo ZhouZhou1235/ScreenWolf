@@ -15,7 +15,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 
-// 物体基类
+
+/**
+ * 物体基类
+ * 在屏幕上显示的物品
+ */
 public class ItemBase extends JPanel {
     protected String itemName;
     protected JLabel body;

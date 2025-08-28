@@ -1,6 +1,10 @@
 package com.pinkcandy.screenwolf.bean;
 
-// 与桌宠游玩的数据
+
+/**
+ * 桌宠游玩数据bean
+ * 储存与这只宠物游玩产生的数据
+ */
 public class PlayPetData {
     private int mouseClickNum = 0; // 鼠标点击记数
     private int followMouseDistance = 0; // 跟随鼠标距离

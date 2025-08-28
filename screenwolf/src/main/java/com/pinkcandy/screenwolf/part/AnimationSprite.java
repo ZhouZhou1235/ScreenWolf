@@ -1,4 +1,4 @@
-package com.pinkcandy.screenwolf;
+package com.pinkcandy.screenwolf.part;
 
 import java.awt.Dimension;
 import java.util.Map;
@@ -10,7 +10,11 @@ import com.pinkcandy.screenwolf.utils.JarFileUtil;
 
 import java.util.HashMap;
 
-// 动画精灵类
+
+/**
+ * 动画精灵
+ * 播放序列帧动画的Swing标签
+ */
 public class AnimationSprite extends JLabel {
     private ImageIcon[] frames;
     private int frameIndex;

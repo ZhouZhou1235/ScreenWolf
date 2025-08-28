@@ -4,12 +4,17 @@ import java.awt.*;
 import java.util.*;
 
 import com.pinkcandy.screenwolf.base.PetBase;
+import com.pinkcandy.screenwolf.part.GameTray;
 import com.pinkcandy.screenwolf.utils.GUtil;
 import com.pinkcandy.screenwolf.windows.AboutWindow;
 import com.pinkcandy.screenwolf.windows.TransparentScreen;
 import com.pinkcandy.screenwolf.windows.WelcomeWindow;
 
-// 启动器
+
+/**
+ * 启动器
+ * 加载游戏所需的一切事物
+ */
 public class Launcher {
     private TransparentScreen screen;
     private ArrayList<PetBase> petList;

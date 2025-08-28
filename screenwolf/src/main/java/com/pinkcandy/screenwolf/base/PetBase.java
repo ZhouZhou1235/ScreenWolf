@@ -23,20 +23,21 @@ import java.nio.charset.StandardCharsets;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import com.pinkcandy.screenwolf.AnimationSprite;
 import com.pinkcandy.screenwolf.Launcher;
-import com.pinkcandy.screenwolf.PetMessageBubble;
 import com.pinkcandy.screenwolf.bean.PetData;
 import com.pinkcandy.screenwolf.bean.PlayPetData;
+import com.pinkcandy.screenwolf.part.AnimationSprite;
+import com.pinkcandy.screenwolf.part.PetMessageBubble;
 import com.pinkcandy.screenwolf.utils.GUtil;
 import com.pinkcandy.screenwolf.utils.GsonUtil;
 import com.pinkcandy.screenwolf.utils.ImageSelection;
 import com.pinkcandy.screenwolf.utils.JarFileUtil;
 import com.pinkcandy.screenwolf.windows.PetOption;
 
+
 /**
- * 桌面宠物基类
- * 具备桌宠基本功能，应该继承此类实现自己的桌宠。
+ * 宠物基类
+ * 提供统一模板，继承此类实现自己的桌宠。
  */
 public class PetBase extends JPanel {
     // === 组成 ===
@@ -256,21 +257,21 @@ public class PetBase extends JPanel {
         if(isPress){
             dragCounter++;
             if(dragCounter>60){
-                reduceAffectPoint(2);
-                dragCounter=0;
+                reduceAffectPoint(10);
+                dragCounter = 0;
             }
         }else{dragCounter=0;}
         // 跟随鼠标
         if(isFollow && isMoving){
             followCounter++;
             if(followCounter>100){
-                addAffectPoint(3);
+                addAffectPoint(5);
                 followCounter = 0;
             }
-        }else{followCounter = 0;}
+        }else{followCounter=0;}
         // 点击太多次
-        if(clickCounter > 20){
-            reduceAffectPoint(clickCounter / 5);
+        if(clickCounter>5){
+            reduceAffectPoint(20);
             clickCounter = 0;
         }
     }
@@ -316,8 +317,8 @@ public class PetBase extends JPanel {
         // 太久不理宠物
         inactiveCounter++;
         if(inactiveCounter>300){
-            if(isResting){reduceAffectPoint(5);}
-            else{reduceAffectPoint(10);}
+            if(isResting){reduceAffectPoint(50);}
+            else{reduceAffectPoint(100);}
             inactiveCounter = 0;
         }
         // 根据等级做出不同反应
@@ -327,19 +328,19 @@ public class PetBase extends JPanel {
             String[] sadMessages = petData.getSadMessages();
             if(!isResting){
                 // 等级高播放特殊动画
-                if(level >= 80 && Math.random()<0.1){
+                if(level >= 70 && Math.random()<0.1){
                     playTargetAnimation("special",5000);
                     showMessage(specialMessages[(int)(Math.random()*specialMessages.length)]);
                 }
                 // 等级低播放特殊动画
-                else if(level < 20 && Math.random()<0.3){
+                else if(level < 30 && Math.random()<0.3){
                     playTargetAnimation("sad",5000);
                     showMessage(sadMessages[(int)(Math.random()*sadMessages.length)]);
                 }
             }
         }else{emotionNum++;}
         // 影响功能
-        if(level >= 60) {
+        if(level>=60){
             followDistanse = (int)(GUtil.DEFAULT_bodySize.getWidth()*0.75);
         }else{
             followDistanse = (int)GUtil.DEFAULT_bodySize.getWidth();
@@ -452,7 +453,7 @@ public class PetBase extends JPanel {
         }
     }
     // 处理鼠标滚轮
-    protected void handleMouseWheelMoved(MouseWheelEvent e) {
+    protected void handleMouseWheelMoved(MouseWheelEvent e){
         if(!isResting) {
             touchNum += 1;
             inactiveCounter = 0;

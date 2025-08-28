@@ -17,7 +17,6 @@ public class Pet_SkyblueHound extends PetBase {
     private boolean isDashing = false;
     public Pet_SkyblueHound(Launcher theLauncher){
         super(theLauncher);
-        // 调整数值
         this.moveSpeed = (int)(GUtil.DEFAULT_bodySize.getWidth()/8);
         this.followDistanse = (int)(GUtil.DEFAULT_bodySize.getWidth()*1.2);
         this.emotionThreshold = 60;
@@ -27,7 +26,6 @@ public class Pet_SkyblueHound extends PetBase {
     private class MyOption extends PetOption {
         public MyOption(PetBase pet){
             super(pet);
-            this.buttonsPerRow = 3;
             loadButtonsToPanel();
             adjustWindowSize();
             this.setBackground(new Color(100,120,150,200));

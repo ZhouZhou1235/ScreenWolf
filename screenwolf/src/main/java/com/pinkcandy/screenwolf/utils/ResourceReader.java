@@ -5,7 +5,11 @@ import java.io.InputStream;
 
 import javax.swing.ImageIcon;
 
-// 项目资源读取器
+
+/**
+ * 项目资源读取器
+ * 能读取屏幕有狼主程序项目的内容
+ */
 public class ResourceReader {
     // 读取资源的输入流
     public static InputStream getResourceAsStream(String filePath){

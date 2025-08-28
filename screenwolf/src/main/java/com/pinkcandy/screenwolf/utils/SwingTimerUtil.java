@@ -4,7 +4,11 @@ import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.util.function.Consumer;
 
-// swing 定时任务工具类
+
+/**
+ * swing 定时任务工具类
+ * 提供swing timer相关的方法
+ */
 public class SwingTimerUtil {
     // 执行延迟任务
     public static Timer schedule(int delayMs,Runnable task){

@@ -1,4 +1,4 @@
-package com.pinkcandy.screenwolf;
+package com.pinkcandy.screenwolf.part;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -12,11 +12,13 @@ import javax.swing.SwingConstants;
 import com.pinkcandy.screenwolf.base.ItemBase;
 import com.pinkcandy.screenwolf.utils.GUtil;
 
-// 宠物消息气泡
+/**
+ * 宠物消息气泡
+ * 在屏幕上显示文字的容器
+ */
 public class PetMessageBubble extends ItemBase {
     private Timer autoHideTimer;
     private int displayTime = 5000;
-    
     public PetMessageBubble(String text) {
         super(text);
         JLabel textLabel = getBody();
@@ -62,12 +64,10 @@ public class PetMessageBubble extends ItemBase {
             public void mouseEntered(MouseEvent e) {
                 autoHideTimer.stop();
             }
-            
             @Override
             public void mouseExited(MouseEvent e) {
                 autoHideTimer.restart();
             }
-            
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON3) {

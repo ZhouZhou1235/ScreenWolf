@@ -1,6 +1,10 @@
 package com.pinkcandy.screenwolf.bean;
 
-// 宠物数据
+
+/**
+ * 宠物数据bean
+ * 储存一只桌宠的信息
+ */
 public class PetData {
     private String name;
     private String info;
