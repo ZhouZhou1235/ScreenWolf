@@ -92,10 +92,6 @@ public class PetBase extends JPanel {
 
     // 初始化桌宠
     public void initPet(){
-        // 基本属性
-        Dimension size = GUtil.DEFAULT_bodySize;
-        this.id = this.getClass().getSimpleName();
-        this.savePath = GUtil.GAME_savePath+id+".json";
         // 宠物数据
         ClassLoader classLoader = this.getClass().getClassLoader();
         try(InputStream is = classLoader.getResourceAsStream("META-INF/pet_data.json")){
@@ -106,10 +102,14 @@ public class PetBase extends JPanel {
         }catch(IOException e){
             throw new RuntimeException("PINKCANDY: Failed to load pet data",e);
         }
+        // 基本属性
+        Dimension size = GUtil.DEFAULT_bodySize;
+        this.id = petData.getId();
+        this.savePath = GUtil.GAME_savePath+id+".json";
         // 动画资源
         HashMap<String, String> imageFrameHashmap = new HashMap<>();
         for(String animationName:JarFileUtil.listJarDirNamesByPath(
-            GUtil.GAME_petsPath+petData.getJarName(),
+            GUtil.GAME_petsPath+JarFileUtil.getCurrentJarName(this),
             "assets/animations"
         )){
             imageFrameHashmap.put(
@@ -120,7 +120,7 @@ public class PetBase extends JPanel {
         this.animationSprite = new AnimationSprite(
             size,
             imageFrameHashmap,
-            GUtil.GAME_petsPath+petData.getJarName()
+            GUtil.GAME_petsPath+JarFileUtil.getCurrentJarName(this)
         );
         // 定时器
         this.updateTimer = new Timer(GUtil.GAME_updateTime,e->autoLoop());

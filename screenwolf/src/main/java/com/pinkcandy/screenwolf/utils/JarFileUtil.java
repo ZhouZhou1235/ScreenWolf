@@ -2,6 +2,9 @@ package com.pinkcandy.screenwolf.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.security.CodeSource;
+import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -57,6 +60,22 @@ public class JarFileUtil {
                 }
             }
         }
+        return null;
+    }
+    // 获取java类所在jar包名
+    static public String getCurrentJarName(Object clazz){
+        try{
+            ProtectionDomain protectionDomain = clazz.getClass().getProtectionDomain();
+            CodeSource codeSource = protectionDomain.getCodeSource();
+            if(codeSource!=null){
+                URL location = codeSource.getLocation();
+                String path = location.getPath();
+                if(path.endsWith(".jar")){
+                    String[] pathParts = path.split("/");
+                    return pathParts[pathParts.length-1];
+                }
+            }
+        }catch(Exception e){e.printStackTrace();}
         return null;
     }
 }

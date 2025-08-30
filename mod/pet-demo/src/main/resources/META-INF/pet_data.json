@@ -1,8 +1,8 @@
 {
+    "id": "screenwolf-demo",
+    "mainClass": "com.pinkcandy.pet_demo.Pet",
     "name": "桌宠示例",
     "info": "只有游戏基本功能的模板",
-    "jarName":"pet-demo-1.0.0.jar",
-    "mainClass": "com.pinkcandy.pet_demo.Pet_Demo",
     "specialMessages":["特殊消息气泡"],
     "sadMessages":["伤心消息气泡"]
 }

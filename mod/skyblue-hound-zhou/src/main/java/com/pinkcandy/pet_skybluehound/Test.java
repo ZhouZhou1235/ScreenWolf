@@ -8,7 +8,7 @@ import com.pinkcandy.screenwolf.base.PetBase;
 public class Test {
     public static void main(String[] args){
         Launcher launcher = new Launcher();
-        PetBase pet = new Pet_SkyblueHound(launcher);
+        PetBase pet = new Pet(launcher);
         launcher.testLoadPet(pet);
     }
 }

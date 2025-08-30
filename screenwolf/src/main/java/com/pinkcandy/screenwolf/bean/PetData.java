@@ -6,20 +6,20 @@ package com.pinkcandy.screenwolf.bean;
  * 储存一只桌宠的信息
  */
 public class PetData {
+    private String id;
     private String name;
     private String info;
-    private String jarName;
     private String mainClass;
     private String[] specialMessages;
     private String[] sadMessages;
+    public String getId() {
+        return id;
+    }
     public String getName() {
         return name;
     }
     public String getInfo() {
         return info;
-    }
-    public String getJarName() {
-        return jarName;
     }
     public String getMainClass() {
         return mainClass;
@@ -30,14 +30,14 @@ public class PetData {
     public String[] getSadMessages() {
         return sadMessages;
     }
+    public void setId(String id) {
+        this.id = id;
+    }
     public void setName(String name) {
         this.name = name;
     }
     public void setInfo(String info) {
         this.info = info;
-    }
-    public void setJarName(String jarName) {
-        this.jarName = jarName;
     }
     public void setMainClass(String mainClass) {
         this.mainClass = mainClass;

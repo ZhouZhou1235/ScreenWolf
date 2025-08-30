@@ -2,3 +2,4 @@
 jdk - java jdk
 lib - 包含jar包 游戏启动器ScreenWolf.jar
 maven-bin - java maven
+pet-demo.zip 模板项目的压缩包

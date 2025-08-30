@@ -13,9 +13,9 @@ import com.pinkcandy.screenwolf.utils.SwingTimerUtil;
 import com.pinkcandy.screenwolf.windows.PetOption;
 
 // 小蓝狗周周
-public class Pet_SkyblueHound extends PetBase {
+public class Pet extends PetBase {
     private boolean isDashing = false;
-    public Pet_SkyblueHound(Launcher theLauncher){
+    public Pet(Launcher theLauncher){
         super(theLauncher);
         this.moveSpeed = (int)(GUtil.DEFAULT_bodySize.getWidth()/8);
         this.followDistanse = (int)(GUtil.DEFAULT_bodySize.getWidth()*1.2);
@@ -41,7 +41,7 @@ public class Pet_SkyblueHound extends PetBase {
             super.loadButtonsToPanel();
             try{
                 byte[] data = JarFileUtil.readByteInJarFile(
-                    GUtil.GAME_petsPath+pet.getPetData().getJarName(),
+                    GUtil.GAME_petsPath+JarFileUtil.getCurrentJarName(this),
                     "assets/images/button_dash.png"
                 );
                 this.addButton(
