@@ -10,7 +10,11 @@ import javax.swing.Timer;
 import com.pinkcandy.screenwolf.base.WindowBase;
 import com.pinkcandy.screenwolf.utils.GUtil;
 
-// 屏幕透明窗体
+
+/**
+ * 屏幕透明窗体
+ * 在屏幕上覆盖一个透明窗体，所有物体都会添加到这个窗体上。
+ */
 public class TransparentScreen extends WindowBase {
     private Timer renderTimer; // 渲染时钟
     private JPanel contentPane;

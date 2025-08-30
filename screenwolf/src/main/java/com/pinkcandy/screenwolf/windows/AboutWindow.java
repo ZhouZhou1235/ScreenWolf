@@ -8,7 +8,11 @@ import com.pinkcandy.screenwolf.utils.GUtil;
 import com.pinkcandy.screenwolf.utils.GsonUtil;
 import com.pinkcandy.screenwolf.utils.ResourceReader;
 
-// 关于
+
+/**
+ * 关于
+ * 介绍游戏
+ */
 public class AboutWindow extends WindowBase {
     public AboutWindow() {
         super("Info",GUtil.DEFAULT_windowSize);

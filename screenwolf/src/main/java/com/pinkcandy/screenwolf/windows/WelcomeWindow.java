@@ -17,7 +17,11 @@ import com.pinkcandy.screenwolf.bean.PetData;
 import com.pinkcandy.screenwolf.utils.GsonUtil;
 import com.pinkcandy.screenwolf.utils.JarFileUtil;
 
-// 开始窗口
+
+/**
+ * 开始窗口
+ * 启动器完成加载后显示的窗口，能选择桌宠和控制游戏的状态。
+ */
 public class WelcomeWindow extends WindowBase {
     private ArrayList<JButton> petButtonsList = new ArrayList<>();
     private JPanel welcomePanel = new JPanel();
@@ -70,17 +74,17 @@ public class WelcomeWindow extends WindowBase {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER,15,5));
         
         int buttonSize = GUtil.DEFAULT_textSize * 2;
-        playButton = GUtil.createIconButton("images/button_play.png","开始游戏",buttonSize);
-        clearButton = GUtil.createIconButton("images/button_stop.png","结束游戏",buttonSize);
-        reloadButton = GUtil.createIconButton("images/button_reload.png","重新加载",buttonSize);
-        exitButton = GUtil.createIconButton("images/button_exit.png","退出程序",buttonSize);
-        infoButton = GUtil.createIconButton("images/button_info.png","游戏介绍",buttonSize);
-        addPetButton = GUtil.createIconButton("images/button_add_pet.png","添加宠物",buttonSize);
+        playButton = GUtil.createIconButton("images/button_play.png","开始游戏 play",buttonSize);
+        clearButton = GUtil.createIconButton("images/button_stop.png","结束游戏 stop",buttonSize);
+        reloadButton = GUtil.createIconButton("images/button_reload.png","重新加载 reload",buttonSize);
+        exitButton = GUtil.createIconButton("images/button_exit.png","退出程序 exit",buttonSize);
+        infoButton = GUtil.createIconButton("images/button_info.png","游戏介绍 info",buttonSize);
+        addPetButton = GUtil.createIconButton("images/button_add_pet.png","添加宠物 add pet",buttonSize);
 
         clearButton.setEnabled(false);
         playButton.addActionListener(e->{
             if(!launcher.getPetListCopy().isEmpty()){launcher.playGame();}
-            else{JOptionPane.showMessageDialog(this,"没有选择宠物");}
+            else{JOptionPane.showMessageDialog(this,"没有选择宠物 no pet have selected");}
         });
         clearButton.addActionListener(e->launcher.stopGame());
         reloadButton.addActionListener(e->launcher.reloadLauncher());
@@ -89,7 +93,7 @@ public class WelcomeWindow extends WindowBase {
         addPetButton.addActionListener(e->{
             int copiedCount = GUtil.copyFilesWithDialog(
                 this, 
-                "选择宠物JAR文件", 
+                "选择宠物JAR文件 select pet jar", 
                 "JAR文件", 
                 "jar",
                 GUtil.GAME_petsPath

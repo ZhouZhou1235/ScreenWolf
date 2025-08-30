@@ -7,7 +7,11 @@ import com.pinkcandy.screenwolf.base.PetBase;
 import com.pinkcandy.screenwolf.base.WindowBase;
 import com.pinkcandy.screenwolf.utils.GUtil;
 
-// 宠物选项面板
+
+/**
+ * 宠物选项面板
+ * 每只宠物都有一个专属面板 继承以定制更多内容
+ */
 public class PetOption extends WindowBase {
     protected PetBase pet;
     protected JLabel statusLabel;
@@ -81,15 +85,15 @@ public class PetOption extends WindowBase {
     // 加载按钮到面板
     protected void loadButtonsToPanel(){
         buttonPanel.removeAll();
-        addButton("images/button_follow.png", "跟随",e->pet.followMouse());
-        addButton("images/button_rest.png", "休息",e->pet.doRest());
-        addButton("images/button_copy_text.png", "复制文本",e->pet.copyTextFromClipboard());
-        addButton("images/button_read.png", "阅读",e->pet.readMessageList());
-        addButton("images/button_screenshot.png", "截图",e->{
+        addButton("images/button_follow.png", "跟随 follow",e->pet.followMouse());
+        addButton("images/button_rest.png", "休息 rest",e->pet.doRest());
+        addButton("images/button_copy_text.png", "复制文本 copy text",e->pet.copyTextFromClipboard());
+        addButton("images/button_read.png", "阅读 read",e->pet.readMessageList());
+        addButton("images/button_screenshot.png", "截图 screenshot",e->{
             pet.copyScreenImage();
             pet.showMessage("截图已复制到剪贴板");
         });
-        addButton("images/button_close.png", "关闭",e->closeWindow());
+        addButton("images/button_close.png", "关闭 close",e->closeWindow());
         // 重写加载更多......
     }
     // 调整窗口大小
@@ -124,7 +128,7 @@ public class PetOption extends WindowBase {
             statusLabel.setText("");
             return;
         }
-        String statusText = String.format("等级:%d 经验:%d/%d | 动画:%s",
+        String statusText = String.format("%d - %d/%d | %s",
             pet.getPlayPetData().getAffectionLevel(),
             pet.getPlayPetData().getAffectionPoints(),
             pet.affectLevelUp,

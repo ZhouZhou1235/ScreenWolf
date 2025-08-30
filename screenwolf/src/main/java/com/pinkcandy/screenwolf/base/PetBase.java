@@ -296,7 +296,7 @@ public class PetBase extends JPanel {
     public void slowAuto_rest(){
         if(!isResting && isFree()){
             if(restNum<restThreshold){restNum++;}
-            else{isResting=true;restNum=0;}
+            else{isResting=true;restNum=0;doRest();}
         }
     }
     // 自主移动
@@ -491,6 +491,7 @@ public class PetBase extends JPanel {
         isResting = false;
         isAutoMoving = false;
         isTargetAnimationPlaying = false;
+        isFollow = false;
     }
     // 是否空闲
     public boolean isFree(){
