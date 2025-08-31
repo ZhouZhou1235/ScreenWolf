@@ -9,11 +9,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.pinkcandy</groupId>
-    <artifactId>pet-demo</artifactId>
+    <artifactId>screenwolf_demo</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>ScreenWolf Pet Demo</name>
-    <description>ScreenWolf Pet Basic Template</description>
+    <description>ScreenWolf Pet id: screenwolf_demo</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

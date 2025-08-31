@@ -1,0 +1,8 @@
+{
+    "id": "screenwolf_demo",
+    "mainClass": "com.pinkcandy.screenwolf_demo.Pet",
+    "name": "桌宠示例",
+    "info": "PetBase 宠物基本功能的模板",
+    "specialMessages":["特殊消息气泡"],
+    "sadMessages":["伤心消息气泡"]
+}

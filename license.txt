@@ -1,6 +1,99 @@
-屏幕有狼 使用许可
-作者 粉糖粒子周周 2025.6
-- 您可以使用、修改、分享这款游戏的公开部分
-- 传播时必须署名作者或表明来源
-- 您必须保证游戏不能封闭，而是可再次修改。
-- 不能用于任何营利目的
+《屏幕有狼》游戏使用许可证
+
+1. 定义
+- "游戏"：指《屏幕有狼》及其所有公开部分
+- "作者"：指小蓝狗周周
+- "用户"：指使用本游戏的个人或组织
+
+2. 许可授予
+根据以下条款，作者授予用户全球性、免版税、非独占的许可：
+- 使用、复制和分发游戏
+- 修改和创作衍生作品
+- 非营利性分享和传播游戏
+
+3. 署名要求
+用户在任何分发、修改或衍生作品中必须：
+- 明确署名"小蓝狗周周"为原作者
+- 注明来源为《屏幕有狼》
+- 保留本许可协议和版权声明
+
+4. 共享条款
+用户分发游戏或衍生作品时必须：
+- 使用相同或兼容的许可条款
+- 保证后续使用者享有相同的修改和分享权利
+- 提供相应的源代码或修改说明
+
+5. 禁止条款
+用户不得：
+- 将游戏用于任何商业或营利目的
+- 对游戏施加技术限制阻止后续修改
+- 声称对游戏拥有原始著作权
+
+6. 免责声明
+游戏按"原样"提供，作者不承担：
+- 任何直接或间接的损害责任
+- 游戏功能完整性和适用性的保证
+
+7. 许可终止
+违反本许可条款将自动终止授予的权利
+
+8. 法律适用
+本许可受中华人民共和国法律管辖
+
+本许可基于知识共享署名-非商业性-相同方式共享4.0国际许可(CC BY-NC-SA 4.0)框架制定
+
+发布日期：2025年6月
+
+
+
+===
+
+
+
+[ENGLISH]
+
+"Screen Wolf" Game Usage License
+
+1. Definitions
+- "Game": Refers to "Screen Wolf" and all its publicly available components
+- "Author": Refers to pinkcandyzhou
+- "User": Refers to any individual or organization using the Game
+
+2. License Grant
+Subject to the following terms, the Author grants User a worldwide, royalty-free, non-exclusive license to:
+- Use, copy, and distribute the Game
+- Modify and create derivative works
+- Share and disseminate the Game for non-commercial purposes
+
+3. Attribution Requirements
+User must in any distribution, modification, or derivative works:
+- Clearly attribute "pinkcandyzhou" as the original author
+- Indicate the source as "Screen Wolf"
+- Retain this license agreement and copyright notice
+
+4. Share-Alike Terms
+When distributing the Game or derivative works, User must:
+- Use the same or compatible license terms
+- Ensure subsequent users enjoy the same modification and sharing rights
+- Provide corresponding source code or modification instructions
+
+5. Prohibitions
+User may not:
+- Use the Game for any commercial or profit-seeking purposes
+- Apply technical restrictions that prevent subsequent modifications
+- Claim original copyright ownership of the Game
+
+6. Disclaimer
+The Game is provided "as is". The Author bears no:
+- Liability for any direct or indirect damages
+- Warranty regarding functional completeness or fitness for purpose
+
+7. License Termination
+Violation of these license terms automatically terminates granted rights
+
+8. Governing Law
+This license is governed by the laws of the People's Republic of China
+
+This license is based on the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) framework
+
+Release Date: June 2025

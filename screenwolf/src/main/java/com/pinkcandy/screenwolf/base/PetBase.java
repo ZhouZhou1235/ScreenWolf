@@ -80,18 +80,19 @@ public class PetBase extends JPanel {
     // 计时器
     protected Timer updateTimer; // 高速循环计时器
     protected Timer lowUpdateTimer; // 低速循环计时器
-    public PetBase(Launcher theLauncher){
-        this.launcher = theLauncher;
-        initPet();
-    }
     // 计数器
     protected int dragCounter = 0; // 拖拽计数器
     protected int followCounter = 0; // 跟随计数器
     protected int inactiveCounter = 0; // 不活跃计数器
     protected int clickCounter = 0; // 点击计数器
-
+    // 构造
+    public PetBase(Launcher theLauncher){
+        this.launcher = theLauncher;
+        String jarName = GUtil.GAME_petsPath+JarFileUtil.getCurrentJarName(this);
+        initPet(jarName);
+    }
     // 初始化桌宠
-    public void initPet(){
+    public void initPet(String jarName){
         // 宠物数据
         ClassLoader classLoader = this.getClass().getClassLoader();
         try(InputStream is = classLoader.getResourceAsStream("META-INF/pet_data.json")){
@@ -109,7 +110,7 @@ public class PetBase extends JPanel {
         // 动画资源
         HashMap<String, String> imageFrameHashmap = new HashMap<>();
         for(String animationName:JarFileUtil.listJarDirNamesByPath(
-            GUtil.GAME_petsPath+JarFileUtil.getCurrentJarName(this),
+            jarName,
             "assets/animations"
         )){
             imageFrameHashmap.put(
@@ -120,7 +121,7 @@ public class PetBase extends JPanel {
         this.animationSprite = new AnimationSprite(
             size,
             imageFrameHashmap,
-            GUtil.GAME_petsPath+JarFileUtil.getCurrentJarName(this)
+            jarName
         );
         // 定时器
         this.updateTimer = new Timer(GUtil.GAME_updateTime,e->autoLoop());

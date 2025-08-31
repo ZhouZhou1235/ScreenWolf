@@ -1,4 +1,4 @@
-package com.pinkcandy.pet_skybluehound;
+package com.pinkcandy.screenwolf_zhou;
 
 import java.awt.Color;
 import java.awt.Dimension;

@@ -1,6 +1,6 @@
 {
-    "id": "screenwolf-skybluehound-zhou",
-    "mainClass": "com.pinkcandy.pet_skybluehound.Pet",
+    "id": "screenwolf_zhou",
+    "mainClass": "com.pinkcandy.screenwolf_zhou.Pet",
     "name": "小蓝狗",
     "info": "小蓝狗正在制作java桌面宠物！安静的他适合作为桌宠教程~",
     "specialMessages": [

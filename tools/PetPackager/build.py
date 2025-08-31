@@ -6,7 +6,6 @@ import subprocess
 import sys
 import json
 import zipfile
-import random
 import xpinyin
 
 
@@ -23,7 +22,7 @@ class MavenPetPackager:
             'jdk': f"{self.root}/bin/jdk",
             'javac': f"{self.root}/bin/jdk/bin/javac.exe",
             'thepet_assets': f"{self.root}/thepet_assets/",
-            'pet_demo_zip': f"{self.root}/bin/pet-demo.zip",
+            'pet_demo_zip': f"{self.root}/bin/screenwolf_demo.zip",
             'temp_dir': f"{self.root}/tmp/"
         }
     # 执行命令
@@ -40,6 +39,8 @@ class MavenPetPackager:
             '-DgroupId=com.pinkcandy '
             '-DartifactId=screenwolf '
             '-Dpackaging=jar'
+            '-DgeneratePom=true '
+            '-DcreateChecksum=true'
         )
         return self.exec(cmd)
     # maven编译打包
@@ -50,7 +51,8 @@ class MavenPetPackager:
         compile_cmd = (
             f'"{self.paths["mvn"]}" -f "{pom}" clean package '
             f'-Dmaven.compiler.fork=true '
-            f'-Dmaven.compiler.executable="{os.path.normpath(self.paths["jdk"])}/bin/javac"'
+            f'-Dmaven.compiler.executable="{os.path.normpath(self.paths["jdk"])}/bin/javac" '
+            f'-Dfile.encoding=UTF-8'
         )
         if not self.exec(compile_cmd):
             return False
@@ -78,6 +80,7 @@ class MavenPetPackager:
         return success
     # 创建宠物项目并打包
     def create_and_build_pet(self,pet_name:str,pet_info:str):
+        theID = xpinyin_obj.get_pinyin(pet_name).lower().replace(" ", "_")
         if os.path.exists(self.paths['temp_dir']):
             shutil.rmtree(self.paths['temp_dir'])
         os.makedirs(self.paths['temp_dir'], exist_ok=True)
@@ -93,8 +96,8 @@ class MavenPetPackager:
         project_dir = os.path.join(self.paths['temp_dir'], extracted_dirs[0])
         # 生成pet_data.json
         pet_data = {
-            "id": xpinyin_obj.get_pinyin(pet_name).lower().replace(" ", "-")+str(random.randint(100000000,999999999)),
-            "mainClass": f"com.pinkcandy.pet_demo.Pet",
+            "id": theID,
+            "mainClass": f"com.pinkcandy.screenwolf_demo.Pet",
             "name": pet_name,
             "info": pet_info,
             "specialMessages": [],
@@ -105,9 +108,8 @@ class MavenPetPackager:
         with open(os.path.join(meta_inf_dir, "pet_data.json"), "w", encoding="utf-8") as f:
             json.dump(pet_data, f, ensure_ascii=False, indent=2)
         # 生成pom.xml
-        artifact_id = f"pet-{xpinyin_obj.get_pinyin(pet_name).lower().replace(' ','-')}"
-        group_id = f"com.pinkcandy.{xpinyin_obj.get_pinyin(pet_name).lower().replace(' ','')}"
         pom_content = f'''<?xml version="1.0" encoding="UTF-8"?>
+<!-- ScreenWolf Pet 标准POM配置文件 -->
 <project
     xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -116,12 +118,12 @@ class MavenPetPackager:
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>{group_id}</groupId>
-    <artifactId>{artifact_id}</artifactId>
+    <groupId>com.pinkcandy</groupId>
+    <artifactId>{theID}</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
-    <name>{xpinyin_obj.get_pinyin(pet_name)}</name>
-    <description>{xpinyin_obj.get_pinyin(pet_info)}</description>
+    <name>ScreenWolf Pet {theID}</name>
+    <description>ScreenWolf Pet id: {theID}</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -150,7 +152,9 @@ class MavenPetPackager:
         </resources>
     </build>
 
-</project>'''
+</project>
+
+'''
         with open(os.path.join(project_dir, "pom.xml"), "w", encoding="utf-8") as f:
             f.write(pom_content)
         assets_src = self.paths['thepet_assets']
@@ -165,7 +169,7 @@ if __name__ == "__main__":
     print("===MavenPetPackager 桌宠打包程序===")
     print("输入选项数字后回车执行 input option number then enter")
     while True:
-        print("1 扫描文件夹打包 scan dir to build")
+        print("1 扫描pet-projects文件夹打包 scan pet-projects dir to build")
         print("2 输入信息然后使用资源创建 input some information then use assets to build")
         print("0 退出 exit")
         try:
