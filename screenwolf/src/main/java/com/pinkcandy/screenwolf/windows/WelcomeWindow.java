@@ -27,12 +27,14 @@ public class WelcomeWindow extends WindowBase {
     private JPanel welcomePanel = new JPanel();
     private JButton playButton,clearButton,reloadButton,exitButton,infoButton,addPetButton;
     private Launcher launcher;
+    private JPanel petsContentPanel;
     public WelcomeWindow(Launcher launcher){
         super("ScreenWolf",GUtil.DEFAULT_windowSize);
         this.launcher = launcher;
         initWelcomeWindow();
         this.setVisible(true);
     }
+    // 初始化
     private void initWelcomeWindow(){
         this.welcomePanel = new JPanel(new BorderLayout(5,5));
         this.welcomePanel.setBackground(new Color(245,245,250));
@@ -68,11 +70,9 @@ public class WelcomeWindow extends WindowBase {
             0
         ));
         welcomePanel.add(titleLabel,BorderLayout.NORTH);
-
         // 组件面板
         JPanel bottomPanel = new JPanel(new BorderLayout());
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER,15,5));
-        
         int buttonSize = GUtil.DEFAULT_textSize * 2;
         playButton = GUtil.createIconButton("images/button_play.png","开始游戏 play",buttonSize);
         clearButton = GUtil.createIconButton("images/button_stop.png","结束游戏 stop",buttonSize);
@@ -80,7 +80,6 @@ public class WelcomeWindow extends WindowBase {
         exitButton = GUtil.createIconButton("images/button_exit.png","退出程序 exit",buttonSize);
         infoButton = GUtil.createIconButton("images/button_info.png","游戏介绍 info",buttonSize);
         addPetButton = GUtil.createIconButton("images/button_add_pet.png","添加宠物 add pet",buttonSize);
-
         clearButton.setEnabled(false);
         playButton.addActionListener(e->{
             if(!launcher.getPetListCopy().isEmpty()){launcher.playGame();}
@@ -108,7 +107,7 @@ public class WelcomeWindow extends WindowBase {
         buttonPanel.add(addPetButton);
         // 底部操作和版本
         GameInfoData gameInfoData = GsonUtil.json2Bean(ResourceReader.readResourceAsString("screenwolf.json"),GameInfoData.class);
-        JLabel versionLabel = new JLabel("version "+gameInfoData.getVersion()+" by "+gameInfoData.getOwner(), SwingConstants.CENTER);
+        JLabel versionLabel = new JLabel("版本 version:"+gameInfoData.getVersion()+" 作者 owner:"+gameInfoData.getOwner(),SwingConstants.CENTER);
         versionLabel.setFont(GUtil.DEFAULT_font.deriveFont(Font.PLAIN, (int)(GUtil.DEFAULT_textSize * 0.8)));
         versionLabel.setForeground(new Color(120, 120, 120));
         versionLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 10, 0));
@@ -124,25 +123,41 @@ public class WelcomeWindow extends WindowBase {
         scrollPane.getViewport().setOpaque(false);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        JPanel contentPanel = new JPanel();
-        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-        contentPanel.setOpaque(false);
-        contentPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-        String[] petJars = GUtil.scanDir(GUtil.GAME_petsPath,".jar");
-        for(String jarName:petJars){
-            try{
-                String jarPath = GUtil.GAME_petsPath+jarName;
-                PetData petData = loadPetDataFromJar(jarPath);
-                if(petData!=null){
-                    JPanel petEntryPanel = createPetEntryPanel(jarPath,jarName,petData);
-                    contentPanel.add(petEntryPanel);
-                    contentPanel.add(Box.createRigidArea(new Dimension(0, GUtil.DEFAULT_textSize)));
-                }
-            }catch(Exception e){e.printStackTrace();}
-        }
-        contentPanel.add(Box.createVerticalGlue());
-        scrollPane.setViewportView(contentPanel);
+        petsContentPanel = new JPanel();
+        petsContentPanel.setLayout(new BoxLayout(petsContentPanel, BoxLayout.Y_AXIS));
+        petsContentPanel.setOpaque(false);
+        petsContentPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+        refreshPetsContent();
+        scrollPane.setViewportView(petsContentPanel);
         welcomePanel.add(scrollPane, BorderLayout.CENTER);
+    }
+    // 刷新宠物内容面板
+    public void refreshPetsContent() {
+        petsContentPanel.removeAll();
+        petButtonsList.clear();
+        String[] petJars = GUtil.scanDir(GUtil.GAME_petsPath,".jar");
+        if (petJars.length == 0){
+            JLabel noPetsLabel = new JLabel("没有宠物，点击按钮添加。 No pets, click the button to add.", SwingConstants.CENTER);
+            noPetsLabel.setFont(GUtil.DEFAULT_font.deriveFont(Font.ITALIC, GUtil.DEFAULT_textSize));
+            noPetsLabel.setForeground(new Color(150, 150, 150));
+            noPetsLabel.setBorder(BorderFactory.createEmptyBorder(50, 10, 50, 10));
+            petsContentPanel.add(noPetsLabel);
+        } else {
+            for(String jarName:petJars){
+                try{
+                    String jarPath = GUtil.GAME_petsPath+jarName;
+                    PetData petData = loadPetDataFromJar(jarPath);
+                    if(petData!=null){
+                        JPanel petEntryPanel = createPetEntryPanel(jarPath,jarName,petData);
+                        petsContentPanel.add(petEntryPanel);
+                        petsContentPanel.add(Box.createRigidArea(new Dimension(0, GUtil.DEFAULT_textSize)));
+                    }
+                }catch(Exception e){e.printStackTrace();}
+            }
+        }
+        petsContentPanel.add(Box.createVerticalGlue());
+        petsContentPanel.revalidate();
+        petsContentPanel.repaint();
     }
     // 创建宠物的面板
     private JPanel createPetEntryPanel(String jarPath,String jarName,PetData petData){
@@ -153,80 +168,75 @@ public class WelcomeWindow extends WindowBase {
             BorderFactory.createEmptyBorder(10,10,10,10)
         ));
         petEntryPanel.setBackground(Color.WHITE);
-        
+        petEntryPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 200)); // 限制最大高度
         // 组件面板
         JPanel leftPanel = new JPanel(new BorderLayout());
-        JPanel rightPanel = new JPanel(new BorderLayout());
-        JPanel topPanel = new JPanel(new BorderLayout());
-
+        JPanel rightPanel = new JPanel(new BorderLayout(5,5));
+        JPanel topPanel = new JPanel(new BorderLayout(10,0));
         // 宠物图标
         JLabel iconLabel = new JLabel();
         try{
             ImageIcon icon = new ImageIcon(JarFileUtil.readByteInJarFile(jarPath,"assets/icon.png"));
             if(icon!=null){
-                icon = GUtil.scaleImageIcon(icon,GUtil.DEFAULT_textSize*4);
+                icon = GUtil.scaleImageIcon(icon,GUtil.DEFAULT_textSize*3);
                 iconLabel.setIcon(icon);
                 iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
             }
-        }catch(Exception e){e.printStackTrace();}
+        }catch(Exception e){
+            // 使用默认图标
+            ImageIcon defaultIcon = ResourceReader.getResourceAsImageIcon("images/icon.png");
+            defaultIcon = GUtil.scaleImageIcon(defaultIcon, GUtil.DEFAULT_textSize*3);
+            iconLabel.setIcon(defaultIcon);
+        }
         leftPanel.add(iconLabel,BorderLayout.CENTER);
-        
-        // 宠物名称
+        // 宠物名称和选择按钮在同一行
         JLabel nameLabel = new JLabel(petData.getName());
         nameLabel.setFont(GUtil.DEFAULT_font.deriveFont(Font.BOLD, (int)(GUtil.DEFAULT_textSize*1.2)));
         nameLabel.setForeground(new Color(70, 70, 70));
-        topPanel.add(nameLabel,BorderLayout.WEST);
-        
+        topPanel.add(nameLabel,BorderLayout.CENTER);
         // 选择按钮
-        JButton selectButton = GUtil.createIconButton("images/button_import.png",petData.getName(),GUtil.DEFAULT_textSize*2);
+        JButton selectButton = GUtil.createIconButton("images/button_import.png","选择 select",GUtil.DEFAULT_textSize*2);
         selectButton.addActionListener(e->{
             try{
                 PetBase pet = loadPetFromJar(jarPath,petData.getMainClass(),launcher);
                 if(pet!=null){
                     launcher.addPetToLauncher(pet);
                     selectButton.setEnabled(false);
+                    selectButton.setToolTipText("已选择 selected");
                 }
-            }catch(Exception ex){ex.printStackTrace();}
+            }catch(Exception ex){
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "加载宠物失败 load pet failed: " + ex.getMessage(), "错误 error", JOptionPane.ERROR_MESSAGE);
+            }
         });
         topPanel.add(selectButton,BorderLayout.EAST);
-        
         rightPanel.add(topPanel,BorderLayout.NORTH);
-        
         // 宠物描述
         JTextArea descArea = new JTextArea(petData.getInfo());
         descArea.setEditable(false);
         descArea.setLineWrap(true);
         descArea.setWrapStyleWord(true);
         descArea.setOpaque(false);
-        descArea.setFont(GUtil.DEFAULT_font.deriveFont(Font.PLAIN, (int)(GUtil.DEFAULT_textSize * 0.9)));
+        descArea.setFont(GUtil.DEFAULT_font.deriveFont(Font.PLAIN, GUtil.DEFAULT_textSize));
         descArea.setForeground(new Color(100, 100, 100));
         descArea.setHighlighter(null);
         descArea.setFocusable(false);
-        descArea.setMargin(new Insets(0,0,0,0));
+        descArea.setMargin(new Insets(5,0,5,0));
+        // 确保描述区域有合适的高度
+        int lineCount = Math.max(1, descArea.getLineCount());
+        int preferredHeight = Math.min(120, lineCount * descArea.getFontMetrics(descArea.getFont()).getHeight() + 10);
+        descArea.setPreferredSize(new Dimension(0, preferredHeight));
         JScrollPane descScroll = new JScrollPane(descArea);
-        descScroll.setBorder(null);
+        descScroll.setBorder(BorderFactory.createEmptyBorder());
         descScroll.setOpaque(false);
         descScroll.getViewport().setOpaque(false);
         descScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         descScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         rightPanel.add(descScroll,BorderLayout.CENTER);
-        
         // 组装面板
-        leftPanel.setPreferredSize(new Dimension(GUtil.DEFAULT_textSize*4,GUtil.DEFAULT_textSize*4));
+        leftPanel.setPreferredSize(new Dimension(GUtil.DEFAULT_textSize*4, GUtil.DEFAULT_textSize*4));
         petEntryPanel.add(leftPanel,BorderLayout.WEST);
         petEntryPanel.add(rightPanel,BorderLayout.CENTER);
-        
-        // 动态高度
-        int lineCount = descArea.getLineCount();
-        int preferredHeight = Math.max(
-            GUtil.DEFAULT_textSize*4,
-            (int)(GUtil.DEFAULT_textSize*(1.5 + lineCount*0.8))
-        );
-        petEntryPanel.setPreferredSize(new Dimension(
-            (int)(GUtil.DEFAULT_windowSize.width * 0.9)-30,
-            preferredHeight
-        ));
-        
         petButtonsList.add(selectButton);
         return petEntryPanel;
     }
@@ -267,5 +277,9 @@ public class WelcomeWindow extends WindowBase {
         exitButton.setEnabled(true);
         reloadButton.setEnabled(true);
         addPetButton.setEnabled(true);
+    }
+    // 重新加载宠物列表
+    public void reloadPets(){
+        refreshPetsContent();
     }
 }

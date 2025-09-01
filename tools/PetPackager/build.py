@@ -1,4 +1,4 @@
-# 桌宠Maven项目打包程序
+# 桌宠项目打包程序
 
 import os
 import shutil
@@ -7,7 +7,7 @@ import sys
 import json
 import zipfile
 import xpinyin
-
+import glob
 
 xpinyin_obj = xpinyin.Pinyin()
 
@@ -23,7 +23,8 @@ class MavenPetPackager:
             'javac': f"{self.root}/bin/jdk/bin/javac.exe",
             'thepet_assets': f"{self.root}/thepet_assets/",
             'pet_demo_zip': f"{self.root}/bin/screenwolf_demo.zip",
-            'temp_dir': f"{self.root}/tmp/"
+            'temp_dir': f"{self.root}/tmp/",
+            'maven_repo': f"{self.root}/bin/maven-bin/repo"
         }
     # 执行命令
     def exec(self, cmd):
@@ -31,6 +32,16 @@ class MavenPetPackager:
         env["JAVA_HOME"] = os.path.normpath(self.paths['jdk'])
         env["PATH"] = f"{self.paths['jdk']}/bin;{env['PATH']}"
         return subprocess.call(cmd, shell=True, env=env) == 0
+    # 清理Maven本地仓库中的旧版本ScreenWolf
+    def clean_old_screenwolf(self):
+        screenwolf_pattern = os.path.join(self.paths['maven_repo'], 'com', 'pinkcandy', 'screenwolf', '*')
+        screenwolf_dirs = glob.glob(screenwolf_pattern)
+        for dir_path in screenwolf_dirs:
+            try:
+                shutil.rmtree(dir_path)
+                print(f"已删除旧版本: {dir_path}")
+            except Exception as e:
+                print(f"删除旧版本时出错 {dir_path}: {e}")
     # 游戏主程序安装
     def install_core(self):
         cmd = (
@@ -38,9 +49,11 @@ class MavenPetPackager:
             f'-Dfile="{self.paths["lib"]}" '
             '-DgroupId=com.pinkcandy '
             '-DartifactId=screenwolf '
-            '-Dpackaging=jar'
+            '-Dversion=1.0.0 '
+            '-Dpackaging=jar '
             '-DgeneratePom=true '
-            '-DcreateChecksum=true'
+            '-DcreateChecksum=true '
+            f'-DlocalRepositoryPath={self.paths["maven_repo"]}'
         )
         return self.exec(cmd)
     # maven编译打包
@@ -48,11 +61,14 @@ class MavenPetPackager:
         pom = f"{projectPath}/pom.xml"
         if not os.path.exists(pom):
             return False
+        clean_cmd = f'"{self.paths["mvn"]}" -f "{pom}" clean'
+        self.exec(clean_cmd)
         compile_cmd = (
-            f'"{self.paths["mvn"]}" -f "{pom}" clean package '
+            f'"{self.paths["mvn"]}" -f "{pom}" package '
             f'-Dmaven.compiler.fork=true '
             f'-Dmaven.compiler.executable="{os.path.normpath(self.paths["jdk"])}/bin/javac" '
-            f'-Dfile.encoding=UTF-8'
+            f'-Dfile.encoding=UTF-8 '
+            f'-U'
         )
         if not self.exec(compile_cmd):
             return False
@@ -171,6 +187,7 @@ if __name__ == "__main__":
     while True:
         print("1 扫描pet-projects文件夹打包 scan pet-projects dir to build")
         print("2 输入信息然后使用资源创建 input some information then use assets to build")
+        print("3 更新ScreenWolf库 update ScreenWolf library")
         print("0 退出 exit")
         try:
             option = int(input('选项 option:'))
@@ -187,6 +204,11 @@ if __name__ == "__main__":
                     input(f"PINKCANDY: 打包完成 task finished.")
                 else:
                     input("PINKCANDY: 打包失败 build failed!")
+            elif option==3:
+                if packager.install_core():
+                    input("PINKCANDY: ScreenWolf库更新完成 library updated.")
+                else:
+                    input("PINKCANDY: 更新失败 update failed!")
             elif option == 0:
                 sys.exit()
             else:

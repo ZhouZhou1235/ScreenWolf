@@ -400,7 +400,6 @@ public class PetBase extends JPanel {
     }
     // 处理鼠标按下事件
     protected void handleMousePressed(MouseEvent e){
-        zeroingResponseNum();
         switch(e.getButton()) {
             case MouseEvent.BUTTON1:
                 handleLeftButtonPress(e);
@@ -431,14 +430,12 @@ public class PetBase extends JPanel {
     }
     // 处理鼠标释放
     protected void handleMouseReleased(MouseEvent e) {
-        zeroingResponseNum();
         if(e.getButton() == MouseEvent.BUTTON1) {
             isPress = false;
         }
     }
     // 处理鼠标点击
     protected void handleMouseClicked(MouseEvent e) {
-        zeroingResponseNum();
         if(e.getButton() == MouseEvent.BUTTON1) {
             followMouse();
         }
@@ -597,10 +594,10 @@ public class PetBase extends JPanel {
         else{showMessageIndex=0;}
     }
     // 跟随鼠标
-    public void followMouse(){if(!isResting){
-        isFollow=!isFollow;
-        if(!isFollow){
-            zeroingResponseNum();
+    public void followMouse(){
+        if(!isResting){
+            if(isFollow){zeroingResponseNum();}
+            else{isFollow=true;}
         }
-    }}
+    }
 }
