@@ -1,16 +1,11 @@
 package com.pinkcandy.screenwolf_zhou;
 
-import java.awt.Color;
-import java.io.IOException;
-
 import javax.swing.Timer;
-
 import com.pinkcandy.screenwolf.Launcher;
 import com.pinkcandy.screenwolf.base.PetBase;
 import com.pinkcandy.screenwolf.utils.GUtil;
-import com.pinkcandy.screenwolf.utils.JarFileUtil;
 import com.pinkcandy.screenwolf.utils.SwingTimerUtil;
-import com.pinkcandy.screenwolf.windows.PetOption;
+
 
 // 小蓝狗周周
 public class Pet extends PetBase {
@@ -21,37 +16,6 @@ public class Pet extends PetBase {
         this.followDistanse = (int)(GUtil.DEFAULT_bodySize.getWidth()*1.2);
         this.emotionThreshold = 60;
         this.moveThreshold = 60;
-    }
-    // 蓝狗的面板
-    private class MyOption extends PetOption {
-        public MyOption(PetBase pet){
-            super(pet);
-            loadButtonsToPanel();
-            adjustWindowSize();
-            this.setBackground(new Color(100,120,150,200));
-        }
-        @Override
-        protected void readyToPaint(){
-            updateStatusText();
-            setupDragBehavior();
-            startStatusUpdate();
-        }
-        @Override
-        public void loadButtonsToPanel(){
-            super.loadButtonsToPanel();
-            try{
-                byte[] data = JarFileUtil.readByteInJarFile(
-                    GUtil.GAME_petsPath+JarFileUtil.getCurrentJarName(this),
-                    "assets/images/button_dash.png"
-                );
-                this.addButton(
-                    GUtil.createImageIconFromBytes(data),
-                    "冲刺",
-                    e->{snowDash();}
-                );
-            }
-            catch(IOException e){System.err.println(e);}
-        }
     }
     // 冲刺
     public void snowDash(){

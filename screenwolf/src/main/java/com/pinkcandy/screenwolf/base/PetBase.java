@@ -50,7 +50,7 @@ public class PetBase extends JPanel {
     protected int followDistanse = (int)GUtil.DEFAULT_bodySize.getWidth(); // 跟随距离
     protected int moveSpeed = (int)GUtil.DEFAULT_bodySize.getWidth()/10; // 移动速度
     // === 数据 ===
-    protected String id; // 宠物号码
+    protected String jarPath; // 宠物jar包路径
     protected PetData petData; // 宠物数据
     protected String savePath; // 数据保存地址
     protected PlayPetData playPetData; // 游玩数据
@@ -88,54 +88,37 @@ public class PetBase extends JPanel {
     // 构造
     public PetBase(Launcher theLauncher){
         this.launcher = theLauncher;
-        String jarName = GUtil.GAME_petsPath+JarFileUtil.getCurrentJarName(this);
-        initPet(jarName);
+        loadPetData();
+        initPet();
     }
-    // 初始化桌宠
-    public void initPet(String jarName){
-        // 宠物数据
+    // 加载宠物数据
+    public void loadPetData(){
         ClassLoader classLoader = this.getClass().getClassLoader();
         try(InputStream is = classLoader.getResourceAsStream("META-INF/pet_data.json")){
             if(is!=null){
                 String jsonpetdata = new String(is.readAllBytes(),StandardCharsets.UTF_8);
                 this.petData = GsonUtil.json2Bean(jsonpetdata,PetData.class);
+                // this.jarPath = GUtil.GAME_petsPath+this.petData.getId()+".jar";
+                this.jarPath = GUtil.GAME_petsPath+JarFileUtil.getCurrentJarName(this);
+                this.savePath = GUtil.GAME_savePath+this.petData.getId()+".json";
             }else{throw new RuntimeException("PINKCANDY: pet_data not found");}
-        }catch(IOException e){
-            throw new RuntimeException("PINKCANDY: Failed to load pet data",e);
-        }
-        // 基本属性
+        }catch(IOException e){System.err.println(e);}
+    }
+    // 初始化桌宠
+    public void initPet(){
         Dimension size = GUtil.DEFAULT_bodySize;
-        this.id = petData.getId();
-        this.savePath = GUtil.GAME_savePath+id+".json";
-        // 动画资源
         HashMap<String, String> imageFrameHashmap = new HashMap<>();
-        for(String animationName:JarFileUtil.listJarDirNamesByPath(
-            jarName,
-            "assets/animations"
-        )){
-            imageFrameHashmap.put(
-                animationName,
-                "assets/animations/"+animationName+"/"
-            );
+        for(String animationName:JarFileUtil.listJarDirNamesByPath(this.jarPath,"assets/animations")){
+            imageFrameHashmap.put(animationName,"assets/animations/"+animationName+"/");
         }
-        this.animationSprite = new AnimationSprite(
-            size,
-            imageFrameHashmap,
-            jarName
-        );
-        // 定时器
-        this.updateTimer = new Timer(GUtil.GAME_updateTime,e->autoLoop());
-        this.updateTimer.start();
-        this.lowUpdateTimer = new Timer(GUtil.GAME_slowUpdateTime,e->slowAutoLoop());
-        this.lowUpdateTimer.start();        
-        // 自动机器
+        this.animationSprite = new AnimationSprite(size,imageFrameHashmap,this.jarPath);
+        this.updateTimer = new Timer(GUtil.GAME_updateTime,e->autoLoop());this.updateTimer.start();
+        this.lowUpdateTimer = new Timer(GUtil.GAME_slowUpdateTime,e->slowAutoLoop());this.lowUpdateTimer.start();        
         try{this.robot = new Robot();}
         catch(AWTException e){e.printStackTrace();}
-        // 面板属性
         this.setSize(size);
         this.setBackground(new Color(0,0,0,0));
         this.add(animationSprite);
-        // 完毕
         this.ready();
     }
     // 释放宠物对象
@@ -151,12 +134,10 @@ public class PetBase extends JPanel {
     }
 
     // === 获取和设置 ===
-    // 获取号码
-    public String getId(){return id;}
-    // 获取宠物数据
+    public String getJarPath(){return this.jarPath;}
     public PetData getPetData(){return this.petData;}
-    // 获取游玩数据
     public PlayPetData getPlayPetData(){return this.playPetData;}
+    public Launcher getLauncher(){return this.launcher;}
     // 获取宠物中心位置
     public Point getPetPosition(){
         Point o = this.getLocation();
@@ -165,8 +146,6 @@ public class PetBase extends JPanel {
         int y = o.y+size.height/2;
         return new Point(x,y);
     }
-    // 获取启动器引用
-    public Launcher getLauncher(){return this.launcher;}
     // 获取类加载器
     public ClassLoader getClassLoader(){
         return classLoader != null?classLoader:getClass().getClassLoader();

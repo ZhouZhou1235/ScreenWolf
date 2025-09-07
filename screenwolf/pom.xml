@@ -11,8 +11,8 @@
     <artifactId>screenwolf</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
-    <name>ScreenWolf - 屏幕有狼</name>
-    <description>周周编写的桌面宠物游戏</description>
+    <name>ScreenWolf</name>
+    <description>a desktop pet game by pinkcandyzhou</description>
     <!-- maven设置 -->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

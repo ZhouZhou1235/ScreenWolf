@@ -41,7 +41,7 @@ public class Snow extends ItemBase {
             imageIcon = GUtil.scaleImageIcon(
                 GUtil.createImageIconFromBytes(
                     JarFileUtil.readByteInJarFile(
-                        GUtil.GAME_petsPath+JarFileUtil.getCurrentJarName(this),
+                        pet.getJarPath(),
                         "assets/images/button_dash.png"
                     )
                 ),
