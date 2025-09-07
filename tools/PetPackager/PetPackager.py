@@ -37,8 +37,10 @@ def clean_mvn_repo():
 
 # 安装游戏主程序jar包
 def install_game():
-    cmd = (
+    install_cmd = (
         f'"{paths["mvn"]}" install:install-file '
+        f'-Dmaven.compiler.fork=true '
+        f'-Dmaven.compiler.executable="{os.path.normpath(paths['jdk'])}/bin/javac" '
         f'-Dfile="{paths["game"]}" '
         '-DgroupId=com.pinkcandy '
         '-DartifactId=screenwolf '
@@ -47,7 +49,8 @@ def install_game():
         '-DcreateChecksum=true '
         f'-DlocalRepositoryPath={paths["maven_repo"]}'
     )
-    return java_exec(cmd)
+    success = java_exec(install_cmd)
+    return success
 
 # 打包
 def mvn_package(projectPath:str):
@@ -60,7 +63,7 @@ def mvn_package(projectPath:str):
         f'-Dmaven.compiler.fork=true '
         f'-Dmaven.compiler.executable="{os.path.normpath(paths['jdk'])}/bin/javac" '
         f'-Dfile.encoding=UTF-8 '
-        f'-U -o'
+        f'-Dmaven.repo.local={paths["maven_repo"]} '
     )
     java_exec(clean_cmd)
     ok = java_exec(package_cmd)
