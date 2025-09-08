@@ -1,4 +1,4 @@
 放置
-jdk - java jdk
-maven-bin - java maven
+jdk
+maven-bin
 ScreenWolf.jar

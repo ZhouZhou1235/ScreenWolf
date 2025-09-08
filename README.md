@@ -47,6 +47,5 @@ Godot版 提供选项加载模组狼
 2 itch [屏幕有狼](https://pinkcandyzhou.itch.io/screen-wolf)
 
 
-// TODO 完成几个宠物开发
-// TODO 改善打包程序 实现无网络依赖地工作 尝试做成图形界面程序
+// TODO 完成3个宠物开发
 // TODO 制作帧动画和商店宣传

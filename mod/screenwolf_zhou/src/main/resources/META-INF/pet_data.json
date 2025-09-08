@@ -2,7 +2,7 @@
     "id": "screenwolf_zhou",
     "mainClass": "com.pinkcandy.screenwolf_zhou.Pet",
     "name": "小蓝狗周周",
-    "info": "屏幕有狼作者周周的设定",
+    "info": "[screenwolf_zhou] 屏幕有狼作者周周的设定",
     "specialMessages": [
         "嗷嗷，今天的代码写得特别顺利。",
         "看，我画了新作品！",
@@ -12,8 +12,7 @@
         "我喜欢听冷门的歌曲 -w-",
         "我身上的金渐层是独一无二的！",
         "辛苦了",
-        "创作好时节！我要记录下来灵感",
-        "我想喝牛奶~"
+        "创作好时节！我要记录下来灵感"
     ],
     "sadMessages": [
         "我是不是很讨厌......",
