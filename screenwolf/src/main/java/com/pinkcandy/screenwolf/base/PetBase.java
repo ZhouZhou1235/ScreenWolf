@@ -558,6 +558,7 @@ public class PetBase extends JPanel {
             if(text != null && !text.trim().isEmpty()){
                 String[] messages = GUtil.splitTextIntoMessages(text);
                 playPetData.setMessageBubbleList(messages);
+                showMessageIndex = 0;
             }
         }catch(Exception e){e.printStackTrace();}
     }
@@ -569,6 +570,13 @@ public class PetBase extends JPanel {
             showMessageIndex++;
             if(showMessageIndex>messageList.length-1){showMessageIndex=0;}
             showMessage(message);
+            Point petPosition = this.getPetPosition();
+            autoMoveTarget = new Point(
+                petPosition.x+GUtil.DEFAULT_bodySize.width,
+                petPosition.y+GUtil.DEFAULT_bodySize.height
+            );
+            isAutoMoving = true;
+            addAffectPoint(1);
         }
         else{showMessageIndex=0;}
     }

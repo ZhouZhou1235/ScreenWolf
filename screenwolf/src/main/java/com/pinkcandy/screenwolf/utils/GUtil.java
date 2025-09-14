@@ -286,22 +286,18 @@ public class GUtil {
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
         return button;
     }
-    // 长文本分割算法
-    public static String[] splitTextIntoMessages(String text) {
-        String[] segments = text.split("(?<=[\\s,.;!?，。；！？])|(?=[\\s,.;!?，。；！？])");
-        List<String> messages = new ArrayList<>();
-        StringBuilder currentMsg = new StringBuilder();
-        for(String segment:segments){
-            if(currentMsg.length()+segment.length()>50 && currentMsg.length()>0){
-                messages.add(currentMsg.toString().trim());
-                currentMsg = new StringBuilder();
+    // 长文本分割
+    public static String[] splitTextIntoMessages(String text){
+        if(text==null || text.trim().isEmpty()){return new String[0];}
+        String[] segments = text.split("(?<=[。！？；：,.!?;:\\n\\r])|(?=[。！？；：,.!?;:\\n\\r])");
+        List<String> result = new ArrayList<>();
+        for (String segment : segments) {
+            String trimmed = segment.trim();
+            if (!trimmed.isEmpty()) {
+                result.add(trimmed);
             }
-            currentMsg.append(segment);
         }
-        if (currentMsg.length()>0){
-            messages.add(currentMsg.toString().trim());
-        }
-        return messages.toArray(new String[0]);
+        return result.toArray(new String[0]);
     }
     // 用字节流创建一张ImageIcon图片
     public static ImageIcon createImageIconFromBytes(byte[] imageData){

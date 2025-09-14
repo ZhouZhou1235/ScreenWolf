@@ -17,6 +17,11 @@ public class Pet extends PetBase {
         this.emotionThreshold = 60;
         this.moveThreshold = 60;
     }
+    @Override
+    public void ready_loadPlay(){
+        super.ready_loadPlay();
+        this.petOption = new MyOption(this);
+    }
     // 冲刺
     public void snowDash(){
         if(playPetData.getAffectionLevel()<40){
@@ -45,10 +50,5 @@ public class Pet extends PetBase {
             zeroingResponseNum();
             snowTimer.stop();
         });
-    }
-    @Override
-    public void ready_loadPlay(){
-        super.ready_loadPlay();
-        this.petOption = new MyOption(this);
     }
 }
