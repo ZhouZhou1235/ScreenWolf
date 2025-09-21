@@ -64,7 +64,7 @@ public class GUtil {
     // 屏幕大小
     static public Dimension SCREEN_dimension = Toolkit.getDefaultToolkit().getScreenSize();
     // 默认动画播放间隔
-    static public int DEFAULT_animationPlaySpeed = 96;
+    static public int DEFAULT_animationPlaySpeed = 192;
     // 默认窗口大小
     static public Dimension DEFAULT_windowSize = new Dimension(SCREEN_dimension.width/2,SCREEN_dimension.height/2);
     // 默认字体大小

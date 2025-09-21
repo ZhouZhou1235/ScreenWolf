@@ -3,6 +3,8 @@ package com.pinkcandy.screenwolf;
 import java.awt.*;
 import java.util.*;
 
+import javax.swing.JOptionPane;
+
 import com.pinkcandy.screenwolf.base.PetBase;
 import com.pinkcandy.screenwolf.part.GameTray;
 import com.pinkcandy.screenwolf.utils.GUtil;
@@ -22,13 +24,25 @@ public class Launcher {
     public AboutWindow infoWindow;
     public GameTray gameTray;
     public Launcher(){
-        GUtil.initFileDirs();
-        GUtil.initGlobalFont(GUtil.DEFAULT_font);
-        this.screen = new TransparentScreen(GUtil.SCREEN_dimension);
-        this.petList = new ArrayList<>();
-        this.gameTray = new GameTray(this);
-        this.welcomeWindow = new WelcomeWindow(this);
-        this.infoWindow = new AboutWindow();
+        try{
+            GUtil.initFileDirs();
+            GUtil.initGlobalFont(GUtil.DEFAULT_font);
+            this.screen = new TransparentScreen(GUtil.SCREEN_dimension);
+            this.petList = new ArrayList<>();
+            this.gameTray = new GameTray(this);
+            this.welcomeWindow = new WelcomeWindow(this);
+            this.infoWindow = new AboutWindow();
+        }
+        catch(Exception e){
+            System.err.println(e);
+            JOptionPane.showMessageDialog(
+                null,
+                String.format("启动失败 launch failed:"+e),
+                "ERROR",
+                JOptionPane.ERROR_MESSAGE
+            );
+            System.exit(0);
+        }
     };
     public TransparentScreen getScreen(){return screen;}
     // === 启动器公开方法 ===

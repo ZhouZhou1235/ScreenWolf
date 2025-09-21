@@ -36,7 +36,7 @@ public class WelcomeWindow extends WindowBase {
     private void initWelcomeWindow(){
         setupWindowProperties();
         setupWelcomePanel();
-        loadBasicComponents();
+        addTitleAndButtonPanel();
         loadPetsFromJars();
         this.add(welcomePanel);
         this.updateWindow();
@@ -62,33 +62,19 @@ public class WelcomeWindow extends WindowBase {
             GUtil.DEFAULT_textSize/2
         ));
     }
-    // 加载基本组件
-    private void loadBasicComponents(){
-        addTitleLabel();
-        addBottomPanel();
-    }
-    // 添加标题标签
-    private void addTitleLabel(){
+    // 添加标题和按钮面板
+    private void addTitleAndButtonPanel(){
+        JPanel northPanel = new JPanel(new BorderLayout());
         ImageIcon logo = ResourceReader.getResourceAsImageIcon("images/logo.png");
-        int logoWidth = (int)(GUtil.DEFAULT_windowSize.width*0.5);
+        int logoWidth = (int)(GUtil.DEFAULT_windowSize.width*0.25);
         logo = GUtil.scaleImageIcon(logo, logoWidth);
         JLabel titleLabel = new JLabel(logo,SwingConstants.CENTER);
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(
-            GUtil.DEFAULT_textSize, 
-            0, 
-            GUtil.DEFAULT_textSize, 
-            0
-        ));
-        welcomePanel.add(titleLabel,BorderLayout.NORTH);
-    }
-    // 添加底部面板
-    private void addBottomPanel(){
-        JPanel bottomPanel = new JPanel(new BorderLayout());
+        northPanel.add(titleLabel, BorderLayout.NORTH);
         JPanel buttonPanel = createButtonPanel();
+        northPanel.add(buttonPanel, BorderLayout.SOUTH);
+        welcomePanel.add(northPanel, BorderLayout.NORTH);
         JLabel versionLabel = createVersionLabel();
-        bottomPanel.add(buttonPanel, BorderLayout.CENTER);
-        bottomPanel.add(versionLabel, BorderLayout.SOUTH);
-        welcomePanel.add(bottomPanel, BorderLayout.SOUTH);
+        welcomePanel.add(versionLabel, BorderLayout.SOUTH);
     }
     // 创建按钮面板
     private JPanel createButtonPanel(){
@@ -168,6 +154,7 @@ public class WelcomeWindow extends WindowBase {
         scrollPane.getViewport().setOpaque(false);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(30);
         return scrollPane;
     }
     // 创建宠物内容面板
@@ -179,7 +166,7 @@ public class WelcomeWindow extends WindowBase {
         return panel;
     }
     // 刷新宠物内容面板
-    public void refreshPetsContent() {
+    public void refreshPetsContent(){
         petsContentPanel.removeAll();
         petButtonsList.clear();
         String[] petJars = GUtil.scanDir(GUtil.GAME_petsPath,".jar");
@@ -227,18 +214,17 @@ public class WelcomeWindow extends WindowBase {
     // 设置宠物条目面板样式
     private void setupPetEntryPanelStyle(JPanel panel){
         panel.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(220,220,230),1),
-            BorderFactory.createEmptyBorder(10,10,10,10)
+            BorderFactory.createLineBorder(new Color(220,220,220),3),
+            BorderFactory.createEmptyBorder(3,3,3,3)
         ));
         panel.setBackground(Color.WHITE);
-        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 200));
     }
     // 创建宠物图标面板
     private JPanel createPetIconPanel(String jarPath){
         JPanel leftPanel = new JPanel(new BorderLayout());
         JLabel iconLabel = createPetIconLabel(jarPath);
         leftPanel.add(iconLabel,BorderLayout.CENTER);
-        leftPanel.setPreferredSize(new Dimension(GUtil.DEFAULT_textSize*4, GUtil.DEFAULT_textSize*4));
+        leftPanel.setPreferredSize(new Dimension(GUtil.DEFAULT_textSize*4,GUtil.DEFAULT_textSize*4));
         return leftPanel;
     }
     // 创建宠物图标标签
@@ -261,32 +247,26 @@ public class WelcomeWindow extends WindowBase {
     // 创建宠物信息面板
     private JPanel createPetInfoPanel(String jarPath, PetData petData){
         JPanel rightPanel = new JPanel(new BorderLayout(5,5));
-        
         JPanel topPanel = createPetTopPanel(jarPath, petData);
         JScrollPane descScroll = createPetDescriptionScroll(petData);
-        
         rightPanel.add(topPanel,BorderLayout.NORTH);
         rightPanel.add(descScroll,BorderLayout.CENTER);
-        
         return rightPanel;
     }
     // 创建宠物顶部面板
     private JPanel createPetTopPanel(String jarPath, PetData petData){
         JPanel topPanel = new JPanel(new BorderLayout(10,0));
-        
         JLabel nameLabel = createPetNameLabel(petData);
         JButton selectButton = createSelectButton(jarPath, petData);
-        
         topPanel.add(nameLabel,BorderLayout.CENTER);
         topPanel.add(selectButton,BorderLayout.EAST);
-        
         return topPanel;
     }
     // 创建宠物名称标签
     private JLabel createPetNameLabel(PetData petData){
         JLabel nameLabel = new JLabel(petData.getName());
         nameLabel.setFont(GUtil.DEFAULT_font.deriveFont(Font.BOLD, (int)(GUtil.DEFAULT_textSize*1.2)));
-        nameLabel.setForeground(new Color(70, 70, 70));
+        nameLabel.setForeground(new Color(70,70,70));
         return nameLabel;
     }
     // 创建选择按钮
@@ -350,7 +330,6 @@ public class WelcomeWindow extends WindowBase {
     }
     // 从JAR加载宠物实现类
     private PetBase loadPetFromJar(String jarPath, String className, Launcher launcher) throws Exception {
-        @SuppressWarnings("deprecation")
         URL jarUrl = new URL("file:" + jarPath);
         URLClassLoader classLoader = new URLClassLoader(new URL[]{jarUrl}, getClass().getClassLoader());
         try{

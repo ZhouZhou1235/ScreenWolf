@@ -11,6 +11,8 @@ public class PlayPetData {
     private int affectionLevel = 50; // 好感等级
     private int affectionPoints = 0; // 好感度点数
     private String[] messageBubbleList = {}; // 消息气泡
+    private int globalMouseClickCount = 0; // 全局鼠标点击
+    private int globalKeyPressCount = 0; // 全局键盘按下
     public int getMouseClickNum() {
         return mouseClickNum;
     }
@@ -26,6 +28,12 @@ public class PlayPetData {
     public String[] getMessageBubbleList() {
         return messageBubbleList;
     }
+    public int getGlobalMouseClickCount() {
+        return globalMouseClickCount;
+    }
+    public int getGlobalKeyPressCount() {
+        return globalKeyPressCount;
+    }
     public void setMouseClickNum(int mouseClickNum) {
         this.mouseClickNum = mouseClickNum;
     }
@@ -40,5 +48,11 @@ public class PlayPetData {
     }
     public void setMessageBubbleList(String[] messageBubbleList) {
         this.messageBubbleList = messageBubbleList;
+    }
+    public void setGlobalMouseClickCount(int globalMouseClickCount) {
+        this.globalMouseClickCount = globalMouseClickCount;
+    }
+    public void setGlobalKeyPressCount(int globalKeyPressCount) {
+        this.globalKeyPressCount = globalKeyPressCount;
     }
 }

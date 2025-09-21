@@ -29,6 +29,7 @@ import com.pinkcandy.screenwolf.bean.PlayPetData;
 import com.pinkcandy.screenwolf.part.AnimationSprite;
 import com.pinkcandy.screenwolf.part.PetMessageBubble;
 import com.pinkcandy.screenwolf.utils.GUtil;
+import com.pinkcandy.screenwolf.utils.GlobalInputListener;
 import com.pinkcandy.screenwolf.utils.GsonUtil;
 import com.pinkcandy.screenwolf.utils.ImageSelection;
 import com.pinkcandy.screenwolf.utils.JarFileUtil;
@@ -46,6 +47,7 @@ public class PetBase extends JPanel {
     protected PetOption petOption; // 选项面板
     public AnimationSprite animationSprite; // 动画精灵
     protected ClassLoader classLoader; // 类加载器
+    protected GlobalInputListener globalInputListener; // 全局输入事件监听器
     // === 数值 ===
     protected int followDistanse = (int)GUtil.DEFAULT_bodySize.getWidth(); // 跟随距离
     protected int moveSpeed = (int)GUtil.DEFAULT_bodySize.getWidth()/10; // 移动速度
@@ -88,18 +90,24 @@ public class PetBase extends JPanel {
     // 构造
     public PetBase(Launcher theLauncher){
         this.launcher = theLauncher;
-        loadPetData();
+        String jarPath = GUtil.GAME_petsPath+JarFileUtil.getCurrentJarName(this);
+        loadPetData(jarPath);
+        initPet();
+    }
+    // 开发模式构造
+    public PetBase(Launcher theLauncher,String jarPath){
+        this.launcher = theLauncher;
+        loadPetData(jarPath);
         initPet();
     }
     // 加载宠物数据
-    public void loadPetData(){
+    public void loadPetData(String jarPath){
         ClassLoader classLoader = this.getClass().getClassLoader();
         try(InputStream is = classLoader.getResourceAsStream("META-INF/pet_data.json")){
             if(is!=null){
                 String jsonpetdata = new String(is.readAllBytes(),StandardCharsets.UTF_8);
                 this.petData = GsonUtil.json2Bean(jsonpetdata,PetData.class);
-                // this.jarPath = GUtil.GAME_petsPath+this.petData.getId()+".jar";
-                this.jarPath = GUtil.GAME_petsPath+JarFileUtil.getCurrentJarName(this);
+                this.jarPath = jarPath;
                 this.savePath = GUtil.GAME_savePath+this.petData.getId()+".json";
             }else{throw new RuntimeException("PINKCANDY: pet_data not found");}
         }catch(IOException e){System.err.println(e);}
@@ -112,6 +120,7 @@ public class PetBase extends JPanel {
             imageFrameHashmap.put(animationName,"assets/animations/"+animationName+"/");
         }
         this.animationSprite = new AnimationSprite(size,imageFrameHashmap,this.jarPath);
+        this.globalInputListener = new GlobalInputListener();this.globalInputListener.startListening();
         this.updateTimer = new Timer(GUtil.GAME_updateTime,e->autoLoop());this.updateTimer.start();
         this.lowUpdateTimer = new Timer(GUtil.GAME_slowUpdateTime,e->slowAutoLoop());this.lowUpdateTimer.start();        
         try{this.robot = new Robot();}
@@ -123,9 +132,20 @@ public class PetBase extends JPanel {
     }
     // 释放宠物对象
     public void dispose(){
-        savePetData();
+        this.playPetData.setGlobalKeyPressCount(
+            this.playPetData.getGlobalKeyPressCount()
+            +
+            this.globalInputListener.getKeyPressCount()
+        );
+        this.playPetData.setGlobalMouseClickCount(
+            this.playPetData.getGlobalMouseClickCount()
+            +
+            this.globalInputListener.getMousePressCount()
+        );
+        savePlayPetData();
         this.setVisible(false);
         this.animationSprite.stopAnimation();
+        this.globalInputListener.startListening();
         this.updateTimer.stop();
         this.lowUpdateTimer.stop();
         this.removeAll();
@@ -138,6 +158,7 @@ public class PetBase extends JPanel {
     public PetData getPetData(){return this.petData;}
     public PlayPetData getPlayPetData(){return this.playPetData;}
     public Launcher getLauncher(){return this.launcher;}
+    public GlobalInputListener getGlobalInputListener() {return this.globalInputListener;}
     // 获取宠物中心位置
     public Point getPetPosition(){
         Point o = this.getLocation();
@@ -454,7 +475,7 @@ public class PetBase extends JPanel {
         else if(dx<0&&animationSprite.flip_h){animationSprite.flip_h=false;}
     }
     // 保存桌宠游玩数据
-    public void savePetData(){
+    public void savePlayPetData(){
         String jsonString = GsonUtil.bean2Json(playPetData);
         GUtil.saveToFile(savePath,jsonString);
     }

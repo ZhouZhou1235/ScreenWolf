@@ -17,6 +17,13 @@ public class Pet extends PetBase {
         this.emotionThreshold = 60;
         this.moveThreshold = 60;
     }
+    public Pet(Launcher launcher,String jarPath){
+        super(launcher,jarPath);
+        this.moveSpeed = (int)(GUtil.DEFAULT_bodySize.getWidth()/8);
+        this.followDistanse = (int)(GUtil.DEFAULT_bodySize.getWidth()*1.2);
+        this.emotionThreshold = 60;
+        this.moveThreshold = 60;
+    }
     @Override
     public void ready_loadPlay(){
         super.ready_loadPlay();

@@ -153,7 +153,6 @@ class PetPackagerGUI:
             messagebox.showwarning("警告 warning","先选择项目路径 need select project path")
             return
         if self.mvn_package(project_path):
-            self.open_directory(self.paths['output_dir'])
             messagebox.showinfo("成功 success","项目打包完成 task finish")
     def open_output_dir(self):
         self.open_directory(self.paths['output_dir'])

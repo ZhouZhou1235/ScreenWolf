@@ -14,7 +14,8 @@ import com.pinkcandy.screenwolf.utils.GUtil;
  */
 public class PetOption extends WindowBase {
     protected PetBase pet;
-    protected JLabel statusLabel;
+    protected JLabel statusLabel1;
+    protected JLabel statusLabel2;
     protected Timer updateTimer;
     protected Point dragOffset;
     protected JPanel buttonPanel;
@@ -51,11 +52,16 @@ public class PetOption extends WindowBase {
         nameLabel.setForeground(new Color(240,240,240));
         dragPanel.add(nameLabel);
         contentPanel.add(dragPanel);
-        statusLabel = new JLabel();
-        statusLabel.setFont(GUtil.DEFAULT_font.deriveFont(Font.PLAIN, (int)(GUtil.DEFAULT_textSize * 0.8)));
-        statusLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        statusLabel.setForeground(new Color(200, 200, 200));
-        contentPanel.add(statusLabel);
+        statusLabel1 = new JLabel();
+        statusLabel1.setFont(GUtil.DEFAULT_font.deriveFont(Font.PLAIN, (int)(GUtil.DEFAULT_textSize * 0.9)));
+        statusLabel1.setAlignmentX(Component.CENTER_ALIGNMENT);
+        statusLabel1.setForeground(new Color(200, 200, 200));
+        contentPanel.add(statusLabel1);
+        statusLabel2 = new JLabel();
+        statusLabel2.setFont(GUtil.DEFAULT_font.deriveFont(Font.PLAIN, (int)(GUtil.DEFAULT_textSize * 0.8)));
+        statusLabel2.setAlignmentX(Component.CENTER_ALIGNMENT);
+        statusLabel2.setForeground(new Color(175, 175, 175));
+        contentPanel.add(statusLabel2);
         contentPanel.add(new JSeparator(JSeparator.HORIZONTAL));
         contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         buttonGrid = new GridBagConstraints();
@@ -124,16 +130,20 @@ public class PetOption extends WindowBase {
     }
     // 更新状态文本
     public void updateStatusText(){
-        if(pet.getPlayPetData()==null){
-            statusLabel.setText("");
-            return;
-        }
-        String statusText = String.format("%d - %d/%d | %s",
+        if(pet.getPlayPetData()==null){return;}
+        String statusText1 = String.format("等级 level:%d 动画 animation:%s",
             pet.getPlayPetData().getAffectionLevel(),
-            pet.getPlayPetData().getAffectionPoints(),
-            pet.affectLevelUp,
-            pet.animationSprite.currentAnimation);
-        statusLabel.setText(statusText);
+
+            pet.animationSprite.currentAnimation
+        );
+        String statusText2 = String.format("键盘 key:%d+%d 鼠标 mouse:%d+%d",
+            pet.getPlayPetData().getGlobalKeyPressCount(),
+            pet.getGlobalInputListener().getKeyPressCount(),
+            pet.getPlayPetData().getGlobalMouseClickCount(),
+            pet.getGlobalInputListener().getMousePressCount()
+        );
+        statusLabel1.setText(statusText1);
+        statusLabel2.setText(statusText2);
     }
     // 启动状态更新定时器
     public void startStatusUpdate(){
