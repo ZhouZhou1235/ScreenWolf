@@ -29,7 +29,6 @@ import com.pinkcandy.screenwolf.bean.PlayPetData;
 import com.pinkcandy.screenwolf.part.AnimationSprite;
 import com.pinkcandy.screenwolf.part.PetMessageBubble;
 import com.pinkcandy.screenwolf.utils.GUtil;
-import com.pinkcandy.screenwolf.utils.GlobalInputListener;
 import com.pinkcandy.screenwolf.utils.GsonUtil;
 import com.pinkcandy.screenwolf.utils.ImageSelection;
 import com.pinkcandy.screenwolf.utils.JarFileUtil;
@@ -47,7 +46,6 @@ public class PetBase extends JPanel {
     protected PetOption petOption; // 选项面板
     public AnimationSprite animationSprite; // 动画精灵
     protected ClassLoader classLoader; // 类加载器
-    protected GlobalInputListener globalInputListener; // 全局输入事件监听器
     // === 数值 ===
     protected int followDistanse = (int)GUtil.DEFAULT_bodySize.getWidth(); // 跟随距离
     protected int moveSpeed = (int)GUtil.DEFAULT_bodySize.getWidth()/10; // 移动速度
@@ -120,7 +118,6 @@ public class PetBase extends JPanel {
             imageFrameHashmap.put(animationName,"assets/animations/"+animationName+"/");
         }
         this.animationSprite = new AnimationSprite(size,imageFrameHashmap,this.jarPath);
-        this.globalInputListener = new GlobalInputListener();this.globalInputListener.startListening();
         this.updateTimer = new Timer(GUtil.GAME_updateTime,e->autoLoop());this.updateTimer.start();
         this.lowUpdateTimer = new Timer(GUtil.GAME_slowUpdateTime,e->slowAutoLoop());this.lowUpdateTimer.start();        
         try{this.robot = new Robot();}
@@ -135,17 +132,16 @@ public class PetBase extends JPanel {
         this.playPetData.setGlobalKeyPressCount(
             this.playPetData.getGlobalKeyPressCount()
             +
-            this.globalInputListener.getKeyPressCount()
+            this.launcher.getGlobalInputListener().getKeyPressCount()
         );
         this.playPetData.setGlobalMouseClickCount(
             this.playPetData.getGlobalMouseClickCount()
             +
-            this.globalInputListener.getMousePressCount()
+            this.launcher.getGlobalInputListener().getMousePressCount()
         );
         savePlayPetData();
         this.setVisible(false);
         this.animationSprite.stopAnimation();
-        this.globalInputListener.startListening();
         this.updateTimer.stop();
         this.lowUpdateTimer.stop();
         this.removeAll();
@@ -158,7 +154,6 @@ public class PetBase extends JPanel {
     public PetData getPetData(){return this.petData;}
     public PlayPetData getPlayPetData(){return this.playPetData;}
     public Launcher getLauncher(){return this.launcher;}
-    public GlobalInputListener getGlobalInputListener() {return this.globalInputListener;}
     // 获取宠物中心位置
     public Point getPetPosition(){
         Point o = this.getLocation();

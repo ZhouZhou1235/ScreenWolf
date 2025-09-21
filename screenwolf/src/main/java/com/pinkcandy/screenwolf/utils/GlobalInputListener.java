@@ -16,13 +16,18 @@ import com.github.kwhat.jnativehook.mouse.NativeMouseMotionListener;
 public class GlobalInputListener implements NativeKeyListener,NativeMouseListener,NativeMouseMotionListener {
     private int keyPressCount = 0;
     private int mousePressCount = 0;
-    public boolean isdebug = false;
+    private boolean isDebug = false;
+    private boolean isListen = false;
     public GlobalInputListener(){}
-    public int getKeyPressCount() {
-        return keyPressCount;
+    public int getKeyPressCount(){return keyPressCount;}
+    public int getMousePressCount(){return mousePressCount;}
+    public boolean isDebug(){return isDebug;}
+    public boolean isListen(){return isListen;}
+    public void setDebug(boolean isDebug) {
+        this.isDebug = isDebug;
     }
-    public int getMousePressCount() {
-        return mousePressCount;
+    public void setListen(boolean isListen) {
+        this.isListen = isListen;
     }
     // 开始监听
     public void startListening(){
@@ -46,33 +51,52 @@ public class GlobalInputListener implements NativeKeyListener,NativeMouseListene
             System.err.println(e.getMessage());
         }
     }
+    // 重置计数
+    public void resetCount(){
+        keyPressCount = 0;
+        mousePressCount = 0;
+    }
     // 键盘事件
     public void nativeKeyPressed(NativeKeyEvent e){
-        keyPressCount++;
-        if(isdebug){System.out.println(NativeKeyEvent.getKeyText(e.getKeyCode()));}
+        if(isListen){
+            keyPressCount++;
+            if(isDebug){System.out.println(NativeKeyEvent.getKeyText(e.getKeyCode()));}
+        }
     }
     public void nativeKeyReleased(NativeKeyEvent e){
-        if(isdebug){System.out.println(NativeKeyEvent.getKeyText(e.getKeyCode()));}
+        if(isListen){
+            if(isDebug){System.out.println(NativeKeyEvent.getKeyText(e.getKeyCode()));}
+        }
     }
     // 鼠标事件
     public void nativeMouseClicked(NativeMouseEvent e){
-        if(isdebug){System.out.println(e.getButton()+"("+e.getX()+","+e.getY()+")");}
+        if(isListen){
+            if(isDebug){System.out.println(e.getButton()+"("+e.getX()+","+e.getY()+")");}
+        }
     }
     @Override
     public void nativeMousePressed(NativeMouseEvent e){
-        mousePressCount++;
-        if(isdebug){System.out.println(e.getButton());}
+        if(isListen){
+            mousePressCount++;
+            if(isDebug){System.out.println(e.getButton());}
+        }
     }
     @Override
     public void nativeMouseReleased(NativeMouseEvent e){
-        if(isdebug){System.out.println(e.getButton());}
+        if(isListen){
+            if(isDebug){System.out.println(e.getButton());}
+        }
     }
     @Override
     public void nativeMouseMoved(NativeMouseEvent e){
-        if(isdebug){System.out.println(e.getButton()+"("+e.getX()+","+e.getY()+")");}
+        if(isListen){
+            if(isDebug){System.out.println(e.getButton()+"("+e.getX()+","+e.getY()+")");}
+        }
     }
     @Override
     public void nativeMouseDragged(NativeMouseEvent e){
-        if(isdebug){System.out.println(e.getButton()+"("+e.getX()+","+e.getY()+")");}
+        if(isListen){
+            if(isDebug){System.out.println(e.getButton()+"("+e.getX()+","+e.getY()+")");}
+        }
     }
 }

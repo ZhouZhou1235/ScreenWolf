@@ -138,9 +138,9 @@ public class PetOption extends WindowBase {
         );
         String statusText2 = String.format("键盘 key:%d+%d 鼠标 mouse:%d+%d",
             pet.getPlayPetData().getGlobalKeyPressCount(),
-            pet.getGlobalInputListener().getKeyPressCount(),
+            pet.getLauncher().getGlobalInputListener().getKeyPressCount(),
             pet.getPlayPetData().getGlobalMouseClickCount(),
-            pet.getGlobalInputListener().getMousePressCount()
+            pet.getLauncher().getGlobalInputListener().getMousePressCount()
         );
         statusLabel1.setText(statusText1);
         statusLabel2.setText(statusText2);

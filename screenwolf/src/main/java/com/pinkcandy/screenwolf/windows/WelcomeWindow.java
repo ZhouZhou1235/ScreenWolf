@@ -101,7 +101,7 @@ public class WelcomeWindow extends WindowBase {
         clearButton.addActionListener(e->launcher.stopGame());
         reloadButton.addActionListener(e->launcher.reloadLauncher());
         exitButton.addActionListener(e->System.exit(0));
-        infoButton.addActionListener(e->launcher.infoWindow.setVisible(true));
+        infoButton.addActionListener(e->launcher.getInfoWindow().setVisible(true));
         addPetButton.addActionListener(e->handleAddPetButton());
     }
     // 处理播放按钮点击
@@ -330,6 +330,7 @@ public class WelcomeWindow extends WindowBase {
     }
     // 从JAR加载宠物实现类
     private PetBase loadPetFromJar(String jarPath, String className, Launcher launcher) throws Exception {
+        @SuppressWarnings("deprecation")
         URL jarUrl = new URL("file:" + jarPath);
         URLClassLoader classLoader = new URLClassLoader(new URL[]{jarUrl}, getClass().getClassLoader());
         try{

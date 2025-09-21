@@ -8,6 +8,7 @@ import javax.swing.JOptionPane;
 import com.pinkcandy.screenwolf.base.PetBase;
 import com.pinkcandy.screenwolf.part.GameTray;
 import com.pinkcandy.screenwolf.utils.GUtil;
+import com.pinkcandy.screenwolf.utils.GlobalInputListener;
 import com.pinkcandy.screenwolf.windows.AboutWindow;
 import com.pinkcandy.screenwolf.windows.TransparentScreen;
 import com.pinkcandy.screenwolf.windows.WelcomeWindow;
@@ -20,18 +21,23 @@ import com.pinkcandy.screenwolf.windows.WelcomeWindow;
 public class Launcher {
     private TransparentScreen screen;
     private ArrayList<PetBase> petList;
-    public WelcomeWindow welcomeWindow;
-    public AboutWindow infoWindow;
-    public GameTray gameTray;
+    private WelcomeWindow welcomeWindow;
+    private AboutWindow infoWindow;
+    private GameTray gameTray;
+    private GlobalInputListener globalInputListener;
     public Launcher(){
         try{
             GUtil.initFileDirs();
             GUtil.initGlobalFont(GUtil.DEFAULT_font);
             this.screen = new TransparentScreen(GUtil.SCREEN_dimension);
             this.petList = new ArrayList<>();
-            this.gameTray = new GameTray(this);
             this.welcomeWindow = new WelcomeWindow(this);
             this.infoWindow = new AboutWindow();
+            this.gameTray = new GameTray(this);
+            this.globalInputListener = new GlobalInputListener();
+            globalInputListener.startListening();
+            gameTray.addSeparator();
+            gameTray.addMenuItem("force exit game", e->System.exit(0));
         }
         catch(Exception e){
             System.err.println(e);
@@ -44,7 +50,24 @@ public class Launcher {
             System.exit(0);
         }
     };
-    public TransparentScreen getScreen(){return screen;}
+    public GameTray getGameTray() {
+        return gameTray;
+    }
+    public GlobalInputListener getGlobalInputListener() {
+        return globalInputListener;
+    }
+    public AboutWindow getInfoWindow() {
+        return infoWindow;
+    }
+    public ArrayList<PetBase> getPetList() {
+        return petList;
+    }
+    public TransparentScreen getScreen() {
+        return screen;
+    }
+    public WelcomeWindow getWelcomeWindow() {
+        return welcomeWindow;
+    }
     // === 启动器公开方法 ===
     // 开始游戏
     public void playGame(){
@@ -53,6 +76,7 @@ public class Launcher {
         welcomeWindow.updateWindowToPlayState();
         welcomeWindow.setVisible(false);
         infoWindow.setVisible(false);
+        globalInputListener.setListen(true);
     }
     // 结束游戏
     public void stopGame(){
@@ -61,6 +85,8 @@ public class Launcher {
         welcomeWindow.updateWindowToStopState();
         screen.setVisible(false);
         welcomeWindow.setVisible(true);
+        globalInputListener.setListen(false);
+        globalInputListener.resetCount();
     }
     // 重新加载启动器
     public void reloadLauncher(){

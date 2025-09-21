@@ -36,7 +36,7 @@ public class GameTray {
         trayIcon.addMouseListener(new MouseAdapter(){
             @Override
             public void mouseClicked(MouseEvent e){
-                if(e.getButton()==MouseEvent.BUTTON1){launcher.welcomeWindow.setVisible(true);}
+                if(e.getButton()==MouseEvent.BUTTON1){launcher.getWelcomeWindow().setVisible(true);}
             }
         });
         try{systemTray.add(trayIcon);}catch(AWTException e){throw new RuntimeException(e);}
@@ -44,7 +44,7 @@ public class GameTray {
         addMenuItem("show begin window",new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
-                launcher.welcomeWindow.setVisible(true);
+                launcher.getWelcomeWindow().setVisible(true);
             }
         });
         addMenuItem("clear screen",new ActionListener(){
