@@ -1,8 +1,8 @@
 {
     "id": "screenwolf_demo",
     "mainClass": "com.pinkcandy.screenwolf_demo.Pet",
-    "name": "宠物模板",
-    "info": "宠物的默认模板 这只宠物是游戏的标准演示，没有添加额外的逻辑。",
+    "name": "小灰狼",
+    "info": "这只宠物是游戏的标准演示，没有添加额外的逻辑。",
     "specialMessages":["特殊消息气泡 happy"],
     "sadMessages":["伤心消息气泡 sad"]
 }

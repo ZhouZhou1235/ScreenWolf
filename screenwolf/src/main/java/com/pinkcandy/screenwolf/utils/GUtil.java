@@ -13,6 +13,8 @@ import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.awt.FileDialog;
+import java.awt.Frame;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileWriter;
@@ -31,12 +33,11 @@ import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.UIManager;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.FontUIResource;
 
 
@@ -207,35 +208,32 @@ public class GUtil {
     }
     // 选择文件复制事件
     public static int copyFilesWithDialog(
-        Component parent,String dialogTitle, 
+        Component parent, 
+        String dialogTitle, 
         String fileTypeDesc,
         String fileExtension, 
         String destDir
     ){
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle(dialogTitle);
-        fileChooser.setMultiSelectionEnabled(true);
-        fileChooser.setFileFilter(new FileNameExtensionFilter(
-            String.format("%s (*.%s)",fileTypeDesc,fileExtension), 
-            fileExtension
-        ));
-        int returnValue = fileChooser.showOpenDialog(parent);
-        if (returnValue != JFileChooser.APPROVE_OPTION){
-            return 0;
-        }
-        File[] selectedFiles = fileChooser.getSelectedFiles();
+        FileDialog fileDialog = new FileDialog((Frame)SwingUtilities.getWindowAncestor(parent),dialogTitle,FileDialog.LOAD);
+        fileDialog.setMultipleMode(true);
+        fileDialog.setFilenameFilter((dir, name) -> 
+            name.toLowerCase().endsWith("." + fileExtension.toLowerCase())
+        );
+        fileDialog.setVisible(true);
+        if(fileDialog.getFiles().length==0){return 0;}
+        File[] selectedFiles = fileDialog.getFiles();
         int copiedCount = 0;
-        for (File file : selectedFiles) {
-            try {
-                File destFile = new File(destDir + file.getName());
-                if (destFile.exists()) {
+        for(File file:selectedFiles){
+            try{
+                File destFile = new File(destDir + File.separator + file.getName());
+                if(destFile.exists()){
                     int overwrite = JOptionPane.showConfirmDialog(
                         parent,
-                        String.format("文件 %s 已存在，是否覆盖？", file.getName()),
+                        String.format("是否覆盖已存在的 %s", file.getName()),
                         "确认覆盖",
                         JOptionPane.YES_NO_OPTION
                     );
-                    if (overwrite != JOptionPane.YES_OPTION) {
+                    if (overwrite!=JOptionPane.YES_OPTION){
                         continue;
                     }
                 }
@@ -245,21 +243,21 @@ public class GUtil {
                     java.nio.file.StandardCopyOption.REPLACE_EXISTING
                 );
                 copiedCount++;
-            } catch (Exception ex) {
+            }catch(Exception ex){
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(
                     parent,
-                    String.format("复制文件 %s 失败: %s", file.getName(), ex.getMessage()),
+                    String.format("%s 复制失败: %s", file.getName(), ex.getMessage()),
                     "错误",
                     JOptionPane.ERROR_MESSAGE
                 );
             }
         }
-        if (copiedCount > 0) {
+        if(copiedCount>0){
             JOptionPane.showMessageDialog(
                 parent,
                 String.format("成功添加 %d 个文件", copiedCount),
-                "操作完成",
+                "完成",
                 JOptionPane.INFORMATION_MESSAGE
             );
         }
