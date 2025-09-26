@@ -567,15 +567,21 @@ public class PetBase extends JPanel {
     // 从剪贴板获取文本然后保存
     public void copyTextFromClipboard(){
         try {
-            String text = Toolkit.getDefaultToolkit()
-                .getSystemClipboard()
-                .getData(DataFlavor.stringFlavor)
-                .toString();
-            if(text != null && !text.trim().isEmpty()){
-                String[] messages = GUtil.splitTextIntoMessages(text);
-                playPetData.setMessageBubbleList(messages);
-                showMessageIndex = 0;
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            if(clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor)){
+                String text = Toolkit.getDefaultToolkit()
+                    .getSystemClipboard()
+                    .getData(DataFlavor.stringFlavor)
+                    .toString();
+                if(text != null && !text.trim().isEmpty()){
+                    String[] messages = GUtil.splitTextIntoMessages(text);
+                    playPetData.setMessageBubbleList(messages);
+                    showMessageIndex = 0;
+                    showMessage("已保存消息气泡 saved message bubbles");
+                }
             }
+            else{showMessage("桌宠数据已保存 saved pet data");}
+            savePlayPetData();
         }catch(Exception e){e.printStackTrace();}
     }
     // 阅读消息气泡列表
@@ -602,5 +608,6 @@ public class PetBase extends JPanel {
             if(isFollow){zeroingResponseNum();}
             else{isFollow=true;}
         }
+        else{isResting=false;}
     }
 }

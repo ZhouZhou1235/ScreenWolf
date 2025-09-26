@@ -2,10 +2,14 @@ package com.pinkcandy.screenwolf.windows;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
+
 import javax.swing.*;
 import com.pinkcandy.screenwolf.base.PetBase;
 import com.pinkcandy.screenwolf.base.WindowBase;
 import com.pinkcandy.screenwolf.utils.GUtil;
+import com.pinkcandy.screenwolf.utils.JarFileUtil;
+import com.pinkcandy.screenwolf.utils.ResourceReader;
 
 
 /**
@@ -20,7 +24,7 @@ public class PetOption extends WindowBase {
     protected Point dragOffset;
     protected JPanel buttonPanel;
     protected GridBagConstraints buttonGrid;
-    protected int buttonsPerRow = 4; // 每行按钮数
+    protected int buttonsPerRow = 5; // 每行按钮数
     public PetOption(PetBase thePet){
         super(
             thePet.getPetData().getName(),
@@ -35,35 +39,70 @@ public class PetOption extends WindowBase {
     }
     // 初始化窗口
     protected void initWindow(){
+        ImageIcon petIcon = ResourceReader.getResourceAsImageIcon("images/icon.png");
+        try{
+            petIcon = GUtil.scaleImageIcon(
+                GUtil.createImageIconFromBytes(JarFileUtil.readByteInJarFile(pet.getJarPath(),"assets/icon.png")),
+                GUtil.DEFAULT_textSize*4
+            );
+        }catch(IOException e){e.printStackTrace();}
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setUndecorated(true);
         this.setAlwaysOnTop(true);
         this.setBackground(new Color(0, 0, 0, 200));
         this.setLayout(new BorderLayout(5, 5));
-        JPanel contentPanel = new JPanel();
-        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-        contentPanel.setOpaque(false);
-        JPanel dragPanel = new JPanel();
-        dragPanel.setOpaque(false);
-        dragPanel.setPreferredSize(new Dimension(0, 30));
+        // 创建顶部面板
+        JPanel topPanel = new JPanel(new BorderLayout(10, 0));
+        topPanel.setOpaque(false);
+        topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        // 宠物图标
+        JLabel iconLabel = new JLabel(petIcon);
+        iconLabel.setPreferredSize(new Dimension(GUtil.DEFAULT_textSize*4, GUtil.DEFAULT_textSize*4));
+        topPanel.add(iconLabel, BorderLayout.WEST);
+        // 信息面板
+        JPanel infoPanel = new JPanel();
+        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+        infoPanel.setOpaque(false);
+        // 宠物名称
         JLabel nameLabel = new JLabel(pet.getPetData().getName());
         nameLabel.setFont(GUtil.DEFAULT_font.deriveFont(Font.BOLD, GUtil.DEFAULT_textSize));
-        nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         nameLabel.setForeground(new Color(240,240,240));
-        dragPanel.add(nameLabel);
-        contentPanel.add(dragPanel);
+        nameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        infoPanel.add(nameLabel);
+        infoPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        // 状态信息1
         statusLabel1 = new JLabel();
         statusLabel1.setFont(GUtil.DEFAULT_font.deriveFont(Font.PLAIN, (int)(GUtil.DEFAULT_textSize * 0.9)));
-        statusLabel1.setAlignmentX(Component.CENTER_ALIGNMENT);
         statusLabel1.setForeground(new Color(200, 200, 200));
-        contentPanel.add(statusLabel1);
+        statusLabel1.setAlignmentX(Component.LEFT_ALIGNMENT);
+        infoPanel.add(statusLabel1);
+        infoPanel.add(Box.createRigidArea(new Dimension(0, 2)));
+        // 状态信息2
         statusLabel2 = new JLabel();
         statusLabel2.setFont(GUtil.DEFAULT_font.deriveFont(Font.PLAIN, (int)(GUtil.DEFAULT_textSize * 0.8)));
-        statusLabel2.setAlignmentX(Component.CENTER_ALIGNMENT);
         statusLabel2.setForeground(new Color(175, 175, 175));
-        contentPanel.add(statusLabel2);
-        contentPanel.add(new JSeparator(JSeparator.HORIZONTAL));
-        contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        statusLabel2.setAlignmentX(Component.LEFT_ALIGNMENT);
+        infoPanel.add(statusLabel2);
+        topPanel.add(infoPanel, BorderLayout.CENTER);
+        // 添加拖动区域
+        JPanel dragPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
+        dragPanel.setOpaque(false);
+        dragPanel.setPreferredSize(new Dimension(0, 20));
+        // 最小化按钮
+        JButton minimizeBtn = GUtil.createIconButton("images/button_minus.png", "最小化", 16);
+        minimizeBtn.addActionListener(e -> setState(Frame.ICONIFIED));
+        dragPanel.add(minimizeBtn);
+        // 关闭按钮
+        JButton closeBtn = GUtil.createIconButton("images/button_close.png", "关闭", 16);
+        closeBtn.addActionListener(e -> closeWindow());
+        dragPanel.add(closeBtn);
+        topPanel.add(dragPanel, BorderLayout.NORTH);
+        this.add(topPanel, BorderLayout.NORTH);
+        // 分隔线
+        JSeparator separator = new JSeparator(JSeparator.HORIZONTAL);
+        separator.setForeground(new Color(100, 100, 100, 100));
+        this.add(separator, BorderLayout.CENTER);
+        // 按钮面板
         buttonGrid = new GridBagConstraints();
         buttonGrid.gridx = 0;
         buttonGrid.gridy = 0;
@@ -71,21 +110,36 @@ public class PetOption extends WindowBase {
         buttonGrid.fill = GridBagConstraints.HORIZONTAL;
         buttonPanel = new JPanel(new GridBagLayout());
         buttonPanel.setOpaque(false);
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         JScrollPane scrollPane = new JScrollPane(buttonPanel);
         scrollPane.setBorder(null);
         scrollPane.setOpaque(false);
         scrollPane.getViewport().setOpaque(false);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        contentPanel.add(scrollPane);
-        this.add(contentPanel,BorderLayout.CENTER);
+        this.add(scrollPane, BorderLayout.SOUTH);
+        // 设置拖动行为
+        topPanel.addMouseListener(new MouseAdapter(){
+            @Override
+            public void mousePressed(MouseEvent e){
+                dragOffset = e.getPoint();
+            }
+        });
+        topPanel.addMouseMotionListener(new MouseMotionAdapter(){
+            @Override
+            public void mouseDragged(MouseEvent e){
+                Point newLocation = e.getLocationOnScreen();
+                newLocation.x -= dragOffset.x;
+                newLocation.y -= dragOffset.y;
+                setLocation(newLocation);
+            }
+        });
     }
     // 开始渲染
     protected void readyToPaint(){
         updateStatusText();
         loadButtonsToPanel();
         adjustWindowSize();
-        setupDragBehavior();
         startStatusUpdate();
     }
     // 加载按钮到面板
@@ -93,13 +147,12 @@ public class PetOption extends WindowBase {
         buttonPanel.removeAll();
         addButton("images/button_follow.png", "跟随 follow",e->pet.followMouse());
         addButton("images/button_rest.png", "休息 rest",e->pet.doRest());
-        addButton("images/button_copy_text.png", "复制文本 copy text",e->pet.copyTextFromClipboard());
+        addButton("images/button_save.png", "保存 save",e->pet.copyTextFromClipboard());
         addButton("images/button_read.png", "阅读 read",e->pet.readMessageList());
         addButton("images/button_screenshot.png", "截图 screenshot",e->{
             pet.copyScreenImage();
-            pet.showMessage("截图已复制到剪贴板");
+            pet.showMessage("截图已复制 screenshot copied");
         });
-        addButton("images/button_close.png", "关闭 close",e->closeWindow());
         // 重写加载更多......
     }
     // 调整窗口大小
@@ -110,33 +163,14 @@ public class PetOption extends WindowBase {
         this.setSize(width, height);
         this.revalidate();
     }
-    // 设置拖动行为
-    public void setupDragBehavior(){
-        this.addMouseListener(new MouseAdapter(){
-            @Override
-            public void mousePressed(MouseEvent e){
-                dragOffset = e.getPoint();
-            }
-        });
-        this.addMouseMotionListener(new MouseMotionAdapter(){
-            @Override
-            public void mouseDragged(MouseEvent e){
-                Point newLocation = e.getLocationOnScreen();
-                newLocation.x -= dragOffset.x;
-                newLocation.y -= dragOffset.y;
-                setLocation(newLocation);
-            }
-        });
-    }
     // 更新状态文本
     public void updateStatusText(){
         if(pet.getPlayPetData()==null){return;}
-        String statusText1 = String.format("等级 level:%d 动画 animation:%s",
+        String statusText1 = String.format("等级 level:%d %s",
             pet.getPlayPetData().getAffectionLevel(),
-
             pet.animationSprite.currentAnimation
         );
-        String statusText2 = String.format("键盘 key:%d+%d 鼠标 mouse:%d+%d",
+        String statusText2 = String.format("%d+%d | %d+%d",
             pet.getPlayPetData().getGlobalKeyPressCount(),
             pet.getLauncher().getGlobalInputListener().getKeyPressCount(),
             pet.getPlayPetData().getGlobalMouseClickCount(),
