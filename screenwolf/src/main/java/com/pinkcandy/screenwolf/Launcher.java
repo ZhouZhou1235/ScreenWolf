@@ -37,6 +37,7 @@ public class Launcher {
             this.globalInputListener = new GlobalInputListener();
             globalInputListener.startListening();
             gameTray.addSeparator();
+            gameTray.addMenuItem("stop game", e->stopGame());
             gameTray.addMenuItem("force exit game", e->System.exit(0));
         }
         catch(Exception e){

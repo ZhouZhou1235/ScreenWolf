@@ -2,19 +2,14 @@
 .vscode
 
 # 编译产物
-build
+/build
 target
 *.class
 *-bin
 
 # 游戏产生
-data
+/data
 
 # 外部资源
 /download
-
-# 临时文件
-tmp
-
-# 自己的模组
-mymod
+/mymod

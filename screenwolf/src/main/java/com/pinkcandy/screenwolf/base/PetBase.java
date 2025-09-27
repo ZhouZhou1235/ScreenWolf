@@ -260,7 +260,7 @@ public class PetBase extends JPanel {
         // 跟随鼠标
         if(isFollow && isMoving){
             followCounter++;
-            if(followCounter>100){
+            if(followCounter>20){
                 addAffectPoint(5);
                 followCounter = 0;
             }
@@ -301,6 +301,10 @@ public class PetBase extends JPanel {
             if(moveNum<moveThreshold){moveNum++;}
             else{
                 autoMoveTarget = GUtil.getRandomPointOnScreen();
+                if(autoMoveTarget.x<GUtil.DEFAULT_bodySize.width){autoMoveTarget.x=GUtil.DEFAULT_bodySize.width;}
+                if(autoMoveTarget.x>GUtil.SCREEN_dimension.width-GUtil.DEFAULT_bodySize.width){autoMoveTarget.x=GUtil.SCREEN_dimension.width-GUtil.DEFAULT_bodySize.width;}
+                if(autoMoveTarget.y<GUtil.DEFAULT_bodySize.height){autoMoveTarget.y=GUtil.DEFAULT_bodySize.height;}
+                if(autoMoveTarget.y>GUtil.SCREEN_dimension.height-GUtil.DEFAULT_bodySize.height){autoMoveTarget.y=GUtil.SCREEN_dimension.height-GUtil.DEFAULT_bodySize.height;}
                 isAutoMoving = true;
                 moveNum = 0;
             }
@@ -586,7 +590,9 @@ public class PetBase extends JPanel {
     }
     // 阅读消息气泡列表
     public void readMessageList(){
+        if(isResting){showMessage("正在休息 is resting");return;}
         String[] messageList = playPetData.getMessageBubbleList();
+        if(messageList.length==0){showMessage("没有要阅读的内容 message bubble is empty");return;}
         if(messageList.length>0 && showMessageIndex<=messageList.length-1){
             String message = messageList[showMessageIndex];
             showMessageIndex++;
