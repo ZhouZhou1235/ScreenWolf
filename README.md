@@ -4,7 +4,6 @@
 
 # 屏幕有狼
 **周周编写的桌面宠物游戏**
-<img src="/docs/images/demo_wolf.png" alt="logo" width="10%">
 
 ## 描述
 屏幕有狼是一款基于 Java Swing 的桌面宠物游戏，玩家能在桌面上放置可交互的虚拟宠物。
@@ -18,3 +17,7 @@
 
 ## 关于
 作者邮箱：1479499289@qq.com
+
+<img src="/docs/images/demo_wolf.png" alt="logo" width="10%">
+<img src="/docs/images/demo_wolf.png" alt="logo" width="10%">
+<img src="/docs/images/demo_wolf.png" alt="logo" width="10%">
