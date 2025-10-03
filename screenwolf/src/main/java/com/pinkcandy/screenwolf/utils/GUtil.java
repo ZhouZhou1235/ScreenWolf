@@ -51,7 +51,7 @@ public class GUtil {
     // 渲染时钟间隔
     static public int GAME_renderTime = 32;
     // 高速循环间隔
-    static public int GAME_updateTime = 16;
+    static public int GAME_updateTime = 64;
     // 低速循环间隔
     static public int GAME_slowUpdateTime = 1024;
     // 程序工作地址

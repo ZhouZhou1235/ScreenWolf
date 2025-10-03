@@ -4,6 +4,7 @@ import java.awt.*;
 import java.util.*;
 
 import javax.swing.JOptionPane;
+import javax.swing.Timer;
 
 import com.pinkcandy.screenwolf.base.PetBase;
 import com.pinkcandy.screenwolf.part.GameTray;
@@ -25,6 +26,8 @@ public class Launcher {
     private AboutWindow infoWindow;
     private GameTray gameTray;
     private GlobalInputListener globalInputListener;
+    private Timer updateTimer;
+    private Timer slowUpdateTimer;
     public Launcher(){
         try{
             GUtil.initFileDirs();
@@ -35,6 +38,12 @@ public class Launcher {
             this.infoWindow = new AboutWindow();
             this.gameTray = new GameTray(this);
             this.globalInputListener = new GlobalInputListener();
+            this.updateTimer = new Timer(GUtil.GAME_updateTime,e->{
+                updatePetAutoLoop();
+            });this.updateTimer.start();
+            this.slowUpdateTimer = new Timer(GUtil.GAME_slowUpdateTime,e->{
+                updatePetSlowAutoLoop();
+            });this.slowUpdateTimer.start();
             globalInputListener.startListening();
             gameTray.addSeparator();
             gameTray.addMenuItem("stop game", e->stopGame());
@@ -69,7 +78,6 @@ public class Launcher {
     public WelcomeWindow getWelcomeWindow() {
         return welcomeWindow;
     }
-    // === 启动器公开方法 ===
     // 开始游戏
     public void playGame(){
         for(PetBase pet:petList){screen.add(pet);}
@@ -105,6 +113,19 @@ public class Launcher {
         for(Component item:items){
             if(item instanceof PetBase){continue;}
             screen.remove(item);
+        }
+    }
+    // 宠物的高速逻辑循环
+    public void updatePetAutoLoop(){
+        for(PetBase pet:petList){
+            pet.autoLoop();
+            pet.animationSprite.updateFrameDisplay();
+        }
+    }
+    // 宠物的低速逻辑循环
+    public void updatePetSlowAutoLoop(){
+        for(PetBase pet:petList){
+            pet.slowAutoLoop();
         }
     }
 }

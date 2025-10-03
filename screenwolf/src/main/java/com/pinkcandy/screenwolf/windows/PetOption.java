@@ -140,7 +140,6 @@ public class PetOption extends WindowBase {
         updateStatusText();
         loadButtonsToPanel();
         adjustWindowSize();
-        startStatusUpdate();
     }
     // 加载按钮到面板
     protected void loadButtonsToPanel(){
@@ -200,6 +199,7 @@ public class PetOption extends WindowBase {
     }
     // 显示窗口
     public void showWindow(){
+        startStatusUpdate();
         Point petLocation = pet.getLocationOnScreen();
         Point windowLocation = new Point(petLocation.x + pet.getWidth() + 5, petLocation.y);
         if (windowLocation.x + this.getWidth() > GUtil.SCREEN_dimension.width){

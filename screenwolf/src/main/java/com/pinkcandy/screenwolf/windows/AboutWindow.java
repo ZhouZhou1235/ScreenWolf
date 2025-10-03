@@ -23,7 +23,7 @@ public class AboutWindow extends WindowBase {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         ImageIcon logo = ResourceReader.getResourceAsImageIcon("images/logo.png");
-        logo = GUtil.scaleImageIcon(logo, (int)(getWidth()*0.5));
+        logo = GUtil.scaleImageIcon(logo, (int)(getWidth()*0.25));
         panel.add(new JLabel(logo, SwingConstants.CENTER), BorderLayout.NORTH);
         JTextArea infoText = new JTextArea(data.getInfo());
         infoText.setFont(GUtil.DEFAULT_font.deriveFont(Font.PLAIN, GUtil.DEFAULT_textSize));

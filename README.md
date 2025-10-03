@@ -1,20 +1,20 @@
-<img src="/docs/logo.png" alt="logo" width="50%">
+<p align="center">
+    <img src="/docs/images/logo_white.png" alt="logo" width="50%">
+</p>
 
 # 屏幕有狼
 **周周编写的桌面宠物游戏**
+<img src="/docs/images/demo_wolf.png" alt="logo" width="10%">
 
 ## 描述
 屏幕有狼是一款基于 Java Swing 的桌面宠物游戏，玩家能在桌面上放置可交互的虚拟宠物。
 游戏支持加载新宠物，每只宠物拥有独立的动画、数值和行为逻辑。
 也就是说，所有宠物均可自定义！
 
-## 开发进度
-- 1.0.0 2025.9.27 开发完成
-- 1.0.0_Beta_2 2025.8.26 已发布
-- 1.0.0_Beta 2025.7.5 已发布
-- 2025.5.16 项目创建
-
 ## 下载
 1. 见github发行版
 2. itch [屏幕有狼](https://pinkcandyzhou.itch.io/screen-wolf)
 3. Steam搜索“屏幕有狼”或“ScreenWolf”查看商店详情
+
+## 关于
+作者邮箱：1479499289@qq.com

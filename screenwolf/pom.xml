@@ -10,7 +10,7 @@
 
     <groupId>com.pinkcandy</groupId>
     <artifactId>screenwolf</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
     <name>ScreenWolf</name>
     <description>a desktop pet game by pinkcandyzhou</description>

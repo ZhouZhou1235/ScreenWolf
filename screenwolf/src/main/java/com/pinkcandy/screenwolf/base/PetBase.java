@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 import javax.swing.JPanel;
-import javax.swing.Timer;
 
 import com.pinkcandy.screenwolf.Launcher;
 import com.pinkcandy.screenwolf.bean.PetData;
@@ -48,7 +47,7 @@ public class PetBase extends JPanel {
     protected ClassLoader classLoader; // 类加载器
     // === 数值 ===
     protected int followDistanse = (int)GUtil.DEFAULT_bodySize.getWidth(); // 跟随距离
-    protected int moveSpeed = (int)GUtil.DEFAULT_bodySize.getWidth()/10; // 移动速度
+    protected int moveSpeed = (int)GUtil.DEFAULT_bodySize.getWidth()/7; // 移动速度
     // === 数据 ===
     protected String jarPath; // 宠物jar包路径
     protected PetData petData; // 宠物数据
@@ -77,9 +76,6 @@ public class PetBase extends JPanel {
     public boolean isAutoMoving = false; // 正在自主移动
     public boolean isTargetAnimationPlaying = false; // 正在播放特定动画
     public int showMessageIndex = 0; // 阅读消息气泡索引
-    // 计时器
-    protected Timer updateTimer; // 高速循环计时器
-    protected Timer lowUpdateTimer; // 低速循环计时器
     // 计数器
     protected int dragCounter = 0; // 拖拽计数器
     protected int followCounter = 0; // 跟随计数器
@@ -118,8 +114,6 @@ public class PetBase extends JPanel {
             imageFrameHashmap.put(animationName,"assets/animations/"+animationName+"/");
         }
         this.animationSprite = new AnimationSprite(size,imageFrameHashmap,this.jarPath);
-        this.updateTimer = new Timer(GUtil.GAME_updateTime,e->autoLoop());this.updateTimer.start();
-        this.lowUpdateTimer = new Timer(GUtil.GAME_slowUpdateTime,e->slowAutoLoop());this.lowUpdateTimer.start();        
         try{this.robot = new Robot();}
         catch(AWTException e){e.printStackTrace();}
         this.setSize(size);
@@ -141,9 +135,7 @@ public class PetBase extends JPanel {
         );
         savePlayPetData();
         this.setVisible(false);
-        this.animationSprite.stopAnimation();
-        this.updateTimer.stop();
-        this.lowUpdateTimer.stop();
+        this.animationSprite.setPlaying(false);
         this.removeAll();
         this.getParent().remove(this);
         System.gc();
@@ -154,6 +146,7 @@ public class PetBase extends JPanel {
     public PetData getPetData(){return this.petData;}
     public PlayPetData getPlayPetData(){return this.playPetData;}
     public Launcher getLauncher(){return this.launcher;}
+    public PetOption getPetOption(){return petOption;}
     // 获取宠物中心位置
     public Point getPetPosition(){
         Point o = this.getLocation();
@@ -223,16 +216,16 @@ public class PetBase extends JPanel {
     public void auto_playAnimations(){
         if(!isResting){
             if(!isTargetAnimationPlaying){
-                if(isPress){animationSprite.setAndPlayAnimation("press");}
-                else if(isMoving || isAutoMoving){animationSprite.setAndPlayAnimation("move");}
+                if(isPress){animationSprite.setAnimation("press");}
+                else if(isMoving || isAutoMoving){animationSprite.setAnimation("move");}
                 else if(isFocus){
-                    if(isTouching){animationSprite.setAndPlayAnimation("touch");}
-                    else{animationSprite.setAndPlayAnimation("focus");}
+                    if(isTouching){animationSprite.setAnimation("touch");}
+                    else{animationSprite.setAnimation("focus");}
                 }
-                else{animationSprite.setAndPlayAnimation("default");}
+                else{animationSprite.setAnimation("default");}
             }
         }
-        else{animationSprite.setAndPlayAnimation("rest");}
+        else{animationSprite.setAnimation("rest");}
     }
     // 执行自主移动
     public void auto_move(){
@@ -546,14 +539,14 @@ public class PetBase extends JPanel {
             @Override
             public void run(){
                 isTargetAnimationPlaying = true;
-                animationSprite.setAndPlayAnimation(animationName);
+                animationSprite.setAnimation(animationName);
             }
         },50); // 保留微小延迟确保调用
         timer.schedule(new TimerTask(){
             @Override
             public void run(){
                 isTargetAnimationPlaying = false;
-                animationSprite.setAndPlayAnimation(animationName);
+                animationSprite.setAnimation(animationName);
                 timer.cancel();
             }
         },time+50);
