@@ -253,13 +253,13 @@ public class PetBase extends JPanel {
         // 跟随鼠标
         if(isFollow && isMoving){
             followCounter++;
-            if(followCounter>20){
-                addAffectPoint(5);
+            if(followCounter>5){
+                addAffectPoint(10);
                 followCounter = 0;
             }
         }else{followCounter=0;}
         // 点击太多次
-        if(clickCounter>5){
+        if(clickCounter>3){
             reduceAffectPoint(20);
             clickCounter = 0;
         }
@@ -309,7 +309,7 @@ public class PetBase extends JPanel {
         int level = playPetData.getAffectionLevel();
         // 太久不理宠物
         inactiveCounter++;
-        if(inactiveCounter>300){
+        if(inactiveCounter>1200 && level>20){
             if(isResting){reduceAffectPoint(50);}
             else{reduceAffectPoint(100);}
             inactiveCounter = 0;
@@ -447,7 +447,7 @@ public class PetBase extends JPanel {
         if(!isResting) {
             touchNum += 1;
             inactiveCounter = 0;
-            addAffectPoint(1);
+            addAffectPoint(5);
         }
     }
 
@@ -597,7 +597,7 @@ public class PetBase extends JPanel {
                 petPosition.y+GUtil.DEFAULT_bodySize.height
             );
             isAutoMoving = true;
-            addAffectPoint(1);
+            addAffectPoint(10);
         }
         else{showMessageIndex=0;}
     }

@@ -17,7 +17,3 @@
 
 ## 关于
 作者邮箱：1479499289@qq.com
-
-<img src="/docs/images/demo_wolf.png" alt="logo" width="10%">
-<img src="/docs/images/demo_wolf.png" alt="logo" width="10%">
-<img src="/docs/images/demo_wolf.png" alt="logo" width="10%">

@@ -12,7 +12,6 @@ jdk_exe = "./jdk/bin/javac.exe"
 mvn_exe = "./maven/bin/mvn.cmd"
 repo_dir = os.path.abspath("./repo")
 output_dir = os.path.abspath("./output")
-game_jar = "./lib/ScreenWolf.jar"
 
 class PetPackagerGUI:
     def __init__(self, root):
@@ -25,7 +24,7 @@ class PetPackagerGUI:
         main_frame = ttk.Frame(self.root, padding="10")
         main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S)) # type: ignore
         
-        title_label = ttk.Label(main_frame, text="屏幕有狼桌宠项目打包程序", font=("Arial", 16, "bold"))
+        title_label = ttk.Label(main_frame, text="屏幕有狼桌宠项目打包程序", font=("SimHei",16,"bold"))
         title_label.grid(row=0, column=0, columnspan=3, pady=(0, 20))
         
         ttk.Label(main_frame, text="项目路径 project path:").grid(row=1, column=0, sticky=tk.W, pady=5)
@@ -53,7 +52,7 @@ class PetPackagerGUI:
         self.package_btn = ttk.Button(button_frame, text="开始打包 package", command=self.start_package)
         self.package_btn.pack(side=tk.LEFT, padx=5)
         
-        self.open_output_btn = ttk.Button(button_frame, text="打开输出目录 open output", command=self.open_output_dir, state=tk.DISABLED)
+        self.open_output_btn = ttk.Button(button_frame, text="打开输出目录 open output", command=self.open_output_dir, state=tk.ACTIVE)
         self.open_output_btn.pack(side=tk.LEFT, padx=5)
         
         main_frame.columnconfigure(1, weight=1)
@@ -103,14 +102,49 @@ class PetPackagerGUI:
             pass
         return "1.0.0"
     
+    def find_game_jar_by_version(self, version):
+        lib_dir = "./lib"
+        expected_name = f"screenwolf-{version}.jar"
+        expected_path = os.path.join(lib_dir, expected_name)
+        if os.path.exists(expected_path):
+            return expected_path
+        if os.path.exists(lib_dir):
+            for file in os.listdir(lib_dir):
+                if file.endswith(".jar"):
+                    if f"-{version}.jar" in file:
+                        return os.path.join(lib_dir, file)
+                    if file.startswith("screenwolf-") and file.endswith(".jar"):
+                        base_name = file[:-4]
+                        parts = base_name.split("-")
+                        if len(parts) >= 2 and parts[0] == "screenwolf":
+                            file_version = parts[1]
+                            if file_version == version:
+                                return os.path.join(lib_dir, file)
+        default_jar = os.path.join(lib_dir, "ScreenWolf.jar")
+        if os.path.exists(default_jar):
+            return default_jar
+        if os.path.exists(lib_dir):
+            for file in os.listdir(lib_dir):
+                if file.endswith(".jar"):
+                    return os.path.join(lib_dir, file)
+        return None
+
     def install_game_lib_with_version(self, version):
-        if not os.path.exists(game_jar):
-            self.log_message(f"错误：游戏主 JAR 不存在 {game_jar}")
+        game_jar = self.find_game_jar_by_version(version)
+        if game_jar is None or not os.path.exists(game_jar):
+            self.log_message(f"错误：找不到版本 {version} 对应的游戏 JAR 文件")
+            self.log_message(f"在 ./lib 目录中查找可用的 JAR 文件...")
+            lib_dir = "./lib"
+            if os.path.exists(lib_dir):
+                jar_files = [f for f in os.listdir(lib_dir) if f.endswith(".jar")]
+                if jar_files:
+                    self.log_message(f"找到以下 JAR 文件: {', '.join(jar_files)}")
+                else:
+                    self.log_message("未找到任何 JAR 文件")
             return False
-        
+        self.log_message(f"使用游戏库: {os.path.basename(game_jar)}")
         if not os.path.exists(repo_dir):
             os.makedirs(repo_dir)
-        
         install_cmd = (
             f'"{mvn_exe}" install:install-file '
             f'-Dfile="{game_jar}" '
