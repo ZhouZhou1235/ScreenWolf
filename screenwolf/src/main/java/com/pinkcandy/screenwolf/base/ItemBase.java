@@ -30,16 +30,12 @@ public class ItemBase extends JPanel {
     public ItemBase(String text){
         body = new JLabel(text);
         setFontAdjustText(text);
-        this.setBackground(new Color(0,0,0,0));
-        this.add(body);
         ready();
     }
     public ItemBase(String theItemName,ImageIcon imageIcon){
         itemName = theItemName;
         body = new JLabel(imageIcon);
         this.setSize(new Dimension(imageIcon.getIconWidth(),imageIcon.getIconHeight()));
-        this.setBackground(new Color(0,0,0,0));
-        this.add(body);
         ready();
     }
     public ItemBase(String theItemName,ImageIcon imageIcon,Dimension theSize){
@@ -47,8 +43,6 @@ public class ItemBase extends JPanel {
         imageIcon = GUtil.scaleImageIcon(imageIcon,theSize.width);
         body = new JLabel(imageIcon);
         this.setSize(theSize);
-        this.setBackground(new Color(0,0,0,0));
-        this.add(body);
         ready();
     }
     // 获取物体名称
@@ -64,6 +58,11 @@ public class ItemBase extends JPanel {
     }
     // 就绪时调用
     public void ready(){
+        this.setBackground(new Color(0,0,0,0));
+        this.setBorder(null);
+        this.setLayout(new java.awt.BorderLayout());
+        this.add(body, java.awt.BorderLayout.CENTER);
+        this.add(body);
         ItemBase itemBase = this;
         itemBase.addMouseListener(new MouseAdapter(){
             @Override

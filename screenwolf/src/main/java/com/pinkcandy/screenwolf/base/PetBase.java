@@ -97,7 +97,7 @@ public class PetBase extends JPanel {
     // 加载宠物数据
     public void loadPetData(String jarPath){
         ClassLoader classLoader = this.getClass().getClassLoader();
-        try(InputStream is = classLoader.getResourceAsStream("META-INF/pet_data.json")){
+        try(InputStream is = classLoader.getResourceAsStream("pet_data.json")){
             if(is!=null){
                 String jsonpetdata = new String(is.readAllBytes(),StandardCharsets.UTF_8);
                 this.petData = GsonUtil.json2Bean(jsonpetdata,PetData.class);
@@ -118,7 +118,9 @@ public class PetBase extends JPanel {
         catch(AWTException e){e.printStackTrace();}
         this.setSize(size);
         this.setBackground(new Color(0,0,0,0));
-        this.add(animationSprite);
+        this.setBorder(null);
+        this.setLayout(new java.awt.BorderLayout());
+        this.add(animationSprite,java.awt.BorderLayout.CENTER);
         this.ready();
     }
     // 释放宠物对象
@@ -582,24 +584,42 @@ public class PetBase extends JPanel {
         }catch(Exception e){e.printStackTrace();}
     }
     // 阅读消息气泡列表
-    public void readMessageList(){
+    public void readMessageList() {
         if(isResting){showMessage("正在休息 is resting");return;}
         String[] messageList = playPetData.getMessageBubbleList();
         if(messageList.length==0){showMessage("没有要阅读的内容 message bubble is empty");return;}
-        if(messageList.length>0 && showMessageIndex<=messageList.length-1){
+        if(messageList.length>0&&showMessageIndex<=messageList.length-1){
             String message = messageList[showMessageIndex];
             showMessageIndex++;
-            if(showMessageIndex>messageList.length-1){showMessageIndex=0;}
+            if(showMessageIndex>messageList.length - 1){showMessageIndex = 0;}
             showMessage(message);
-            Point petPosition = this.getPetPosition();
-            autoMoveTarget = new Point(
-                petPosition.x+GUtil.DEFAULT_bodySize.width,
-                petPosition.y+GUtil.DEFAULT_bodySize.height
-            );
+            int screenWidth = GUtil.SCREEN_dimension.width;
+            int screenHeight = GUtil.SCREEN_dimension.height;
+            int petWidth = this.getSize().width;
+            int petHeight = this.getSize().height;
+            int maxX = screenWidth-petWidth;
+            int maxY = screenHeight;
+            int minX = 0;
+            int minY = 0;
+            int verticalStep = (int)(petHeight*1.5);
+            Point currentPos = this.getPetPosition();
+            int newX = currentPos.x;
+            int newY = currentPos.y+verticalStep;
+            if(newY>maxY){
+                newY = minY;
+                newX = currentPos.x+petWidth;
+                if(newX>maxX){
+                    newX = minX;
+                    newY = minY;
+                }
+            }
+            newX = Math.min(Math.max(newX, minX), maxX);
+            newY = Math.min(Math.max(newY, minY), maxY);
+            autoMoveTarget = new Point(newX, newY);
             isAutoMoving = true;
             addAffectPoint(10);
         }
-        else{showMessageIndex=0;}
+        else{showMessageIndex = 0;}
     }
     // 跟随鼠标
     public void followMouse(){

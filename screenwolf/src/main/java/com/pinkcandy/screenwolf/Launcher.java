@@ -30,6 +30,10 @@ public class Launcher {
     private Timer slowUpdateTimer;
     public Launcher(){
         try{
+            System.setProperty("awt.useSystemAAFontSettings","on");
+            System.setProperty("swing.aatext","true");
+            System.setProperty("file.encoding", "UTF-8");
+            System.setProperty("sun.jnu.encoding", "UTF-8");
             GUtil.initFileDirs();
             GUtil.initGlobalFont(GUtil.DEFAULT_font);
             this.screen = new TransparentScreen(GUtil.SCREEN_dimension);

@@ -10,7 +10,7 @@
 游戏支持加载新宠物，每只宠物拥有独立的动画、数值和行为逻辑。
 也就是说，所有宠物均可自定义！
 
-## 下载
-1. github发行版
-2. itch [屏幕有狼](https://pinkcandyzhou.itch.io/screen-wolf)
-3. Steam搜索“屏幕有狼”或“ScreenWolf”查看商店详情
+## 游戏下载
+1. github [github发行版](https://github.com/ZhouZhou1235/ScreenWolf/releases)
+2. Steam [Steam商店页](https://store.steampowered.com/app/3875700)
+3. itch [itch页面](https://pinkcandyzhou.itch.io/screen-wolf)

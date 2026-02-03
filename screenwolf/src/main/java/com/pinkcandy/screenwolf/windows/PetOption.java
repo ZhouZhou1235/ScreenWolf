@@ -66,21 +66,21 @@ public class PetOption extends WindowBase {
         // 宠物名称
         JLabel nameLabel = new JLabel(pet.getPetData().getName());
         nameLabel.setFont(GUtil.DEFAULT_font.deriveFont(Font.BOLD, GUtil.DEFAULT_textSize));
-        nameLabel.setForeground(new Color(240,240,240));
+        nameLabel.setForeground(new Color(250,250,250));
         nameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         infoPanel.add(nameLabel);
         infoPanel.add(Box.createRigidArea(new Dimension(0, 5)));
         // 状态信息1
         statusLabel1 = new JLabel();
         statusLabel1.setFont(GUtil.DEFAULT_font.deriveFont(Font.PLAIN, (int)(GUtil.DEFAULT_textSize * 0.9)));
-        statusLabel1.setForeground(new Color(200, 200, 200));
+        statusLabel1.setForeground(new Color(240, 240, 240));
         statusLabel1.setAlignmentX(Component.LEFT_ALIGNMENT);
         infoPanel.add(statusLabel1);
         infoPanel.add(Box.createRigidArea(new Dimension(0, 2)));
         // 状态信息2
         statusLabel2 = new JLabel();
         statusLabel2.setFont(GUtil.DEFAULT_font.deriveFont(Font.PLAIN, (int)(GUtil.DEFAULT_textSize * 0.8)));
-        statusLabel2.setForeground(new Color(175, 175, 175));
+        statusLabel2.setForeground(new Color(230, 230, 230));
         statusLabel2.setAlignmentX(Component.LEFT_ALIGNMENT);
         infoPanel.add(statusLabel2);
         topPanel.add(infoPanel, BorderLayout.CENTER);

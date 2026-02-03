@@ -155,6 +155,20 @@ public class WelcomeWindow extends WindowBase {
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(30);
+        scrollPane.getViewport().addMouseWheelListener(e->{
+            JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
+            if(verticalScrollBar!=null && verticalScrollBar.isVisible()){
+                int rotation = e.getWheelRotation();
+                int unitIncrement = verticalScrollBar.getUnitIncrement();
+                int newValue = verticalScrollBar.getValue() + (rotation * unitIncrement * 3);
+                newValue = Math.max(
+                    verticalScrollBar.getMinimum(), 
+                    Math.min(newValue,verticalScrollBar.getMaximum()-verticalScrollBar.getVisibleAmount())
+                );
+                verticalScrollBar.setValue(newValue);
+                e.consume();
+            }
+        });
         return scrollPane;
     }
     // 创建宠物内容面板
@@ -207,6 +221,8 @@ public class WelcomeWindow extends WindowBase {
         setupPetEntryPanelStyle(petEntryPanel);
         JPanel leftPanel = createPetIconPanel(jarPath);
         JPanel rightPanel = createPetInfoPanel(jarPath, petData);
+        int minHeight = GUtil.DEFAULT_textSize * 6;
+        petEntryPanel.setMinimumSize(new Dimension(0, minHeight));
         petEntryPanel.add(leftPanel,BorderLayout.WEST);
         petEntryPanel.add(rightPanel,BorderLayout.CENTER);
         return petEntryPanel;
@@ -249,8 +265,12 @@ public class WelcomeWindow extends WindowBase {
         JPanel rightPanel = new JPanel(new BorderLayout(5,5));
         JPanel topPanel = createPetTopPanel(jarPath, petData);
         JScrollPane descScroll = createPetDescriptionScroll(petData);
-        rightPanel.add(topPanel,BorderLayout.NORTH);
-        rightPanel.add(descScroll,BorderLayout.CENTER);
+        rightPanel.add(topPanel, BorderLayout.NORTH);
+        rightPanel.add(descScroll, BorderLayout.CENTER);
+        int minWidth = GUtil.DEFAULT_textSize * 10;
+        int preferredWidth = GUtil.DEFAULT_textSize * 20;
+        rightPanel.setMinimumSize(new Dimension(minWidth, 0));
+        rightPanel.setPreferredSize(new Dimension(preferredWidth, 0));
         return rightPanel;
     }
     // 创建宠物顶部面板
@@ -299,6 +319,9 @@ public class WelcomeWindow extends WindowBase {
         descScroll.getViewport().setOpaque(false);
         descScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         descScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        int maxHeight = GUtil.DEFAULT_textSize * 8;
+        int preferredHeight = Math.min(maxHeight, descArea.getPreferredSize().height);
+        descScroll.setPreferredSize(new Dimension(0, preferredHeight));
         return descScroll;
     }
     // 创建描述文本区域
@@ -313,18 +336,18 @@ public class WelcomeWindow extends WindowBase {
         descArea.setHighlighter(null);
         descArea.setFocusable(false);
         descArea.setMargin(new Insets(5,0,5,0));
-        
         int lineCount = Math.max(1, descArea.getLineCount());
-        int preferredHeight = Math.min(120, lineCount * descArea.getFontMetrics(descArea.getFont()).getHeight() + 10);
+        int lineHeight = descArea.getFontMetrics(descArea.getFont()).getHeight();
+        int preferredHeight = lineCount * lineHeight + 10;
         descArea.setPreferredSize(new Dimension(0, preferredHeight));
-        
+        descArea.setMinimumSize(new Dimension(0, lineHeight + 10));
         return descArea;
     }
     // 从JAR中加载宠物数据
     private PetData loadPetDataFromJar(String jarPath) throws Exception{
         String json = new String(JarFileUtil.readByteInJarFile(
             jarPath,
-            "META-INF/pet_data.json"
+            "pet_data.json"
         ));
         return GsonUtil.json2Bean(json,PetData.class);
     }
